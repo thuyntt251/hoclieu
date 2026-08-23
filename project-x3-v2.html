@@ -2,10 +2,6 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
-<!-- v20260823-162441 -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PROJECT X3 · Truyền Thông Sáng Tạo · Bộ Học Liệu Tổng Hợp</title>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -47,7 +43,7 @@ body{font-family:"Be Vietnam Pro",sans-serif;background:#F0F4FF;color:var(--ink)
 .header-logout:hover{background:rgba(255,255,255,.28)}
 
 /* ACTION BAR */
-.action-bar{background:#fff;border-bottom:1px solid var(--border);padding:8px 32px;display:flex;align-items:center;gap:8px;position:sticky;top:64px;z-index:100;box-shadow:0 1px 4px rgba(15,43,91,.08);min-height:40px}
+.action-bar{display:none}
 .btn{display:inline-flex;align-items:center;gap:5px;padding:6px 14px;border-radius:var(--radius-sm);font-size:12.5px;font-weight:600;cursor:pointer;border:1.5px solid transparent;transition:all .18s;font-family:inherit;white-space:nowrap}
 .btn:disabled{opacity:.4;cursor:not-allowed}
 .btn-reset{background:var(--red-light);color:var(--red);border-color:#FECACA}.btn-reset:hover:not(:disabled){background:#FEE2E2;border-color:var(--red)}
@@ -68,6 +64,7 @@ body{font-family:"Be Vietnam Pro",sans-serif;background:#F0F4FF;color:var(--ink)
 
 /* LESSON TABS (Row 1) */
 .lesson-tabs-wrap{background:#fff;border-bottom:1px solid var(--sky-deep);padding:0 32px;overflow-x:auto;position:sticky;top:64px;z-index:90;box-shadow:0 1px 0 var(--sky-deep)}
+/* lesson-tabs-wrap height = 64px(header) + ~56px(tabs) = 120px hl-tabs starts at */
 .lesson-tabs{display:flex;gap:3px;padding:8px 0 0;flex-wrap:nowrap;overflow-x:auto}
 .lesson-tab{padding:6px 9px;font-size:11px;font-weight:600;background:var(--pending-bg);color:var(--pending);border:1.5px solid var(--pending-border);border-radius:var(--radius-sm) var(--radius-sm) 0 0;cursor:pointer;transition:all .15s;white-space:normal;border-bottom:none;font-family:inherit;position:relative;min-height:48px;width:72px;text-align:center;line-height:1.3;display:inline-flex;align-items:center;justify-content:center;word-break:break-word}
 .lesson-tab::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:2px;background:transparent;transition:background .15s}
@@ -80,7 +77,7 @@ body{font-family:"Be Vietnam Pro",sans-serif;background:#F0F4FF;color:var(--ink)
 .lesson-tab.status-progress.active{background:#fff;color:var(--progress)}
 
 /* HL TABS (Row 2) */
-.hl-tabs-wrap{background:#F8FAFF;border-bottom:2px solid var(--sky-deep);padding:8px 32px;display:flex;gap:6px;flex-wrap:wrap;position:sticky;top:112px;z-index:89}
+.hl-tabs-wrap{background:#F8FAFF;border-bottom:2px solid var(--sky-deep);padding:8px 32px;display:flex;gap:6px;flex-wrap:wrap;position:sticky;top:120px;z-index:89}
 .hl-tab{padding:5px 12px;font-size:11.5px;font-weight:600;background:var(--pending-bg);color:var(--pending);border:1.5px solid var(--pending-border);border-radius:20px;cursor:pointer;transition:all .15s;font-family:inherit;display:flex;align-items:center;gap:6px}
 .hl-tab:hover{filter:brightness(.96)}
 .hl-tab.active{box-shadow:0 0 0 2px var(--blue);border-color:var(--blue);background:#fff;color:var(--blue)}
@@ -109,35 +106,39 @@ body{font-family:"Be Vietnam Pro",sans-serif;background:#F0F4FF;color:var(--ink)
 .hl-panel{display:none}
 .hl-panel.active{display:block}
 
-/* LOCKED OVERLAY */
-/* Lock: chỉ khóa field học sinh (có data-fid), không đụng grading */
+/* LOCKED OVERLAY — chỉ khóa student fields (data-fid) */
 .hl-panel.locked [data-fid]{background:#F8FAFC!important;color:var(--ink-soft)!important;pointer-events:none!important;border-color:#E2E8F0!important;cursor:not-allowed!important;opacity:.7}
-/* Grading inputs luôn active dù panel locked */
-.hl-panel.locked .grading-section input,.hl-panel.locked .grading-section textarea,.hl-panel.locked .grading-section button{pointer-events:auto!important;opacity:1!important;cursor:auto!important}
-.hl-panel.locked .grading-section input[type=number],.hl-panel.locked .grading-section textarea:not([readonly]){background:#fff!important;border-color:var(--border)!important;color:var(--ink)!important;cursor:text!important}
-.hl-panel.locked .grading-section button{cursor:pointer!important}
 .locked-banner{background:var(--green-light);border:1px solid #6EE7B7;border-radius:var(--radius-sm);padding:10px 16px;font-size:13px;color:#065F46;font-weight:600;margin-bottom:16px;display:flex;align-items:center;gap:8px}
 /* STATUS extras */
 .hl-tab.graded .status-dot{background:#7C3AED}
 .hl-status-badge.graded{background:#EDE9FE;color:#4C1D95}
-/* GRADING SECTION — collapsible */
-.grading-section{margin-top:20px;border:1.5px solid #DDD6FE;border-radius:var(--radius);overflow:hidden;transition:box-shadow .2s;display:none}
-.hl-panel.submitted .grading-section,.hl-panel.graded .grading-section{display:block}
-.hl-panel.submitted .grading-body,.hl-panel.graded .grading-body{max-height:600px!important;opacity:1!important;padding:16px 18px!important;overflow:visible!important}
-/* GV mode: always show grading */
-body.gv-logged .grading-section{display:block}
-body.gv-logged .grading-section .grading-body{max-height:600px!important;opacity:1!important;padding:16px 18px!important;overflow:visible!important}
-/* GV: student fields read-only (visual) */
-body.gv-logged [data-fid]{pointer-events:none!important;background:#F8FAFC!important;color:var(--ink-soft)!important;border-color:#E2E8F0!important;cursor:default!important;opacity:.75}
-/* GV: ẩn nút học sinh */
-body.gv-logged .btn-save,body.gv-logged .btn-submit,body.gv-logged .btn-reset{display:none!important}
+
+/* ── GRADING SECTION ─────────────────────────────── */
+/* Mặc định ẩn — chỉ hiện khi có class .open */
+.grading-section{margin-top:20px;border:1.5px solid #DDD6FE;border-radius:var(--radius);overflow:hidden;transition:box-shadow .2s}
 .grading-section:hover{box-shadow:0 0 0 3px rgba(124,58,237,.1)}
 .grading-header{background:linear-gradient(135deg,#4C1D95,#6D28D9);color:#fff;padding:11px 18px;font-size:12px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;transition:background .15s}
 .grading-header:hover{background:linear-gradient(135deg,#3B0764,#5B21B6)}
 .grading-toggle-icon{font-size:16px;transition:transform .3s;display:inline-block}
-.grading-body{padding:16px 18px;background:#FAFCFF;display:flex;flex-direction:column;gap:12px;max-height:0;overflow:hidden;transition:max-height .35s ease,padding .3s ease,opacity .3s ease;opacity:0;padding-top:0;padding-bottom:0}
-.grading-section.open .grading-body{max-height:600px;opacity:1;padding:16px 18px}
+/* Body đóng mặc định */
+.grading-body{background:#FAFCFF;display:flex;flex-direction:column;gap:12px;max-height:0;overflow:hidden;opacity:0;transition:max-height .35s ease,opacity .25s ease,padding .3s ease;padding:0 18px}
+/* Body mở khi có .open */
+.grading-section.open .grading-body{max-height:700px;opacity:1;padding:16px 18px}
 .grading-section.open .grading-toggle-icon{transform:rotate(180deg)}
+/* Ẩn toàn bộ grading-section với HS (không phải GV, không phải submitted/graded) */
+.grading-section{display:none}
+.hl-panel.submitted .grading-section,
+.hl-panel.graded .grading-section,
+body.gv-logged .grading-section{display:block}
+
+/* ── HS: ẩn nút Chấm bài ───────────────────────── */
+body:not(.gv-logged) .btn-grade{display:none!important}
+
+/* ── GV mode ────────────────────────────────────── */
+/* Student fields: chỉ xem */
+body.gv-logged [data-fid]{pointer-events:none!important;background:#F8FAFC!important;color:var(--ink-soft)!important;border-color:#E2E8F0!important;cursor:default!important;opacity:.75}
+/* Ẩn nút HS */
+body.gv-logged .btn-save,body.gv-logged .btn-submit,body.gv-logged .btn-reset{display:none!important}
 .grading-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .grade-input{width:90px;padding:8px 12px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:inherit;font-size:16px;font-weight:700;color:var(--navy);text-align:center;background:#fff}
 .grade-input:focus{outline:none;border-color:#7C3AED;box-shadow:0 0 0 3px rgba(124,58,237,.12)}
@@ -217,7 +218,7 @@ tbody td textarea:focus,tbody td input[type="text"]:focus{background:#fff}
 
 /* PRINT */
 @media print{
-  .action-bar,.lesson-tabs-wrap,.hl-tabs-wrap{display:none!important}
+  .action-bar,.lesson-tabs-wrap,.hl-tabs-wrap,.teacher-bar{display:none!important}
   .hl-panel{display:block!important}
   .section-card{box-shadow:none!important;break-inside:avoid;border:1px solid #ccc}
   body{background:#fff;font-size:13px}
@@ -268,9 +269,10 @@ tbody td textarea:focus,tbody td input[type="text"]:focus{background:#fff}
 .teacher-name-display{font-size:14px;font-weight:700;color:#4C1D95}
 /* session bar GV */
 .session-bar.gv-mode{background:#EDE9FE;border-bottom-color:#DDD6FE;color:#4C1D95}
-/* grading section: ẩn gv-auth-row khi đã đăng nhập với vai trò GV */
+/* GV đã đăng nhập: ẩn ô nhập mã GV (đã verify khi login) */
 body.gv-logged .gv-auth-row{display:none!important}
-body.gv-logged .btn-grade{display:inline-flex}
+/* GV: nút chấm bài luôn hiện */
+body.gv-logged .btn-grade{display:inline-flex!important}
 </style>
 </head>
 <body>
@@ -2029,8 +2031,6 @@ async function doLogin() {
         localStorage.removeItem(LOCK_KEY); localStorage.removeItem(ATTEMPT_KEY);
         sessionStorage.setItem(SESSION_KEY, JSON.stringify({ ...gv, role: 'gv' }));
         await enterAppGV(gv, true);
-        // Mở tất cả grading sections ngay khi GV đăng nhập
-        document.querySelectorAll('.grading-section').forEach(s => s.classList.add('open'));
       } else {
         const att = (parseInt(localStorage.getItem(ATTEMPT_KEY)) || 0) + 1;
         localStorage.setItem(ATTEMPT_KEY, att);
@@ -2183,6 +2183,10 @@ async function loadStudentData(ten, lop) {
     });
     renderHLTabs();
     showToast('✓ Đã tải bài làm của ' + ten, 'success');
+    // Nếu GV: mở tất cả grading sections
+    if (document.body.classList.contains('gv-logged')) {
+      document.querySelectorAll('.grading-section').forEach(s => s.classList.add('open'));
+    }
   } catch(e) {
     showToast('❌ Lỗi tải dữ liệu: ' + e.message, 'error');
   } finally {
