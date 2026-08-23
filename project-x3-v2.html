@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PROJECT X3 · Truyền Thông Sáng Tạo · Bộ Học Liệu Tổng Hợp</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0F2B5B;--blue:#1B4FD8;--blue-light:#3B70F2;
+  --sky:#E8EFFF;--sky-deep:#D0DEFF;
+  --amber:#F59E0B;--amber-light:#FEF3C7;
+  --green:#059669;--green-light:#D1FAE5;
+  --red:#DC2626;--red-light:#FEE2E2;
+  --slate:#64748B;--slate-light:#F1F5F9;
+  --ink:#1E293B;--ink-soft:#475569;
+  --border:#CBD5E1;--radius:10px;--radius-sm:6px;
+  --shadow:0 2px 8px rgba(15,43,91,.10);
+  --shadow-md:0 4px 20px rgba(15,43,91,.14);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Be Vietnam Pro",sans-serif;background:#F0F4FF;color:var(--ink);font-size:15px;line-height:1.65;min-height:100vh}
+
+/* HEADER */
+.site-header{background:linear-gradient(135deg,var(--navy) 0%,#1B3A7A 60%,#1B4FD8 100%);color:#fff;padding:20px 32px 16px;position:relative;overflow:hidden}
+.site-header::before{content:"X3";position:absolute;right:-16px;top:-16px;font-size:140px;font-weight:700;opacity:.06;letter-spacing:-8px;line-height:1;font-family:"JetBrains Mono",monospace}
+.header-eyebrow{font-size:11px;font-weight:600;letter-spacing:2px;color:#93B4FF;text-transform:uppercase;margin-bottom:4px}
+.header-title{font-size:22px;font-weight:700;line-height:1.2;margin-bottom:2px}
+.header-subtitle{font-size:12px;color:#A5C0FF}
+
+/* ACTION BAR */
+.action-bar{background:#fff;border-bottom:1px solid var(--border);padding:10px 32px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;position:sticky;top:0;z-index:100;box-shadow:var(--shadow)}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;border:1.5px solid transparent;transition:all .18s;font-family:inherit;white-space:nowrap}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn-reset{background:var(--red-light);color:var(--red);border-color:#FECACA}.btn-reset:hover:not(:disabled){background:#FEE2E2;border-color:var(--red)}
+.btn-print{background:var(--slate-light);color:var(--ink);border-color:var(--border)}.btn-print:hover{background:#E2E8F0}
+.btn-email{background:var(--amber-light);color:#92400E;border-color:#FDE68A}.btn-email:hover:not(:disabled){background:#FEF3C7;border-color:var(--amber)}
+.btn-save{background:var(--green-light);color:#065F46;border-color:#6EE7B7}.btn-save:hover:not(:disabled){background:#A7F3D0;border-color:var(--green)}
+.btn-submit{background:var(--blue);color:#fff;border-color:var(--blue)}.btn-submit:hover:not(:disabled){background:#1440B0}
+.btn-icon{font-size:15px}
+
+/* STUDENT BAR */
+.student-bar{background:#fff;border-bottom:2px solid var(--sky-deep);padding:12px 32px;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:12px}
+.student-field{display:flex;flex-direction:column;gap:4px}
+.student-field label{font-size:11px;font-weight:600;color:var(--slate);text-transform:uppercase;letter-spacing:.8px}
+.student-field select,.student-field input{padding:7px 10px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:inherit;font-size:14px;color:var(--ink);background:var(--slate-light);transition:border-color .15s}
+.student-field select:focus,.student-field input:focus{outline:none;border-color:var(--blue);background:#fff}
+#loadStatus{font-size:12px;color:var(--slate);padding:4px 0;align-self:flex-end}
+
+/* LESSON TABS (Row 1) */
+.lesson-tabs-wrap{background:#fff;border-bottom:1px solid var(--sky-deep);padding:0 32px;overflow-x:auto;position:sticky;top:53px;z-index:90}
+.lesson-tabs{display:flex;gap:2px;padding:8px 0 0;min-width:max-content}
+.lesson-tab{padding:8px 14px;font-size:13px;font-weight:600;color:var(--slate);background:transparent;border:none;border-radius:var(--radius-sm) var(--radius-sm) 0 0;cursor:pointer;transition:all .15s;white-space:nowrap;border-bottom:3px solid transparent;font-family:inherit}
+.lesson-tab:hover{color:var(--blue);background:var(--sky)}
+.lesson-tab.active{color:var(--blue);background:var(--sky);border-bottom-color:var(--blue)}
+
+/* HL TABS (Row 2) */
+.hl-tabs-wrap{background:var(--sky);border-bottom:2px solid var(--sky-deep);padding:8px 32px;display:flex;gap:6px;flex-wrap:wrap;position:sticky;top:101px;z-index:89}
+.hl-tab{padding:6px 14px;font-size:12px;font-weight:600;color:var(--ink-soft);background:#fff;border:1.5px solid var(--border);border-radius:20px;cursor:pointer;transition:all .15s;font-family:inherit;display:flex;align-items:center;gap:6px}
+.hl-tab:hover{background:var(--sky);border-color:var(--blue-light);color:var(--blue)}
+.hl-tab.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+.hl-tab .status-dot{width:7px;height:7px;border-radius:50%;background:var(--border);flex-shrink:0}
+.hl-tab.draft .status-dot{background:var(--amber)}
+.hl-tab.submitted .status-dot{background:var(--green)}
+
+/* HL PANEL HEADER */
+.hl-panel-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding-bottom:16px;border-bottom:2px solid var(--sky-deep)}
+.hl-panel-title-wrap{display:flex;align-items:flex-start;gap:14px}
+.hl-badge{background:var(--blue);color:#fff;font-size:11px;font-weight:700;letter-spacing:1px;padding:5px 10px;border-radius:var(--radius-sm);white-space:nowrap;margin-top:2px;font-family:"JetBrains Mono",monospace}
+.hl-panel-actions{display:flex;gap:8px;align-items:center}
+.hl-status-badge{font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;letter-spacing:.5px}
+.hl-status-badge.draft{background:var(--amber-light);color:#92400E}
+.hl-status-badge.submitted{background:var(--green-light);color:#065F46}
+.hl-status-badge.unsaved{background:var(--slate-light);color:var(--slate)}
+
+/* CONTENT */
+.content-area{padding:24px 32px;max-width:1100px;margin:0 auto}
+.hl-panel{display:none}
+.hl-panel.active{display:block}
+
+/* LOCKED OVERLAY */
+.hl-panel.locked textarea,.hl-panel.locked input[type="text"],.hl-panel.locked select:not(#s_name):not(#s_lop):not(#s_nhom){background:#F8FAFC!important;color:var(--ink-soft)!important;pointer-events:none;border-color:#E2E8F0!important;cursor:not-allowed}
+.hl-panel.locked input[type="checkbox"],.hl-panel.locked input[type="radio"]{pointer-events:none;opacity:.65}
+.locked-banner{background:var(--green-light);border:1px solid #6EE7B7;border-radius:var(--radius-sm);padding:10px 16px;font-size:13px;color:#065F46;font-weight:600;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+
+/* SECTION CARD */
+.section-card{background:#fff;border-radius:var(--radius);border:1px solid var(--border);padding:20px 22px;margin-bottom:16px;box-shadow:var(--shadow)}
+.section-title{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.section-title::before{content:"";width:4px;height:18px;background:var(--blue);border-radius:2px;flex-shrink:0}
+.section-code{font-family:"JetBrains Mono",monospace;font-size:10px;font-weight:500;color:var(--blue-light);background:var(--sky);padding:2px 7px;border-radius:4px}
+.section-instruction{font-size:13px;color:var(--slate);margin-bottom:14px;padding:10px 14px;background:var(--amber-light);border-left:3px solid var(--amber);border-radius:0 var(--radius-sm) var(--radius-sm) 0;font-style:italic}
+
+/* SOURCE BOX */
+.source-box{background:var(--slate-light);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px;margin-bottom:14px;font-size:13.5px;line-height:1.7}
+.source-label{font-size:11px;font-weight:700;letter-spacing:1px;color:var(--blue);text-transform:uppercase;margin-bottom:6px;font-family:"JetBrains Mono",monospace}
+
+/* FORM */
+.field-group{margin-bottom:14px}
+.field-label{display:block;font-size:13px;font-weight:600;color:var(--ink);margin-bottom:5px}
+.field-sublabel{font-size:12px;color:var(--slate);font-weight:400;margin-left:4px}
+textarea,input[type="text"]{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:"Be Vietnam Pro",sans-serif;font-size:14px;color:var(--ink);background:#FAFCFF;transition:border-color .15s,background .15s;resize:vertical}
+textarea:focus,input[type="text"]:focus{outline:none;border-color:var(--blue);background:#fff;box-shadow:0 0 0 3px rgba(27,79,216,.1)}
+textarea{min-height:80px}
+textarea.tall{min-height:120px}
+textarea.short{min-height:52px}
+
+/* TABLE */
+.table-wrap{overflow-x:auto;margin-bottom:14px;border-radius:var(--radius-sm);border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+thead th{background:var(--navy);color:#fff;padding:10px 12px;text-align:left;font-weight:600;font-size:12.5px;border-right:1px solid rgba(255,255,255,.12)}
+thead th:last-child{border-right:none}
+tbody tr:nth-child(even){background:var(--slate-light)}
+tbody tr:nth-child(odd){background:#fff}
+tbody td{padding:8px 10px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top}
+tbody td:last-child{border-right:none}
+tbody td.row-header{font-weight:600;color:var(--navy);background:var(--sky)!important;font-size:12.5px;min-width:130px}
+tbody td textarea,tbody td input[type="text"]{min-height:50px;font-size:13px;background:transparent;border:1px solid #D0D9F0}
+tbody td textarea:focus,tbody td input[type="text"]:focus{background:#fff}
+
+/* CHECKBOX / RADIO */
+.checkbox-list{display:flex;flex-direction:column;gap:10px;margin-bottom:6px}
+.checkbox-item{display:flex;align-items:flex-start;gap:10px;cursor:pointer}
+.checkbox-item input[type="checkbox"]{width:18px;height:18px;margin-top:1px;flex-shrink:0;accent-color:var(--blue);cursor:pointer}
+.checkbox-item span{font-size:14px;color:var(--ink)}
+.rating-group{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+.rating-option{display:flex;align-items:flex-start;gap:10px}
+.rating-option input[type="radio"]{margin-top:3px;accent-color:var(--blue)}
+.rating-option label{font-size:13.5px;cursor:pointer}
+.rating-level{font-weight:600;color:var(--blue)}
+
+/* INLINE FILL */
+.inline-fill{display:inline-block;border:none;border-bottom:2px solid var(--blue-light);min-width:100px;padding:2px 6px;font-size:14px;font-family:"Be Vietnam Pro",sans-serif;color:var(--ink);background:var(--sky);outline:none}
+.inline-fill:focus{border-bottom-color:var(--blue);background:#DBE7FF}
+
+/* PORTFOLIO */
+.portfolio-note{margin-top:14px;padding:12px 16px;background:var(--green-light);border-left:3px solid var(--green);border-radius:0 var(--radius-sm) var(--radius-sm) 0;font-size:13px;color:#065F46}
+.portfolio-note strong{display:block;font-size:11px;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px}
+.divider{border:none;border-top:1px solid var(--sky-deep);margin:18px 0}
+
+/* LOADER */
+#globalLoader{position:fixed;inset:0;background:rgba(15,43,91,.6);z-index:9999;display:none;align-items:center;justify-content:center;flex-direction:column;gap:12px;color:#fff;font-size:15px;font-weight:600}
+#globalLoader .spinner{width:36px;height:36px;border:4px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* TOAST */
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--navy);color:#fff;padding:12px 22px;border-radius:var(--radius);font-size:14px;font-weight:500;opacity:0;transition:all .3s;pointer-events:none;z-index:9999;box-shadow:var(--shadow-md)}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#toast.success{background:#065F46}
+#toast.error{background:#991B1B}
+
+/* PRINT */
+@media print{
+  .action-bar,.lesson-tabs-wrap,.hl-tabs-wrap{display:none!important}
+  .hl-panel{display:block!important}
+  .section-card{box-shadow:none!important;break-inside:avoid;border:1px solid #ccc}
+  body{background:#fff;font-size:13px}
+  .site-header{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .content-area{padding:12px;max-width:100%}
+}
+
+@media(max-width:640px){
+  .site-header,.action-bar,.student-bar,.lesson-tabs-wrap,.hl-tabs-wrap,.content-area{padding-left:14px;padding-right:14px}
+  .student-bar{grid-template-columns:1fr 1fr}
+  .header-title{font-size:18px}
+}
+</style>
+</head>
+<body>
+
+<!-- GLOBAL LOADER -->
+<div id="globalLoader"><div class="spinner"></div><span id="loaderMsg">Đang tải...</span></div>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="header-eyebrow">PDP FSchools · Niên khóa 2026–2027</div>
+  <div class="header-title">PROJECT X3 · TRUYỀN THÔNG SÁNG TẠO</div>
+  <div class="header-subtitle">Bộ Học Liệu Tổng Hợp Toàn Khóa · Khối 11</div>
+</header>
+
+<!-- ACTION BAR -->
+<div class="action-bar">
+  <button class="btn btn-reset" onclick="resetCurrent()"><span class="btn-icon">🔄</span> Reset HL này</button>
+  <button class="btn btn-print" onclick="window.print()"><span class="btn-icon">🖨️</span> In</button>
+  <button class="btn btn-email" onclick="sendEmail()"><span class="btn-icon">📧</span> Email</button>
+  <div style="flex:1"></div>
+  <span id="syncStatus" style="font-size:12px;color:var(--slate)"></span>
+</div>
+
+<!-- STUDENT BAR -->
+<div class="student-bar">
+  <div class="student-field">
+    <label>Họ và tên</label>
+    <select id="s_name" onchange="onStudentChange()">
+      <option value="">-- Chọn tên --</option>
+    </select>
+  </div>
+  <div class="student-field">
+    <label>Lớp</label>
+    <input type="text" id="s_lop" placeholder="VD: 11A1" readonly style="background:var(--slate-light)"/>
+  </div>
+  <div class="student-field">
+    <label>Nhóm</label>
+    <input type="text" id="s_nhom" placeholder="VD: Nhóm 2"/>
+  </div>
+  <div id="loadStatus" style="font-size:12px;color:var(--slate);align-self:center"></div>
+</div>
+
+<!-- LESSON TABS (Tầng 1) -->
+<div class="lesson-tabs-wrap">
+  <div class="lesson-tabs" id="lessonTabs">
+    <button class="lesson-tab active" onclick="switchLesson(0,this)">B1 · Tôi &amp; TT</button>
+    <button class="lesson-tab" onclick="switchLesson(1,this)">B2 · Giải mã TĐ</button>
+    <button class="lesson-tab" onclick="switchLesson(2,this)">B3 · CER</button>
+    <button class="lesson-tab" onclick="switchLesson(3,this)">B4 · Nguồn tin</button>
+    <button class="lesson-tab" onclick="switchLesson(4,this)">B5 · Kiểm chứng</button>
+    <button class="lesson-tab" onclick="switchLesson(5,this)">B6 · Tác động TT</button>
+    <button class="lesson-tab" onclick="switchLesson(6,this)">B7 · Tạo lập</button>
+    <button class="lesson-tab" onclick="switchLesson(7,this)">B8 · Tiếng nói</button>
+    <button class="lesson-tab" onclick="switchLesson(8,this)">B9 · Phản tư</button>
+    <button class="lesson-tab" onclick="switchLesson(9,this)">B10 · Launch</button>
+    <button class="lesson-tab" onclick="switchLesson(10,this)">B11 · Research</button>
+    <button class="lesson-tab" onclick="switchLesson(11,this)">B12 · Acquire</button>
+    <button class="lesson-tab" onclick="switchLesson(12,this)">B13 · Ideation</button>
+    <button class="lesson-tab" onclick="switchLesson(13,this)">B14 · Develop</button>
+    <button class="lesson-tab" onclick="switchLesson(14,this)">B15 · Tuning</button>
+    <button class="lesson-tab" onclick="switchLesson(15,this)">B16 · Delve A</button>
+    <button class="lesson-tab" onclick="switchLesson(16,this)">B17 · Lặp</button>
+    <button class="lesson-tab" onclick="switchLesson(17,this)">B18 · Delve B</button>
+    <button class="lesson-tab" onclick="switchLesson(18,this)">B19 · Exhibit</button>
+    <button class="lesson-tab" onclick="switchLesson(19,this)">B20 · Reflect</button>
+  </div>
+</div>
+
+<!-- HL TABS (Tầng 2 — dynamic) -->
+<div class="hl-tabs-wrap" id="hlTabsWrap">
+  <!-- filled by JS -->
+</div>
+
+<div class="content-area" id="contentArea">
+  <!-- HL panels filled by JS from DATA -->
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// CONFIG — Replace with your deployed Apps Script URL
+// ═══════════════════════════════════════════════════════════
+const GAS_URL = 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE';
+const SHEET_ID = '1zoZvZcRpPsdGN2Wqj_C9qe7kDQTnGICk_4T5WU7_pjQ';
+
+// ═══════════════════════════════════════════════════════════
+// LESSON / HL DATA STRUCTURE
+// Each lesson has multiple HL (học liệu). Each HL has:
+//   id: unique key (used as field prefix in sheet)
+//   label: tab label
+//   fields: array of field definitions
+// ═══════════════════════════════════════════════════════════
+const LESSONS = [
+  // B1
+  { bai:'B1', label:'B1 · Tôi & TT', hls:[
+    { id:'B1_HL1', label:'HL-B1.1 · Giao ước + Nhật ký' },
+    { id:'B1_HL2', label:'HL-B1.2 · Khái niệm' },
+    { id:'B1_HL3', label:'HL-B1.3 · Ba vai trò' },
+    { id:'B1_HL4', label:'HL-B1.4 · Media Literacy' },
+    { id:'B1_HL5', label:'HL-B1.5 · Phản tư + Ra cửa' },
+  ]},
+  // B2
+  { bai:'B2', label:'B2 · Giải mã TĐ', hls:[
+    { id:'B2_HL0', label:'B2.0 · Bộ nguồn' },
+    { id:'B2_HL1', label:'B2.1 · So sánh 3 phiên bản' },
+    { id:'B2_HL2', label:'B2.2 · Khái niệm' },
+    { id:'B2_HL3', label:'B2.3 · 8 câu hỏi' },
+    { id:'B2_HL4', label:'B2.4 · Giải mã độc lập' },
+    { id:'B2_HL5', label:'B2.5–6 · Phản tư + Ra cửa' },
+  ]},
+  // B3
+  { bai:'B3', label:'B3 · CER', hls:[
+    { id:'B3_HL1', label:'B3.1 · CER Framework' },
+    { id:'B3_HL2', label:'B3.2 · Nâng cấp mẫu yếu' },
+    { id:'B3_HL3', label:'B3.3 · Apply tự chọn' },
+    { id:'B3_HL4', label:'B3.4 · Rubric + Tự đánh giá' },
+  ]},
+  // B4
+  { bai:'B4', label:'B4 · Nguồn tin', hls:[
+    { id:'B4_HL0', label:'B4.0 · Bộ nguồn' },
+    { id:'B4_HL1', label:'B4.1 · Tin hay không tin?' },
+    { id:'B4_HL2', label:'B4.2 · 5 dạng sai lệch' },
+    { id:'B4_HL3', label:'B4.3 · Công cụ đọc ngang' },
+    { id:'B4_HL4', label:'B4.4 · Worksheet COR' },
+    { id:'B4_HL5', label:'B4.5–6 · Phản tư + Ra cửa' },
+  ]},
+  // B5
+  { bai:'B5', label:'B5 · Kiểm chứng', hls:[
+    { id:'B5_HL1', label:'B5.1 · Lỗi lập luận' },
+    { id:'B5_HL2', label:'B5.2 · Case lan truyền' },
+    { id:'B5_HL3', label:'B5.3 · Self-check Protocol' },
+    { id:'B5_HL4', label:'B5.4 · Rubric' },
+  ]},
+  // B6
+  { bai:'B6', label:'B6 · Tác động TT', hls:[
+    { id:'B6_HL0', label:'B6.0–1 · Bộ nguồn + Feed' },
+    { id:'B6_HL2', label:'B6.2 · Khái niệm' },
+    { id:'B6_HL3', label:'B6.3–4 · Q-TIPS' },
+    { id:'B6_HL5', label:'B6.5–6 · Phản tư + Ra cửa' },
+  ]},
+  // B7
+  { bai:'B7', label:'B7 · Tạo lập', hls:[
+    { id:'B7_HL0', label:'B7.0–1 · Ba tình huống' },
+    { id:'B7_HL2', label:'B7.2 · Ethical checklist' },
+    { id:'B7_HL3', label:'B7.3–4 · 7 câu hỏi + Mini-message' },
+    { id:'B7_HL5', label:'B7.5–6 · Phản tư + Ra cửa' },
+  ]},
+  // B8
+  { bai:'B8', label:'B8 · Tiếng nói', hls:[
+    { id:'B8_HL1', label:'B8.1 · Voice Mapping' },
+    { id:'B8_HL2', label:'B8.2 · Voice Statement' },
+    { id:'B8_HL3', label:'B8.3 · Rubric' },
+  ]},
+  // B9
+  { bai:'B9', label:'B9 · Phản tư', hls:[
+    { id:'B9_HL1', label:'B9.1–2 · Nhìn lại + Khái niệm' },
+    { id:'B9_HL3', label:'B9.3–4 · Tuyên ngôn + Manifesto' },
+    { id:'B9_HL5', label:'B9.5–6 · Phản tư + Ra cửa' },
+  ]},
+  // B10
+  { bai:'B10', label:'B10 · Launch', hls:[
+    { id:'B10_HL1', label:'B10.1–2 · Gallery + Fake news' },
+    { id:'B10_HL2', label:'B10.3–4 · Pitch + DQ' },
+    { id:'B10_HL3', label:'B10.5–6 · Contract + NTK' },
+  ]},
+  // B11
+  { bai:'B11', label:'B11 · Research', hls:[
+    { id:'B11_HL1', label:'B11.1 · Research Log' },
+    { id:'B11_HL3', label:'B11.3 · Peer Audit' },
+  ]},
+  // B12
+  { bai:'B12', label:'B12 · Acquire', hls:[
+    { id:'B12_HL1', label:'B12.1 · Audience Profile' },
+    { id:'B12_HL2', label:'B12.2–3 · Research Canvas' },
+    { id:'B12_HL4', label:'B12.4 · Genre Study' },
+    { id:'B12_HL5', label:'B12.5–8 · Key Message + Checklist' },
+  ]},
+  // B13
+  { bai:'B13', label:'B13 · Ideation', hls:[
+    { id:'B13_HL1', label:'B13.1 · Crazy 8s' },
+    { id:'B13_HL2', label:'B13.2 · SCAMPER' },
+    { id:'B13_HL3', label:'B13.3–4 · Matrix + Rubric' },
+  ]},
+  // B14
+  { bai:'B14', label:'B14 · Develop', hls:[
+    { id:'B14_HL1', label:'B14.1 · Storyboard / Script' },
+    { id:'B14_HL2', label:'B14.2–3 · Production + Standup' },
+    { id:'B14_HL4', label:'B14.4 · Draft v1' },
+  ]},
+  // B15
+  { bai:'B15', label:'B15 · Tuning', hls:[
+    { id:'B15_HL1', label:'B15.1–2 · Tuning Protocol' },
+    { id:'B15_HL3', label:'B15.3 · Revision Matrix' },
+    { id:'B15_HL4', label:'B15.4 · Rubric' },
+  ]},
+  // B16
+  { bai:'B16', label:'B16 · Delve A', hls:[
+    { id:'B16_HL1', label:'B16.1 · Phản hồi khán giả' },
+    { id:'B16_HL2', label:'B16.2 · Ma trận chỉnh sửa' },
+    { id:'B16_HL3', label:'B16.3 · Peer Critique' },
+  ]},
+  // B17
+  { bai:'B17', label:'B17 · Lặp', hls:[
+    { id:'B17_HL1', label:'B17.1 · So sánh v1 vs v2' },
+    { id:'B17_HL2', label:'B17.2–3 · Iteration Log' },
+  ]},
+  // B18
+  { bai:'B18', label:'B18 · Delve B', hls:[
+    { id:'B18_HL1', label:'B18.1–2 · Revision + Tiêu chí' },
+    { id:'B18_HL3', label:'B18.3–4 · Ethics + Pitch' },
+  ]},
+  // B19
+  { bai:'B19', label:'B19 · Exhibit', hls:[
+    { id:'B19_HL1', label:'B19.1–2 · Phản hồi + Checklist' },
+    { id:'B19_HL3', label:'B19.3 · Pitch 3 phút' },
+  ]},
+  // B20
+  { bai:'B20', label:'B20 · Reflect', hls:[
+    { id:'B20_HL1', label:'B20.1 · Manifesto v2' },
+    { id:'B20_HL2', label:'B20.2 · Portfolio + Commitment' },
+    { id:'B20_HL3', label:'B20.3 · Reflection Circle' },
+  ]},
+];
+
+// ═══════════════════════════════════════════════════════════
+// HTML TEMPLATES per HL ID
+// Each returns HTML string for that học liệu panel body
+// ═══════════════════════════════════════════════════════════
+function hlHTML(hlId) {
+  const T = {
+
+'B1_HL1': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B1.1 · Phần A</span> Giao ước học tập</div>
+  <div class="section-instruction">Hãy hoàn thành Giao ước học tập trong Tiết 1.</div>
+  <p style="font-size:14px;font-weight:600;margin-bottom:10px;">Cam kết khóa học:</p>
+  <div class="checkbox-list">
+    <label class="checkbox-item"><input type="checkbox" data-fid="ck_trainhiem"/><span>Trải nghiệm — làm trước, rút ra sau.</span></label>
+    <label class="checkbox-item"><input type="checkbox" data-fid="ck_duan"/><span>Dự án thật — tạo sản phẩm truyền thông cho audience thật.</span></label>
+    <label class="checkbox-item"><input type="checkbox" data-fid="ck_portfolio"/><span>Portfolio — lưu hành trình học tập để phản tư cuối khóa.</span></label>
+    <label class="checkbox-item"><input type="checkbox" data-fid="ck_danhgia"/><span>Đánh giá vì tiến bộ — không xét đỗ/trượt.</span></label>
+  </div>
+  <hr class="divider"/>
+  <p style="font-size:14px;font-weight:600;margin-bottom:10px;">Giao ước lớp học:</p>
+  <div class="checkbox-list">
+    <label class="checkbox-item"><input type="checkbox" data-fid="ck_thatthat"/><span>Tham gia chia sẻ thật, không giả tạo.</span></label>
+    <label class="checkbox-item"><input type="checkbox" data-fid="ck_tonton"/><span>Tôn trọng quan điểm khác nhau trong lớp.</span></label>
+    <label class="checkbox-item"><input type="checkbox" data-fid="ck_luugiu"/><span>Lưu giữ Portfolio đầy đủ sau mỗi bài học.</span></label>
+  </div>
+  <div class="field-group" style="margin-top:12px;">
+    <label class="field-label">Cam kết cá nhân thêm của tôi:</label>
+    <textarea data-fid="camket_ca_nhan" class="short" placeholder="Ghi thêm..."></textarea>
+  </div>
+</div>
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B1.1 · Phần B</span> Nhật ký media 24h</div>
+  <div class="section-instruction">Ghi lại MỌI lần bạn chạm với phương tiện truyền thông trong 24 giờ qua.</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Khung giờ</th><th>Loại media</th><th>Thời gian (phút)</th><th>Chủ động / Bị cuốn?</th></tr></thead>
+    <tbody>
+      <tr><td><input type="text" data-fid="nk_gio_1" placeholder="VD: 6:30 sáng"/></td><td><input type="text" data-fid="nk_loai_1" placeholder="VD: TikTok"/></td><td><input type="text" data-fid="nk_tg_1" placeholder="20"/></td><td><input type="text" data-fid="nk_cd_1" placeholder="Bị cuốn"/></td></tr>
+      <tr><td><input type="text" data-fid="nk_gio_2"/></td><td><input type="text" data-fid="nk_loai_2"/></td><td><input type="text" data-fid="nk_tg_2"/></td><td><input type="text" data-fid="nk_cd_2"/></td></tr>
+      <tr><td><input type="text" data-fid="nk_gio_3"/></td><td><input type="text" data-fid="nk_loai_3"/></td><td><input type="text" data-fid="nk_tg_3"/></td><td><input type="text" data-fid="nk_cd_3"/></td></tr>
+      <tr><td><input type="text" data-fid="nk_gio_4"/></td><td><input type="text" data-fid="nk_loai_4"/></td><td><input type="text" data-fid="nk_tg_4"/></td><td><input type="text" data-fid="nk_cd_4"/></td></tr>
+      <tr><td><input type="text" data-fid="nk_gio_5"/></td><td><input type="text" data-fid="nk_loai_5"/></td><td><input type="text" data-fid="nk_tg_5"/></td><td><input type="text" data-fid="nk_cd_5"/></td></tr>
+    </tbody>
+  </table></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+    <div class="field-group"><label class="field-label">Tổng số loại media đã chạm:</label><input type="text" data-fid="nk_tong_loai" placeholder="VD: 5 loại"/></div>
+    <div class="field-group"><label class="field-label">Tổng giờ ước lượng:</label><input type="text" data-fid="nk_tong_gio" placeholder="VD: 4.5 giờ"/></div>
+  </div>
+  <div class="field-group"><label class="field-label">Điều làm bạn bất ngờ nhất khi nhìn lại Nhật ký 24h:</label><textarea data-fid="nk_batgo" placeholder="Trả lời..."></textarea></div>
+</div>`,
+
+'B1_HL2': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B1.2</span> Phiếu Khái niệm — Sống trong môi trường truyền thông</div>
+  <div class="field-group"><label class="field-label">KN1. Tôi không chỉ ___ media — tôi ___ trong một môi trường truyền thông.</label>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <input type="text" data-fid="kn1_a" placeholder="Động từ đầu..."/>
+      <input type="text" data-fid="kn1_b" placeholder="Động từ hai..."/>
+    </div>
+  </div>
+  <div class="field-group"><label class="field-label">Định nghĩa Media exposure (Tiếp xúc truyền thông):</label><textarea data-fid="dn_exposure" class="short" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">Định nghĩa Media environment (Môi trường truyền thông):</label><textarea data-fid="dn_env" class="short" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">Định nghĩa Personal locus (Điểm định vị cá nhân):</label><textarea data-fid="dn_locus" class="short" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">Định nghĩa Attention economy (Nền kinh tế chú ý):</label><textarea data-fid="dn_attn" class="short" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">Ví dụ thứ "giành" nhiều sự chú ý nhất của bạn ngày hôm qua:</label><textarea data-fid="vd_chuya" class="short" placeholder="..."></textarea></div>
+</div>`,
+
+'B1_HL3': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B1.3</span> Ba vai trò & Bản đồ định vị cá nhân</div>
+  <div style="background:var(--sky);border-radius:var(--radius-sm);padding:14px;margin-bottom:14px;font-size:13.5px">
+    <p><strong>Vai trò 1 — Consumer (Tiếp nhận):</strong> Tiếp thu, giải mã thông điệp.</p>
+    <p><strong>Vai trò 2 — Sharer (Chia sẻ):</strong> Phát tán, truyền đi thông điệp.</p>
+    <p><strong>Vai trò 3 — Creator (Sáng tạo):</strong> Thiết kế, kiến tạo thông điệp mới.</p>
+  </div>
+  <div class="field-group"><label class="field-label">Ví dụ thực tế — vai trò Consumer của bạn:</label><textarea data-fid="vai_consumer" class="short" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">Ví dụ thực tế — vai trò Sharer của bạn:</label><textarea data-fid="vai_sharer" class="short" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">Ví dụ thực tế — vai trò Creator của bạn:</label><textarea data-fid="vai_creator" class="short" placeholder="..."></textarea></div>
+  <hr class="divider"/>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Mức độ chủ động</th><th>Consumer</th><th>Sharer</th><th>Creator</th></tr></thead>
+    <tbody>
+      <tr><td class="row-header">CHỦ ĐỘNG</td><td><textarea data-fid="bd_chudon_con" class="short"></textarea></td><td><textarea data-fid="bd_chudon_sha" class="short"></textarea></td><td><textarea data-fid="bd_chudon_cre" class="short"></textarea></td></tr>
+      <tr><td class="row-header">BỊ CUỐN</td><td><textarea data-fid="bd_bicut_con" class="short"></textarea></td><td><textarea data-fid="bd_bicut_sha" class="short"></textarea></td><td><textarea data-fid="bd_bicut_cre" class="short"></textarea></td></tr>
+    </tbody>
+  </table></div>
+  <div class="checkbox-list">
+    <label class="checkbox-item"><input type="checkbox" data-fid="ck_3vai"/><span>Đã định vị đủ cả 3 vai trò trên Bản đồ.</span></label>
+    <label class="checkbox-item"><input type="checkbox" data-fid="ck_vd_banchung"/><span>Mỗi vị trí đều có một ví dụ thật từ Nhật ký làm bằng chứng.</span></label>
+    <label class="checkbox-item"><input type="checkbox" data-fid="ck_1vai_phat"/><span>Đã chỉ ra duy nhất 1 vai trò muốn phát triển nhất.</span></label>
+  </div>
+</div>`,
+
+'B1_HL4': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B1.4</span> 6 khái niệm Media Literacy</div>
+  <div style="background:var(--sky);border-radius:var(--radius-sm);padding:14px;font-size:13.5px;line-height:1.9;margin-bottom:16px">
+    <p><strong>1. Tính kiến tạo:</strong> Mọi thông điệp đều do ai đó lắp ghép có chủ đích.</p>
+    <p><strong>2. Ngôn ngữ & kỹ thuật:</strong> Mỗi loại truyền thông dùng kỹ thuật riêng để tạo nghĩa.</p>
+    <p><strong>3. Mục đích:</strong> Thông điệp luôn có mục đích rõ ràng.</p>
+    <p><strong>4. Giá trị & góc nhìn:</strong> Phản ánh lập trường của người tạo.</p>
+    <p><strong>5. Đối tượng & diễn giải:</strong> Người khác nhau hiểu khác nhau.</p>
+    <p><strong>6. Tác động & trách nhiệm:</strong> Truyền thông định hình hành vi.</p>
+  </div>
+  <div class="field-group"><label class="field-label">Soi chiếu nhanh: Ghi lại 1 thông điệp bạn gặp hôm nay và phân tích sơ bộ bằng 1 khái niệm:</label>
+    <textarea data-fid="soichieu" placeholder="..."></textarea>
+  </div>
+</div>`,
+
+'B1_HL5': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B1.5a</span> Phản tư — "Trước / Giờ"</div>
+  <div class="field-group"><label class="field-label">Trước đây, tôi nghĩ tôi "dùng" media nghĩa là:</label><textarea data-fid="pt_truoc" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">Bây giờ, tôi nhận ra tôi "sống trong" môi trường truyền thông nghĩa là:</label><textarea data-fid="pt_gio" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">Vai trò truyền thông tôi đang dành nhiều thời gian nhất là ___ vì:</label>
+    <input type="text" data-fid="pt_vaitro_chinh" placeholder="Vai trò..." style="margin-bottom:8px"/>
+    <textarea data-fid="pt_vaitro_vi" class="short" placeholder="Lý do..."></textarea>
+  </div>
+</div>
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B1.5b</span> Phiếu ra cửa</div>
+  <div class="field-group"><label class="field-label">Vai trò truyền thông tôi muốn phát triển một cách có ý thức nhất trong kỳ học:</label><textarea data-fid="racua" placeholder="..."></textarea></div>
+  <div class="portfolio-note"><strong>Portfolio Note</strong>Hãy lưu Bản đồ định vị cá nhân vào Portfolio v1. Ghi chú: "Đầu CP1, tôi định vị mình ở..." để đối chiếu cuối kỳ.</div>
+</div>`,
+
+// B2 ─────────────────────────────────────────────────────────
+'B2_HL0': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B2.0</span> Bộ nguồn — "Cùng một chuyện, kể khác nhau"</div>
+  <div class="source-box"><div class="source-label">Nguồn 1 — Fanpage Trường</div>Sáng 12/10, Trường THPT Hoa Phượng tổ chức Ngày hội STEM với 18 gian trưng bày. Trong ~15 phút giữa buổi, khu vực sân khấu mất điện do quá tải; ban tổ chức chuyển sang nguồn dự phòng và chương trình tiếp tục. Sự kiện thu hút khoảng 600 lượt tham quan và kết thúc lúc 11:30.</div>
+  <div class="source-box"><div class="source-label">Nguồn 2 — Teen Hot News</div>SỐC: Ngày hội STEM trường H. "toang" giữa chừng vì mất điện?! Hàng trăm học sinh được phen hoảng hồn khi sân khấu tối om, sự kiện tưởng "vỡ trận" hoàn toàn. Liệu ban tổ chức có "gánh" nổi cú phốt này? Đọc ngay kẻo lỡ!</div>
+  <div class="source-box"><div class="source-label">Nguồn 3 — Blog Phụ huynh</div>Tôi cho rằng nhà trường đã thiếu chuẩn bị nghiêm trọng. Một sự kiện lớn mà để mất điện là khó chấp nhận. Dù sau đó khắc phục, ấn tượng với phụ huynh vẫn là lo ngại về tính chuyên nghiệp.</div>
+  <div class="field-group"><label class="field-label">Ghi nhanh 2–3 điểm khác biệt rõ nhất giữa ba nguồn:</label><textarea data-fid="kbiet_3ng" placeholder="..."></textarea></div>
+</div>`,
+
+'B2_HL1': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B2.1</span> Bảng đối chiếu ba phiên bản</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Khía cạnh</th><th>Nguồn 1 (Fanpage)</th><th>Nguồn 2 (Teen Hot)</th><th>Nguồn 3 (Blog PH)</th></tr></thead>
+    <tbody>
+      <tr><td class="row-header">Từ ngữ nổi bật</td><td><textarea data-fid="dc_tu_1" class="short"></textarea></td><td><textarea data-fid="dc_tu_2" class="short"></textarea></td><td><textarea data-fid="dc_tu_3" class="short"></textarea></td></tr>
+      <tr><td class="row-header">Điều được nhấn mạnh</td><td><textarea data-fid="dc_nhan_1" class="short"></textarea></td><td><textarea data-fid="dc_nhan_2" class="short"></textarea></td><td><textarea data-fid="dc_nhan_3" class="short"></textarea></td></tr>
+      <tr><td class="row-header">Điều bị bỏ qua</td><td><textarea data-fid="dc_bo_1" class="short"></textarea></td><td><textarea data-fid="dc_bo_2" class="short"></textarea></td><td><textarea data-fid="dc_bo_3" class="short"></textarea></td></tr>
+      <tr><td class="row-header">Cảm xúc gợi ra</td><td><textarea data-fid="dc_cx_1" class="short"></textarea></td><td><textarea data-fid="dc_cx_2" class="short"></textarea></td><td><textarea data-fid="dc_cx_3" class="short"></textarea></td></tr>
+    </tbody>
+  </table></div>
+  <div class="field-group"><label class="field-label">Nếu chỉ đọc 1 nguồn duy nhất, người đọc sẽ hiểu về sự kiện thế nào?</label><textarea data-fid="suy_1ng" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">Nguồn nào đáng tin cậy hơn? Lý do cụ thể:</label><textarea data-fid="tin_nhat" placeholder="..."></textarea></div>
+</div>`,
+
+'B2_HL2': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B2.2</span> 4 khái niệm cốt lõi</div>
+  <div class="field-group"><label class="field-label">KN1. Mọi thông điệp truyền thông đều được ___ có chủ đích.</label><input type="text" data-fid="kn1_fill" placeholder="Điền từ..."/></div>
+  <div class="field-group"><label class="field-label">1. Tính kiến tạo (Constructedness) nghĩa là gì?</label><textarea data-fid="kn_const" class="short" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">2. Ngôn ngữ truyền thông (Media Language):</label><textarea data-fid="kn_lang" class="short" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">3. Mục đích (Purpose):</label><textarea data-fid="kn_purpose" class="short" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">4. Góc nhìn & Giá trị (Values & Viewpoints):</label><textarea data-fid="kn_values" class="short" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">Ví dụ từ Bộ nguồn B2.0 minh họa cho 1 khái niệm:</label><textarea data-fid="vd_kn" placeholder="..."></textarea></div>
+</div>`,
+
+'B2_HL3': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B2.3</span> 8 câu hỏi giải mã</div>
+  <div style="background:var(--sky);border-radius:var(--radius-sm);padding:14px;font-size:13.5px;line-height:2">
+    <p><strong>1.</strong> Ai đã tạo ra thông điệp này?</p>
+    <p><strong>2.</strong> Thông điệp này được tạo ra vì mục đích gì?</p>
+    <p><strong>3.</strong> Hướng tới đối tượng nào?</p>
+    <p><strong>4.</strong> Dùng kỹ thuật gì để thu hút sự chú ý?</p>
+    <p><strong>5.</strong> Truyền tải những giá trị hay góc nhìn nào?</p>
+    <p><strong>6.</strong> Điều gì hoặc thông tin nào đã bị bỏ sót?</p>
+    <p><strong>7.</strong> Có thể được hiểu khác nhau thế nào?</p>
+    <p><strong>8.</strong> Ai được hưởng lợi và ai chịu thiệt thòi?</p>
+  </div>
+</div>`,
+
+'B2_HL4': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B2.4</span> Worksheet — Giải mã độc lập</div>
+  <div class="field-group"><label class="field-label">Thông điệp bạn chọn (Mô tả ngắn / loại hình / nguồn):</label><textarea data-fid="chon_td" class="short" placeholder="..."></textarea></div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Câu hỏi giải mã</th><th>Câu trả lời phân tích</th><th>Bằng chứng cụ thể</th></tr></thead>
+    <tbody>
+      <tr><td class="row-header">1. Ai tạo ra?</td><td><textarea data-fid="gm_ai" class="short"></textarea></td><td><textarea data-fid="gm_ai_bc" class="short"></textarea></td></tr>
+      <tr><td class="row-header">2. Mục đích?</td><td><textarea data-fid="gm_mdc" class="short"></textarea></td><td><textarea data-fid="gm_mdc_bc" class="short"></textarea></td></tr>
+      <tr><td class="row-header">4. Kỹ thuật?</td><td><textarea data-fid="gm_kt" class="short"></textarea></td><td><textarea data-fid="gm_kt_bc" class="short"></textarea></td></tr>
+      <tr><td class="row-header">5. Góc nhìn?</td><td><textarea data-fid="gm_gn" class="short"></textarea></td><td><textarea data-fid="gm_gn_bc" class="short"></textarea></td></tr>
+      <tr><td class="row-header">6. Bỏ sót gì?</td><td><textarea data-fid="gm_boso" class="short"></textarea></td><td><textarea data-fid="gm_boso_bc" class="short"></textarea></td></tr>
+    </tbody>
+  </table></div>
+  <div class="field-group"><label class="field-label">Mối liên hệ Kỹ thuật ↔ Mục đích:</label><textarea data-fid="gm_lienhe" placeholder="..."></textarea></div>
+  <div class="checkbox-list">
+    <label class="checkbox-item"><input type="checkbox" data-fid="ck_bc_cu"/><span>Mỗi kết luận đều có bằng chứng trực quan đi kèm.</span></label>
+    <label class="checkbox-item"><input type="checkbox" data-fid="ck_ktmdc"/><span>Chỉ rõ ít nhất 1 cặp Kỹ thuật ↔ Mục đích.</span></label>
+    <label class="checkbox-item"><input type="checkbox" data-fid="ck_omit"/><span>Xác định rõ ít nhất 1 chi tiết quan trọng bị bỏ sót.</span></label>
+  </div>
+</div>`,
+
+'B2_HL5': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B2.5</span> Phản tư — "Trước / Giờ"</div>
+  <div class="field-group"><label class="field-label">Trước khi học bài, khi đọc các nguồn tin ở B2.0, tôi cảm thấy:</label><textarea data-fid="b2_truoc" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">Bây giờ, sau khi có công cụ 8 câu hỏi, khi đọc lại tôi nhận ra:</label><textarea data-fid="b2_gio" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">Câu hỏi giải mã tôi thấy hữu ích nhất là ___ vì:</label>
+    <input type="text" data-fid="b2_cauq_nhat" placeholder="Câu số..." style="margin-bottom:8px"/>
+    <textarea data-fid="b2_cauq_vi" class="short" placeholder="Lý do..."></textarea>
+  </div>
+</div>
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B2.6</span> Phiếu ra cửa + Tự định vị</div>
+  <div class="field-group"><label class="field-label">Thông điệp thường ngày tôi sẽ dừng lại giải mã khác đi từ hôm nay:</label><textarea data-fid="b2_racua" placeholder="..."></textarea></div>
+  <p style="font-size:13px;font-weight:600;color:var(--navy);margin-bottom:8px">Tự định vị mức độ năng lực:</p>
+  <div class="rating-group">
+    <label class="rating-option"><input type="radio" name="b2_level" data-fid="b2_level" value="1"/><label><span class="rating-level">Mức 1</span> — Nhận diện được, thực hiện với hỗ trợ.</label></label>
+    <label class="rating-option"><input type="radio" name="b2_level" data-fid="b2_level" value="2"/><label><span class="rating-level">Mức 2</span> — Áp dụng độc lập trong ngữ cảnh lớp học.</label></label>
+    <label class="rating-option"><input type="radio" name="b2_level" data-fid="b2_level" value="3"/><label><span class="rating-level">Mức 3</span> — Vận dụng linh hoạt, tự giải thích lý do.</label></label>
+  </div>
+</div>`,
+
+// B3 – B20: Shorter versions to keep file manageable
+'B3_HL1': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B3.1</span> Phiếu CER Framework</div>
+  <div class="section-instruction">Nguyên tắc Vàng: Mỗi Claim bắt buộc được nâng đỡ bởi Evidence và Reasoning.</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Thành phần CER</th><th>Câu hỏi gợi ý</th><th>Ghi chú phân tích</th></tr></thead>
+    <tbody>
+      <tr><td class="row-header">Claim<br/>(Suy luận)</td><td style="font-size:12.5px;color:var(--slate)">Thông điệp muốn nói gì? Mục đích/góc nhìn là gì?</td><td><textarea data-fid="cer_claim" placeholder="Claim..."></textarea></td></tr>
+      <tr><td class="row-header">Evidence<br/>(Bằng chứng)</td><td style="font-size:12.5px;color:var(--slate)">Chi tiết trực quan nào làm điểm tựa cho suy luận?</td><td><textarea data-fid="cer_evidence" placeholder="Evidence..."></textarea></td></tr>
+      <tr><td class="row-header">Reasoning<br/>(Lập luận)</td><td style="font-size:12.5px;color:var(--slate)">Tại sao chi tiết đó chứng minh cho suy luận?</td><td><textarea data-fid="cer_reasoning" placeholder="Reasoning..."></textarea></td></tr>
+    </tbody>
+  </table></div>
+</div>`,
+
+'B3_HL2': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B3.2</span> Nâng cấp mẫu yếu → mẫu tốt</div>
+  <div class="field-group"><label class="field-label">Mẫu 1: "Quảng cáo này muốn mọi người mua sản phẩm." → Viết lại theo CER:</label><textarea data-fid="mau1_cer" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">Mẫu 2: "Bài đăng này gây hoang mang cho người đọc." → Viết lại theo CER:</label><textarea data-fid="mau2_cer" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">Mẫu 3: "Video này cố làm cho mình thấy ghen tị." → Viết lại theo CER:</label><textarea data-fid="mau3_cer" placeholder="..."></textarea></div>
+</div>`,
+
+'B3_HL3': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B3.3</span> Apply — Phân tích thông điệp tự chọn</div>
+  <div class="field-group"><label class="field-label">Mô tả ngắn về thông điệp bạn chọn:</label><textarea data-fid="b3_chon" class="short" placeholder="..."></textarea></div>
+  <div style="background:var(--sky);border-radius:var(--radius-sm);padding:14px;margin-bottom:12px">
+    <p style="font-weight:700;color:var(--navy);margin-bottom:8px">Cụm CER số 1</p>
+    <div class="field-group"><label class="field-label">Claim:</label><textarea data-fid="b3a_claim" class="short" placeholder="..."></textarea></div>
+    <div class="field-group"><label class="field-label">Evidence:</label><textarea data-fid="b3a_evidence" class="short" placeholder="..."></textarea></div>
+    <div class="field-group"><label class="field-label">Reasoning:</label><textarea data-fid="b3a_reasoning" class="short" placeholder="..."></textarea></div>
+  </div>
+  <div style="background:var(--sky);border-radius:var(--radius-sm);padding:14px;margin-bottom:12px">
+    <p style="font-weight:700;color:var(--navy);margin-bottom:8px">Cụm CER số 2</p>
+    <div class="field-group"><label class="field-label">Claim:</label><textarea data-fid="b3b_claim" class="short" placeholder="..."></textarea></div>
+    <div class="field-group"><label class="field-label">Evidence:</label><textarea data-fid="b3b_evidence" class="short" placeholder="..."></textarea></div>
+    <div class="field-group"><label class="field-label">Reasoning:</label><textarea data-fid="b3b_reasoning" class="short" placeholder="..."></textarea></div>
+  </div>
+  <div class="field-group"><label class="field-label">Sau kiểm chéo, bạn đã bổ sung/chỉnh sửa gì?</label><textarea data-fid="b3_sau_kiem" placeholder="..."></textarea></div>
+</div>`,
+
+'B3_HL4': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B3.4</span> Rubric + Tự đánh giá</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Tiêu chí</th><th>Mức 1 (Khởi đầu)</th><th>Mức 2 (Định hình)</th></tr></thead>
+    <tbody>
+      <tr><td class="row-header">Bằng chứng</td><td style="font-size:12.5px">Có nêu chi tiết nhưng còn chung chung.</td><td style="font-size:12.5px">Mỗi suy luận được neo vào chi tiết cụ thể, quan sát được.</td></tr>
+      <tr><td class="row-header">Lập luận</td><td style="font-size:12.5px">Giải thích còn rời rạc, chưa làm rõ cơ chế tác động.</td><td style="font-size:12.5px">Giải thích tường minh, logic vì sao chi tiết dẫn đến kết luận.</td></tr>
+      <tr><td class="row-header">Tự điều chỉnh</td><td style="font-size:12.5px">Sửa khi được nhắc nhở.</td><td style="font-size:12.5px">Chủ động tự rà soát trước khi đưa kết luận.</td></tr>
+    </tbody>
+  </table></div>
+  <div class="field-group" style="margin-top:12px"><label class="field-label">Tự định vị mức độ + 1 thói quen tư duy phản biện sẽ rèn luyện:</label><textarea data-fid="b3_tudinvi" placeholder="..."></textarea></div>
+</div>`,
+
+  }; // end T
+
+  // Generic fallback for B4–B20 HLs not individually templated
+  const label = hlId.replace(/_/g,' ');
+  return T[hlId] || `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">${label}</span> Nội dung học liệu</div>
+  <div class="section-instruction">Điền câu trả lời của bạn vào các ô bên dưới. Sử dụng phiếu in từ GV để tham khảo cấu trúc chi tiết.</div>
+  <div class="field-group"><label class="field-label">Phần 1 — Phân tích / Nhận xét chính:</label><textarea data-fid="${hlId}_p1" class="tall" placeholder="Trả lời..."></textarea></div>
+  <div class="field-group"><label class="field-label">Phần 2 — Bằng chứng / Ví dụ cụ thể:</label><textarea data-fid="${hlId}_p2" placeholder="Trả lời..."></textarea></div>
+  <div class="field-group"><label class="field-label">Phần 3 — Phản tư / Tự đánh giá:</label><textarea data-fid="${hlId}_p3" placeholder="Trả lời..."></textarea></div>
+  <div class="field-group"><label class="field-label">Ghi chú thêm:</label><textarea data-fid="${hlId}_note" class="short" placeholder="..."></textarea></div>
+</div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════
+let currentLesson = 0;
+let currentHLIndex = 0;
+let studentRecords = []; // loaded from sheet
+let students = [];       // [{ten, lop, nhom}]
+// hlState[hlId] = { status:'draft'|'submitted'|'unsaved', data:{fid:val,...} }
+let hlState = {};
+
+// ═══════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  buildAllPanels();
+  switchLesson(0, document.querySelector('.lesson-tab'));
+  loadStudentList();
+});
+
+function buildAllPanels() {
+  const ca = document.getElementById('contentArea');
+  ca.innerHTML = '';
+  LESSONS.forEach(lesson => {
+    lesson.hls.forEach(hl => {
+      const div = document.createElement('div');
+      div.className = 'hl-panel';
+      div.id = 'panel-' + hl.id;
+      div.innerHTML = panelHeader(hl) + hlHTML(hl.id);
+      ca.appendChild(div);
+    });
+  });
+}
+
+function panelHeader(hl) {
+  return `<div class="hl-panel-header">
+    <div class="hl-panel-title-wrap">
+      <span class="hl-badge">${hl.id.replace('_',' ')}</span>
+      <div>
+        <div style="font-size:18px;font-weight:700;color:var(--navy)">${hl.label}</div>
+        <div id="status-${hl.id}" class="hl-status-badge unsaved" style="display:inline-block;margin-top:4px">● Chưa lưu</div>
+      </div>
+    </div>
+    <div class="hl-panel-actions">
+      <button class="btn btn-save" onclick="saveHL('${hl.id}')">💾 Lưu</button>
+      <button class="btn btn-submit" onclick="submitHL('${hl.id}')">✅ Nộp bài</button>
+    </div>
+  </div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+// LESSON / HL SWITCHING
+// ═══════════════════════════════════════════════════════════
+function switchLesson(idx, btn) {
+  currentLesson = idx;
+  currentHLIndex = 0;
+  document.querySelectorAll('.lesson-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  renderHLTabs();
+  showHL(0);
+}
+
+function renderHLTabs() {
+  const wrap = document.getElementById('hlTabsWrap');
+  const lesson = LESSONS[currentLesson];
+  wrap.innerHTML = lesson.hls.map((hl, i) => {
+    const st = (hlState[hl.id] || {}).status || 'unsaved';
+    return `<button class="hl-tab ${st} ${i===0?'active':''}" id="hltab-${hl.id}" onclick="showHL(${i})">
+      <span class="status-dot"></span>${hl.label}
+    </button>`;
+  }).join('');
+}
+
+function showHL(idx) {
+  currentHLIndex = idx;
+  // hide all
+  document.querySelectorAll('.hl-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.hl-tab').forEach(t => t.classList.remove('active'));
+  const lesson = LESSONS[currentLesson];
+  const hl = lesson.hls[idx];
+  document.getElementById('panel-' + hl.id)?.classList.add('active');
+  document.getElementById('hltab-' + hl.id)?.classList.add('active');
+}
+
+// ═══════════════════════════════════════════════════════════
+// STUDENT LIST
+// ═══════════════════════════════════════════════════════════
+async function loadStudentList() {
+  if (!GAS_URL || GAS_URL.includes('YOUR_')) {
+    // Demo mode — no backend
+    setSyncStatus('⚠ Chưa cấu hình GAS URL — chạy demo offline');
+    return;
+  }
+  try {
+    showLoader('Đang tải danh sách học sinh...');
+    const res = await fetch(GAS_URL + '?action=getStudents');
+    const json = await res.json();
+    students = json.students || [];
+    const sel = document.getElementById('s_name');
+    sel.innerHTML = '<option value="">-- Chọn tên --</option>';
+    students.forEach(s => {
+      const opt = document.createElement('option');
+      opt.value = s.ten;
+      opt.dataset.lop = s.lop;
+      opt.dataset.nhom = s.nhom;
+      opt.textContent = s.ten + (s.lop ? ' (' + s.lop + ')' : '');
+      sel.appendChild(opt);
+    });
+    setSyncStatus('✓ Đã tải danh sách (' + students.length + ' học sinh)');
+  } catch(e) {
+    setSyncStatus('❌ Không kết nối được Sheet');
+  } finally {
+    hideLoader();
+  }
+}
+
+async function onStudentChange() {
+  const sel = document.getElementById('s_name');
+  const opt = sel.selectedOptions[0];
+  if (!opt || !opt.value) return;
+  document.getElementById('s_lop').value = opt.dataset.lop || '';
+  document.getElementById('s_nhom').value = opt.dataset.nhom || '';
+  await loadStudentData(opt.value, opt.dataset.lop);
+}
+
+async function loadStudentData(ten, lop) {
+  if (!GAS_URL || GAS_URL.includes('YOUR_')) return;
+  try {
+    showLoader('Đang tải dữ liệu của ' + ten + '...');
+    const res = await fetch(`${GAS_URL}?action=getData&ten=${encodeURIComponent(ten)}&lop=${encodeURIComponent(lop)}`);
+    const json = await res.json();
+    studentRecords = json.records || [];
+    hlState = {};
+    // Restore data into panels
+    studentRecords.forEach(rec => {
+      hlState[rec.hoc_lieu] = { status: rec.trang_thai, data: rec.du_lieu };
+      restorePanel(rec.hoc_lieu, rec.du_lieu, rec.trang_thai === 'submitted');
+    });
+    // Refresh HL tabs
+    renderHLTabs();
+    showToast('✓ Đã tải dữ liệu bài làm', 'success');
+  } catch(e) {
+    showToast('❌ Lỗi tải dữ liệu: ' + e.message, 'error');
+  } finally {
+    hideLoader();
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// RESTORE PANEL from saved data
+// ═══════════════════════════════════════════════════════════
+function restorePanel(hlId, data, locked) {
+  const panel = document.getElementById('panel-' + hlId);
+  if (!panel || !data) return;
+
+  // Fill inputs
+  Object.entries(data).forEach(([fid, val]) => {
+    const el = panel.querySelector(`[data-fid="${fid}"]`);
+    if (!el) return;
+    if (el.type === 'checkbox') el.checked = !!val;
+    else if (el.type === 'radio') {
+      // find radio with matching value
+      panel.querySelectorAll(`[data-fid="${fid}"]`).forEach(r => {
+        if (r.value === val) r.checked = true;
+      });
+    }
+    else el.value = val || '';
+  });
+
+  // Lock if submitted
+  if (locked) lockPanel(hlId);
+
+  // Update status badge
+  updateStatusBadge(hlId, locked ? 'submitted' : 'draft');
+}
+
+function lockPanel(hlId) {
+  const panel = document.getElementById('panel-' + hlId);
+  if (!panel) return;
+  panel.classList.add('locked');
+  // Hide save/submit buttons
+  panel.querySelectorAll('.btn-save, .btn-submit').forEach(b => {
+    b.disabled = true;
+    b.style.opacity = '.4';
+    b.style.cursor = 'not-allowed';
+  });
+  // Add locked banner if not already there
+  if (!panel.querySelector('.locked-banner')) {
+    const banner = document.createElement('div');
+    banner.className = 'locked-banner';
+    banner.innerHTML = '🔒 Bài đã nộp — không thể chỉnh sửa';
+    panel.querySelector('.hl-panel-header').insertAdjacentElement('afterend', banner);
+  }
+}
+
+function updateStatusBadge(hlId, status) {
+  const badge = document.getElementById('status-' + hlId);
+  if (!badge) return;
+  const labels = { draft:'● Đã lưu (nháp)', submitted:'✓ Đã nộp', unsaved:'● Chưa lưu' };
+  badge.className = 'hl-status-badge ' + status;
+  badge.textContent = labels[status] || status;
+
+  // Update HL tab dot
+  const tab = document.getElementById('hltab-' + hlId);
+  if (tab) {
+    tab.className = tab.className.replace(/(draft|submitted|unsaved)/g,'').trim() + ' ' + status;
+  }
+
+  hlState[hlId] = hlState[hlId] || {};
+  hlState[hlId].status = status;
+}
+
+// ═══════════════════════════════════════════════════════════
+// COLLECT PANEL DATA
+// ═══════════════════════════════════════════════════════════
+function collectPanel(hlId) {
+  const panel = document.getElementById('panel-' + hlId);
+  if (!panel) return {};
+  const data = {};
+  // textareas / text inputs
+  panel.querySelectorAll('[data-fid]').forEach(el => {
+    const fid = el.dataset.fid;
+    if (!fid) return;
+    if (el.type === 'checkbox') data[fid] = el.checked;
+    else if (el.type === 'radio') { if (el.checked) data[fid] = el.value; }
+    else data[fid] = el.value;
+  });
+  return data;
+}
+
+// ═══════════════════════════════════════════════════════════
+// SAVE / SUBMIT
+// ═══════════════════════════════════════════════════════════
+function getStudent() {
+  return {
+    ten:  document.getElementById('s_name').value,
+    lop:  document.getElementById('s_lop').value,
+    nhom: document.getElementById('s_nhom').value,
+  };
+}
+
+async function saveHL(hlId) {
+  const st = getStudent();
+  if (!st.ten) { showToast('Vui lòng chọn tên học sinh trước!', 'error'); return; }
+  const lesson = LESSONS.find(l => l.hls.some(h => h.id === hlId));
+  const data = collectPanel(hlId);
+
+  if (!GAS_URL || GAS_URL.includes('YOUR_')) {
+    // Offline mode — just update state
+    hlState[hlId] = { status:'draft', data };
+    updateStatusBadge(hlId, 'draft');
+    showToast('💾 Đã lưu (offline — chưa kết nối Sheet)', 'success');
+    return;
+  }
+
+  try {
+    showLoader('Đang lưu...');
+    const res = await fetch(GAS_URL, {
+      method:'POST',
+      body: JSON.stringify({
+        action:'save',
+        ten: st.ten, lop: st.lop, nhom: st.nhom,
+        bai: lesson?.bai, hoc_lieu: hlId,
+        du_lieu: data
+      })
+    });
+    const json = await res.json();
+    if (json.ok) {
+      hlState[hlId] = { status:'draft', data };
+      updateStatusBadge(hlId, 'draft');
+      showToast('💾 Đã lưu vào Google Sheet!', 'success');
+    } else {
+      showToast('❌ ' + (json.error || 'Lỗi lưu'), 'error');
+    }
+  } catch(e) {
+    showToast('❌ Lỗi kết nối: ' + e.message, 'error');
+  } finally {
+    hideLoader();
+  }
+}
+
+async function submitHL(hlId) {
+  const st = getStudent();
+  if (!st.ten) { showToast('Vui lòng chọn tên học sinh trước!', 'error'); return; }
+  if (!confirm('Bạn có chắc muốn NỘP BÀI "' + hlId + '" không?\nSau khi nộp, bài sẽ bị KHÓA và không thể sửa.')) return;
+  const lesson = LESSONS.find(l => l.hls.some(h => h.id === hlId));
+  const data = collectPanel(hlId);
+
+  if (!GAS_URL || GAS_URL.includes('YOUR_')) {
+    hlState[hlId] = { status:'submitted', data };
+    updateStatusBadge(hlId, 'submitted');
+    lockPanel(hlId);
+    showToast('✅ Đã nộp bài (offline)', 'success');
+    return;
+  }
+
+  try {
+    showLoader('Đang nộp bài...');
+    const res = await fetch(GAS_URL, {
+      method:'POST',
+      body: JSON.stringify({
+        action:'submit',
+        ten: st.ten, lop: st.lop, nhom: st.nhom,
+        bai: lesson?.bai, hoc_lieu: hlId,
+        du_lieu: data
+      })
+    });
+    const json = await res.json();
+    if (json.ok) {
+      hlState[hlId] = { status:'submitted', data };
+      updateStatusBadge(hlId, 'submitted');
+      lockPanel(hlId);
+      showToast('✅ Nộp bài thành công!', 'success');
+    } else {
+      showToast('❌ ' + (json.error || 'Lỗi nộp'), 'error');
+    }
+  } catch(e) {
+    showToast('❌ Lỗi kết nối: ' + e.message, 'error');
+  } finally {
+    hideLoader();
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// RESET current HL
+// ═══════════════════════════════════════════════════════════
+function resetCurrent() {
+  const lesson = LESSONS[currentLesson];
+  const hl = lesson.hls[currentHLIndex];
+  const panel = document.getElementById('panel-' + hl.id);
+  if (!panel) return;
+  if (panel.classList.contains('locked')) { showToast('Bài đã nộp — không thể reset!', 'error'); return; }
+  if (!confirm('Reset toàn bộ nội dung đã điền trong học liệu này?')) return;
+  panel.querySelectorAll('textarea, input[type="text"]').forEach(e => e.value='');
+  panel.querySelectorAll('input[type="checkbox"]').forEach(e => e.checked=false);
+  panel.querySelectorAll('input[type="radio"]').forEach(e => e.checked=false);
+  updateStatusBadge(hl.id, 'unsaved');
+  showToast('🔄 Đã reset học liệu này');
+}
+
+// ═══════════════════════════════════════════════════════════
+// EMAIL
+// ═══════════════════════════════════════════════════════════
+function sendEmail() {
+  const st = getStudent();
+  const lesson = LESSONS[currentLesson];
+  const hl = lesson.hls[currentHLIndex];
+  const data = collectPanel(hl.id);
+  const lines = ['PROJECT X3 — Bài làm: ' + hl.id, 'Họ tên: ' + st.ten, 'Lớp: ' + st.lop, '---'];
+  Object.entries(data).forEach(([k,v]) => { if(v) lines.push('[' + k + ']: ' + v); });
+  const body = encodeURIComponent(lines.join('\n').substring(0,2000));
+  window.location.href = 'mailto:?subject=' + encodeURIComponent('PROJECT X3 - ' + hl.id + ' - ' + st.ten) + '&body=' + body;
+}
+
+// ═══════════════════════════════════════════════════════════
+// UI HELPERS
+// ═══════════════════════════════════════════════════════════
+function showLoader(msg) {
+  document.getElementById('loaderMsg').textContent = msg || 'Đang tải...';
+  document.getElementById('globalLoader').style.display = 'flex';
+}
+function hideLoader() {
+  document.getElementById('globalLoader').style.display = 'none';
+}
+function setSyncStatus(msg) {
+  document.getElementById('syncStatus').textContent = msg;
+}
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'show' + (type ? ' ' + type : '');
+  clearTimeout(t._tid);
+  t._tid = setTimeout(() => t.className = '', 3000);
+}
+</script>
+</body>
+</html>
