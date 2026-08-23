@@ -1871,10 +1871,22 @@ async function initApp() {
   checkLockout();
 }
 
+// fetch với timeout (ms)
+function fetchWithTimeout(url, options = {}, ms = 15000) {
+  const controller = new AbortController();
+  const tid = setTimeout(() => controller.abort(), ms);
+  return fetch(url, { ...options, signal: controller.signal }).finally(() => clearTimeout(tid));
+}
+
 async function loadNameList() {
+  const statusEl = document.getElementById('list_status');
+  const setStatus = (html) => { if (statusEl) statusEl.innerHTML = html; };
+
+  setStatus('<span style="color:#64748B">⏳ Đang tải danh sách…</span>');
+
   try {
-    // ── Danh sách HS từ GAS ──────────────────────────────────────
-    const res  = await fetch(GAS_URL + '?action=list');
+    // ── Danh sách HS ────────────────────────────────────────────
+    const res  = await fetchWithTimeout(GAS_URL + '?action=list', {});
     const json = await res.json();
     allStudents = json.students || [];
     const sel  = document.getElementById('login_name');
@@ -1885,8 +1897,9 @@ async function loadNameList() {
       opt.textContent = s.ten + (s.lop ? ' (' + s.lop + ')' : '');
       sel.appendChild(opt);
     });
-    // ── Danh sách GV từ GAS ─────────────────────────────────────
-    const res2  = await fetch(GAS_URL + '?action=listGV');
+
+    // ── Danh sách GV ────────────────────────────────────────────
+    const res2  = await fetchWithTimeout(GAS_URL + '?action=listGV', {});
     const json2 = await res2.json();
     const sel2  = document.getElementById('login_gv_name');
     sel2.innerHTML = '<option value="">-- Chọn GV --</option>';
@@ -1896,23 +1909,33 @@ async function loadNameList() {
       opt.textContent = t.ten;
       sel2.appendChild(opt);
     });
-    // Hiển thị số lượng HS và GV sau khi load xong
+
+    // ── Hiển thị kết quả ────────────────────────────────────────
     const hsCount = allStudents.length;
     const gvCount = (json2.teachers || []).length;
-    const statusEl = document.getElementById('list_status');
-    if (statusEl) {
-      if (hsCount === 0 && gvCount === 0) {
-        statusEl.innerHTML = '<span style="color:#D97706">⚠ Chưa có dữ liệu trong sheet</span>';
-      } else {
-        statusEl.innerHTML =
-          '<span style="color:#059669">✓ Tìm thấy <strong>' + hsCount + ' học sinh</strong>' +
-          (gvCount > 0 ? ' · <strong>' + gvCount + ' giáo viên</strong>' : '') + '</span>';
-      }
+    if (hsCount === 0 && gvCount === 0) {
+      setStatus('<span style="color:#D97706">⚠ Chưa có dữ liệu trong sheet</span>');
+    } else {
+      setStatus('<span style="color:#059669">✓ Tìm thấy <strong>' + hsCount + ' học sinh</strong>' +
+        (gvCount > 0 ? ' · <strong>' + gvCount + ' giáo viên</strong>' : '') + '</span>');
     }
+
   } catch(e) {
-    document.getElementById('login_err').textContent = '❌ Không kết nối được server: ' + e.message;
-    const statusEl = document.getElementById('list_status');
-    if (statusEl) statusEl.innerHTML = '<span style="color:#DC2626">❌ Không kết nối được</span>';
+    const isTimeout = e.name === 'AbortError';
+    const msg = isTimeout
+      ? '⏱ Kết nối quá chậm — kiểm tra mạng hoặc thử lại'
+      : '❌ Không kết nối được server';
+    setStatus('<span style="color:#DC2626">' + msg + '</span>');
+    // Hiện nút thử lại ngay dưới status
+    if (statusEl) {
+      const retryBtn = document.createElement('button');
+      retryBtn.textContent = '↻ Thử lại';
+      retryBtn.style.cssText = 'margin-top:6px;padding:5px 14px;background:#1B4FD8;color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;display:block;margin-left:auto;margin-right:auto';
+      retryBtn.onclick = () => { statusEl.innerHTML = ''; loadNameList(); };
+      statusEl.appendChild(retryBtn);
+    }
+    // Vẫn cho phép đăng nhập nếu URL có sẵn (người dùng tự nhập MK)
+    document.getElementById('login_err').textContent = '';
   }
 }
 
@@ -1955,7 +1978,7 @@ async function doLogin() {
 
     btn.disabled = true; btn.textContent = 'Đang xác thực...';
     try {
-      const res  = await fetch(GAS_URL + '?action=verify&name=' + encodeURIComponent(student.ten) + '&pw=' + encodeURIComponent(pw));
+      const res  = await fetchWithTimeout(GAS_URL + '?action=verify&name=', {} + encodeURIComponent(student.ten) + '&pw=' + encodeURIComponent(pw));
       const json = await res.json();
       if (json.valid) {
         localStorage.removeItem(LOCK_KEY); localStorage.removeItem(ATTEMPT_KEY);
@@ -1989,7 +2012,7 @@ async function doLogin() {
 
     btn.disabled = true; btn.textContent = 'Đang xác thực...';
     try {
-      const res  = await fetch(GAS_URL + '?action=verifyGV&name=' + encodeURIComponent(gv.ten) + '&pw=' + encodeURIComponent(pw));
+      const res  = await fetchWithTimeout(GAS_URL + '?action=verifyGV&name=', {} + encodeURIComponent(gv.ten) + '&pw=' + encodeURIComponent(pw));
       const json = await res.json();
       if (json.valid) {
         localStorage.removeItem(LOCK_KEY); localStorage.removeItem(ATTEMPT_KEY);
@@ -2131,7 +2154,7 @@ async function loadStudentData(ten, lop) {
   try {
     showLoader('Đang tải bài làm của ' + ten + '...');
     // Vẫn dùng GAS để đọc bài làm (GAS xử lý filter phức tạp)
-    const res  = await fetch(GAS_URL + '?action=load&name=' + encodeURIComponent(ten) + '&lop=' + encodeURIComponent(lop), { });
+    const res  = await fetchWithTimeout(GAS_URL + '?action=load&name=' + encodeURIComponent(ten) + '&lop=' + encodeURIComponent(lop), {});
     const json = await res.json();
     studentRecords = json.records || [];
     hlState = {};
@@ -2293,7 +2316,7 @@ async function saveHL(hlId) {
 
   try {
     showLoader('Đang lưu...');
-    const res = await fetch(GAS_URL, { method: 'POST',
+    const res = await fetchWithTimeout(GAS_URL, { method: 'POST',
       headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify({
         action:'save',
@@ -2335,7 +2358,7 @@ async function submitHL(hlId) {
 
   try {
     showLoader('Đang nộp bài...');
-    const res = await fetch(GAS_URL, { method: 'POST',
+    const res = await fetchWithTimeout(GAS_URL, { method: 'POST',
       headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify({
         action:'submit',
@@ -2434,7 +2457,7 @@ async function gradeHL(hlId) {
 
   try {
     showLoader('Đang lưu điểm...');
-    const res = await fetch(GAS_URL, { method: 'POST',
+    const res = await fetchWithTimeout(GAS_URL, { method: 'POST',
       headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify({
         action: 'grade',
