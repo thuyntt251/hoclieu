@@ -179,7 +179,6 @@ tbody td textarea:focus,tbody td input[type="text"]:focus{background:#fff}
 
 <!-- ACTION BAR -->
 <div class="action-bar">
-  <button class="btn btn-reset" onclick="resetCurrent()"><span class="btn-icon">🔄</span> Reset HL này</button>
   <button class="btn btn-print" onclick="window.print()"><span class="btn-icon">🖨️</span> In</button>
   <button class="btn btn-email" onclick="sendEmail()"><span class="btn-icon">📧</span> Email</button>
   <div style="flex:1"></div>
@@ -721,6 +720,7 @@ function panelHeader(hl) {
       </div>
     </div>
     <div class="hl-panel-actions">
+      <button class="btn btn-reset" onclick="resetCurrent()" style="margin-right:16px">🔄 Xóa trắng</button>
       <button class="btn btn-save" onclick="saveHL('${hl.id}')">💾 Lưu</button>
       <button class="btn btn-submit" onclick="submitHL('${hl.id}')">✅ Nộp bài</button>
     </div>
@@ -1008,8 +1008,8 @@ function resetCurrent() {
   const hl = lesson.hls[currentHLIndex];
   const panel = document.getElementById('panel-' + hl.id);
   if (!panel) return;
-  if (panel.classList.contains('locked')) { showToast('Bài đã nộp — không thể reset!', 'error'); return; }
-  if (!confirm('Reset toàn bộ nội dung đã điền trong học liệu này?')) return;
+  if (panel.classList.contains('locked')) { showToast('Bài đã nộp — không thể xóa trắng!', 'error'); return; }
+  if (!confirm('⚠ Xóa trắng toàn bộ nội dung đã điền trong:\n"' + hl.label + '"\n\nHành động này không thể hoàn tác. Tiếp tục?')) return;
   panel.querySelectorAll('textarea, input[type="text"]').forEach(e => e.value='');
   panel.querySelectorAll('input[type="checkbox"]').forEach(e => e.checked=false);
   panel.querySelectorAll('input[type="radio"]').forEach(e => e.checked=false);
