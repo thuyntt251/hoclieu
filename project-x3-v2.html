@@ -17,27 +17,42 @@
   --border:#CBD5E1;--radius:10px;--radius-sm:6px;
   --shadow:0 2px 8px rgba(15,43,91,.10);
   --shadow-md:0 4px 20px rgba(15,43,91,.14);
+  /* Status colors */
+  --done:#059669;--done-bg:#D1FAE5;--done-border:#6EE7B7;
+  --progress:#D97706;--progress-bg:#FEF3C7;--progress-border:#FCD34D;
+  --pending:#64748B;--pending-bg:#F1F5F9;--pending-border:#CBD5E1;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:"Be Vietnam Pro",sans-serif;background:#F0F4FF;color:var(--ink);font-size:15px;line-height:1.65;min-height:100vh}
 
 /* HEADER */
-.site-header{background:linear-gradient(135deg,var(--navy) 0%,#1B3A7A 60%,#1B4FD8 100%);color:#fff;padding:20px 32px 16px;position:relative;overflow:hidden}
-.site-header::before{content:"X3";position:absolute;right:-16px;top:-16px;font-size:140px;font-weight:700;opacity:.06;letter-spacing:-8px;line-height:1;font-family:"JetBrains Mono",monospace}
-.header-eyebrow{font-size:11px;font-weight:600;letter-spacing:2px;color:#93B4FF;text-transform:uppercase;margin-bottom:4px}
-.header-title{font-size:22px;font-weight:700;line-height:1.2;margin-bottom:2px}
-.header-subtitle{font-size:12px;color:#A5C0FF}
+.site-header{background:linear-gradient(135deg,var(--navy) 0%,#162E6B 50%,#1B4FD8 100%);color:#fff;padding:14px 32px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:space-between;min-height:64px}
+.site-header::before{content:"X3";position:absolute;right:-10px;top:-20px;font-size:120px;font-weight:700;opacity:.05;letter-spacing:-8px;line-height:1;font-family:"JetBrains Mono",monospace;pointer-events:none}
+.header-left{display:flex;flex-direction:column;gap:2px}
+.header-eyebrow{font-size:10px;font-weight:600;letter-spacing:2px;color:#93B4FF;text-transform:uppercase}
+.header-title{font-size:20px;font-weight:700;line-height:1.2}
+.header-subtitle{font-size:11px;color:#A5C0FF}
+/* User chip in header */
+.header-user{display:none;align-items:center;gap:10px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:24px;padding:6px 14px 6px 8px;backdrop-filter:blur(4px);flex-shrink:0}
+.header-user.visible{display:flex}
+.header-user-avatar{width:28px;height:28px;border-radius:50%;background:var(--blue-light);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.header-user-info{display:flex;flex-direction:column;gap:1px}
+.header-user-name{font-size:13px;font-weight:600;color:#fff;white-space:nowrap;max-width:180px;overflow:hidden;text-overflow:ellipsis}
+.header-user-role{font-size:10px;color:#93B4FF;font-weight:500}
+.header-logout{background:rgba(255,255,255,.15);border:none;color:#fff;font-size:11px;font-weight:600;padding:4px 10px;border-radius:12px;cursor:pointer;font-family:inherit;transition:background .15s;white-space:nowrap}
+.header-logout:hover{background:rgba(255,255,255,.28)}
 
 /* ACTION BAR */
-.action-bar{background:#fff;border-bottom:1px solid var(--border);padding:10px 32px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;position:sticky;top:0;z-index:100;box-shadow:var(--shadow)}
-.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;border:1.5px solid transparent;transition:all .18s;font-family:inherit;white-space:nowrap}
-.btn:disabled{opacity:.45;cursor:not-allowed}
+.action-bar{background:#fff;border-bottom:1px solid var(--border);padding:8px 32px;display:flex;align-items:center;gap:8px;position:sticky;top:64px;z-index:100;box-shadow:0 1px 4px rgba(15,43,91,.08)}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:6px 14px;border-radius:var(--radius-sm);font-size:12.5px;font-weight:600;cursor:pointer;border:1.5px solid transparent;transition:all .18s;font-family:inherit;white-space:nowrap}
+.btn:disabled{opacity:.4;cursor:not-allowed}
 .btn-reset{background:var(--red-light);color:var(--red);border-color:#FECACA}.btn-reset:hover:not(:disabled){background:#FEE2E2;border-color:var(--red)}
-.btn-print{background:var(--slate-light);color:var(--ink);border-color:var(--border)}.btn-print:hover{background:#E2E8F0}
-.btn-email{background:var(--amber-light);color:#92400E;border-color:#FDE68A}.btn-email:hover:not(:disabled){background:#FEF3C7;border-color:var(--amber)}
 .btn-save{background:var(--green-light);color:#065F46;border-color:#6EE7B7}.btn-save:hover:not(:disabled){background:#A7F3D0;border-color:var(--green)}
 .btn-submit{background:var(--blue);color:#fff;border-color:var(--blue)}.btn-submit:hover:not(:disabled){background:#1440B0}
-.btn-icon{font-size:15px}
+.btn-grade{background:#4C1D95;color:#fff;border-color:#4C1D95;padding:7px 16px;font-size:12.5px;font-weight:600;border-radius:var(--radius-sm);cursor:pointer;font-family:inherit;border-style:solid;transition:background .15s;display:inline-flex;align-items:center;gap:5px}
+.btn-grade:hover:not(:disabled){background:#3B0764}
+.btn-grade:disabled{opacity:.4;cursor:not-allowed}
+.btn-icon{font-size:14px}
 
 /* STUDENT BAR */
 .student-bar{background:#fff;border-bottom:2px solid var(--sky-deep);padding:12px 32px;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:12px}
@@ -48,30 +63,42 @@ body{font-family:"Be Vietnam Pro",sans-serif;background:#F0F4FF;color:var(--ink)
 #loadStatus{font-size:12px;color:var(--slate);padding:4px 0;align-self:flex-end}
 
 /* LESSON TABS (Row 1) */
-.lesson-tabs-wrap{background:#fff;border-bottom:1px solid var(--sky-deep);padding:0 32px;overflow-x:auto;position:sticky;top:53px;z-index:90}
-.lesson-tabs{display:flex;gap:2px;padding:8px 0 0;min-width:max-content}
-.lesson-tab{padding:8px 14px;font-size:13px;font-weight:600;color:var(--slate);background:transparent;border:none;border-radius:var(--radius-sm) var(--radius-sm) 0 0;cursor:pointer;transition:all .15s;white-space:nowrap;border-bottom:3px solid transparent;font-family:inherit}
-.lesson-tab:hover{color:var(--blue);background:var(--sky)}
-.lesson-tab.active{color:var(--blue);background:var(--sky);border-bottom-color:var(--blue)}
+.lesson-tabs-wrap{background:#fff;border-bottom:1px solid var(--sky-deep);padding:0 32px;overflow-x:auto;position:sticky;top:104px;z-index:90;box-shadow:0 1px 0 var(--sky-deep)}
+.lesson-tabs{display:flex;gap:3px;padding:8px 0 0;min-width:max-content}
+.lesson-tab{padding:7px 13px;font-size:12px;font-weight:600;background:var(--pending-bg);color:var(--pending);border:1.5px solid var(--pending-border);border-radius:var(--radius-sm) var(--radius-sm) 0 0;cursor:pointer;transition:all .15s;white-space:nowrap;border-bottom:none;font-family:inherit;position:relative}
+.lesson-tab::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:2px;background:transparent;transition:background .15s}
+.lesson-tab:hover{background:#E2E8F0;color:var(--ink)}
+.lesson-tab.active{background:#fff;color:var(--blue);border-color:var(--sky-deep);border-bottom-color:#fff;z-index:1}
+/* Lesson tab status colors */
+.lesson-tab.status-done{background:var(--done-bg);color:var(--done);border-color:var(--done-border)}
+.lesson-tab.status-done.active{background:#fff;color:var(--done)}
+.lesson-tab.status-progress{background:var(--progress-bg);color:var(--progress);border-color:var(--progress-border)}
+.lesson-tab.status-progress.active{background:#fff;color:var(--progress)}
 
 /* HL TABS (Row 2) */
-.hl-tabs-wrap{background:var(--sky);border-bottom:2px solid var(--sky-deep);padding:8px 32px;display:flex;gap:6px;flex-wrap:wrap;position:sticky;top:101px;z-index:89}
-.hl-tab{padding:6px 14px;font-size:12px;font-weight:600;color:var(--ink-soft);background:#fff;border:1.5px solid var(--border);border-radius:20px;cursor:pointer;transition:all .15s;font-family:inherit;display:flex;align-items:center;gap:6px}
-.hl-tab:hover{background:var(--sky);border-color:var(--blue-light);color:var(--blue)}
-.hl-tab.active{background:var(--blue);color:#fff;border-color:var(--blue)}
-.hl-tab .status-dot{width:7px;height:7px;border-radius:50%;background:var(--border);flex-shrink:0}
-.hl-tab.draft .status-dot{background:var(--amber)}
-.hl-tab.submitted .status-dot{background:var(--green)}
+.hl-tabs-wrap{background:#F8FAFF;border-bottom:2px solid var(--sky-deep);padding:8px 32px;display:flex;gap:6px;flex-wrap:wrap;position:sticky;top:149px;z-index:89}
+.hl-tab{padding:5px 12px;font-size:11.5px;font-weight:600;background:var(--pending-bg);color:var(--pending);border:1.5px solid var(--pending-border);border-radius:20px;cursor:pointer;transition:all .15s;font-family:inherit;display:flex;align-items:center;gap:6px}
+.hl-tab:hover{filter:brightness(.96)}
+.hl-tab.active{box-shadow:0 0 0 2px var(--blue);border-color:var(--blue);background:#fff;color:var(--blue)}
+.hl-tab .status-dot{width:7px;height:7px;border-radius:50%;background:var(--pending-border);flex-shrink:0;transition:background .2s}
+/* HL status colors */
+.hl-tab.draft{background:var(--progress-bg);color:var(--progress);border-color:var(--progress-border)}
+.hl-tab.draft .status-dot{background:var(--progress)}
+.hl-tab.submitted{background:var(--done-bg);color:var(--done);border-color:var(--done-border)}
+.hl-tab.submitted .status-dot{background:var(--done)}
+.hl-tab.graded{background:#EDE9FE;color:#4C1D95;border-color:#C4B5FD}
+.hl-tab.graded .status-dot{background:#7C3AED}
 
 /* HL PANEL HEADER */
 .hl-panel-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding-bottom:16px;border-bottom:2px solid var(--sky-deep)}
 .hl-panel-title-wrap{display:flex;align-items:flex-start;gap:14px}
 .hl-badge{background:var(--blue);color:#fff;font-size:11px;font-weight:700;letter-spacing:1px;padding:5px 10px;border-radius:var(--radius-sm);white-space:nowrap;margin-top:2px;font-family:"JetBrains Mono",monospace}
 .hl-panel-actions{display:flex;gap:8px;align-items:center}
-.hl-status-badge{font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;letter-spacing:.5px}
-.hl-status-badge.draft{background:var(--amber-light);color:#92400E}
-.hl-status-badge.submitted{background:var(--green-light);color:#065F46}
-.hl-status-badge.unsaved{background:var(--slate-light);color:var(--slate)}
+.hl-status-badge{font-size:11px;font-weight:600;padding:4px 12px;border-radius:20px;letter-spacing:.3px;border:1px solid transparent}
+.hl-status-badge.unsaved{background:var(--pending-bg);color:var(--pending);border-color:var(--pending-border)}
+.hl-status-badge.draft{background:var(--progress-bg);color:var(--progress);border-color:var(--progress-border)}
+.hl-status-badge.submitted{background:var(--done-bg);color:var(--done);border-color:var(--done-border)}
+.hl-status-badge.graded{background:#EDE9FE;color:#4C1D95;border-color:#C4B5FD}
 
 /* CONTENT */
 .content-area{padding:24px 32px;max-width:1100px;margin:0 auto}
@@ -85,10 +112,15 @@ body{font-family:"Be Vietnam Pro",sans-serif;background:#F0F4FF;color:var(--ink)
 /* STATUS extras */
 .hl-tab.graded .status-dot{background:#7C3AED}
 .hl-status-badge.graded{background:#EDE9FE;color:#4C1D95}
-/* GRADING SECTION */
-.grading-section{margin-top:20px;border:1.5px solid #DDD6FE;border-radius:var(--radius);overflow:hidden}
-.grading-header{background:#4C1D95;color:#fff;padding:10px 18px;font-size:12px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;display:flex;align-items:center;gap:8px}
-.grading-body{padding:16px 18px;background:#FAFCFF;display:flex;flex-direction:column;gap:12px}
+/* GRADING SECTION — collapsible */
+.grading-section{margin-top:20px;border:1.5px solid #DDD6FE;border-radius:var(--radius);overflow:hidden;transition:box-shadow .2s}
+.grading-section:hover{box-shadow:0 0 0 3px rgba(124,58,237,.1)}
+.grading-header{background:linear-gradient(135deg,#4C1D95,#6D28D9);color:#fff;padding:11px 18px;font-size:12px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;transition:background .15s}
+.grading-header:hover{background:linear-gradient(135deg,#3B0764,#5B21B6)}
+.grading-toggle-icon{font-size:16px;transition:transform .3s;display:inline-block}
+.grading-body{padding:16px 18px;background:#FAFCFF;display:flex;flex-direction:column;gap:12px;max-height:0;overflow:hidden;transition:max-height .35s ease,padding .3s ease,opacity .3s ease;opacity:0;padding-top:0;padding-bottom:0}
+.grading-section.open .grading-body{max-height:600px;opacity:1;padding:16px 18px}
+.grading-section.open .grading-toggle-icon{transform:rotate(180deg)}
 .grading-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .grade-input{width:90px;padding:8px 12px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:inherit;font-size:16px;font-weight:700;color:var(--navy);text-align:center;background:#fff}
 .grade-input:focus{outline:none;border-color:#7C3AED;box-shadow:0 0 0 3px rgba(124,58,237,.12)}
@@ -197,8 +229,7 @@ tbody td textarea:focus,tbody td input[type="text"]:focus{background:#fff}
 .btn-login:disabled{opacity:.5;cursor:not-allowed}
 .login-err{font-size:13px;color:var(--red);font-weight:600;text-align:center;min-height:20px}
 .login-lock{font-size:13px;color:#92400E;font-weight:600;background:var(--amber-light);padding:8px 12px;border-radius:var(--radius-sm);text-align:center}
-.session-bar{background:var(--green-light);border-bottom:1px solid #6EE7B7;padding:8px 32px;font-size:13px;color:#065F46;font-weight:600;display:flex;align-items:center;justify-content:space-between}
-.session-bar.hidden{display:none}
+.session-bar{display:none!important}
 /* GV AUTH inside grading */
 .gv-auth-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px dashed #DDD6FE;margin-top:8px}
 .gv-pw-input{padding:7px 12px;border:1.5px solid #DDD6FE;border-radius:var(--radius-sm);font-family:inherit;font-size:13px;width:160px;color:var(--ink)}
@@ -268,28 +299,31 @@ body.gv-logged .btn-grade{display:inline-flex}
   </div>
 </div>
 
-<!-- SESSION BAR -->
-<div class="session-bar hidden" id="sessionBar">
-  <span id="sessionLabel">👤 Đang đăng nhập...</span>
-  <button class="btn btn-reset" style="padding:5px 12px;font-size:12px" onclick="doLogout()">🚪 Đăng xuất</button>
-</div>
+<!-- session bar moved to header -->
 
 <!-- GLOBAL LOADER -->
 <div id="globalLoader"><div class="spinner"></div><span id="loaderMsg">Đang tải...</span></div>
 
 <!-- HEADER -->
 <header class="site-header">
-  <div class="header-eyebrow">PDP FSchools · Niên khóa 2026–2027</div>
-  <div class="header-title">PROJECT X3 · TRUYỀN THÔNG SÁNG TẠO</div>
-  <div class="header-subtitle">Bộ Học Liệu Tổng Hợp Toàn Khóa · Khối 11</div>
+  <div class="header-left">
+    <div class="header-eyebrow">PDP FSchools · Niên khóa 2026–2027</div>
+    <div class="header-title">PROJECT X3 · TRUYỀN THÔNG SÁNG TẠO</div>
+    <div class="header-subtitle">Bộ Học Liệu Tổng Hợp Toàn Khóa · Khối 11</div>
+  </div>
+  <div class="header-user" id="headerUser">
+    <div class="header-user-avatar" id="headerAvatar">?</div>
+    <div class="header-user-info">
+      <div class="header-user-name" id="headerUserName">--</div>
+      <div class="header-user-role" id="headerUserRole">--</div>
+    </div>
+    <button class="header-logout" onclick="doLogout()">Đăng xuất</button>
+  </div>
 </header>
 
 <!-- ACTION BAR -->
 <div class="action-bar">
-  <button class="btn btn-print" onclick="window.print()"><span class="btn-icon">🖨️</span> In</button>
-  <button class="btn btn-email" onclick="sendEmail()"><span class="btn-icon">📧</span> Email</button>
-  <div style="flex:1"></div>
-  <span id="syncStatus" style="font-size:12px;color:var(--slate)"></span>
+  <span id="syncStatus" style="font-size:12px;color:var(--slate);margin-left:4px"></span>
 </div>
 
 <!-- STUDENT BAR: HS mode = readonly, GV mode = ẩn -->
@@ -365,7 +399,7 @@ body.gv-logged .btn-grade{display:inline-flex}
 // ═══════════════════════════════════════════════════════════
 // CONFIG — Replace with your deployed Apps Script URL
 // ═══════════════════════════════════════════════════════════
-const GAS_URL  = 'https://script.google.com/macros/s/AKfycbyDIBn8JeDTKMP46jx_PV3MrG1cBBRrbnxxdWPu0FUoNX1qyiLbrrcWLOEvoqAnnEVJ/exec'; // ← Thay bằng URL GAS từ Gmail cá nhân
+const GAS_URL  = 'https://script.google.com/macros/s/AKfycbyDIBn8JeDTKMP46jx_PV3MrG1cBBRrbnxxdWPu0FUoNX1qyiLbrrcWLOEvoqAnnEVJ/exec';
 const SHEET_ID = '1DpojpfuQpyEnXw6eQJc_fOakgiwDZhf9k0IrO1RhtMI';
 
 // ═══════════════════════════════════════════════════════════
@@ -908,7 +942,8 @@ function panelHeader(hl) {
 
   const gradingHdr = document.createElement('div');
   gradingHdr.className = 'grading-header';
-  gradingHdr.textContent = '📝 Chấm điểm — Giáo viên';
+  gradingHdr.innerHTML = '<span>📝 Chấm điểm — Giáo viên</span><span class="grading-toggle-icon">▾</span>';
+  gradingHdr.onclick = () => gradingHdr.closest('.grading-section').classList.toggle('open');
 
   const gradingBody = document.createElement('div');
   gradingBody.className = 'grading-body';
@@ -1015,6 +1050,20 @@ function renderHLTabs() {
     btn.onclick = () => showHL(i);
     btn.innerHTML = '<span class="status-dot"></span>' + hl.label;
     wrap.appendChild(btn);
+  });
+  updateLessonTabStatus();
+}
+
+function updateLessonTabStatus() {
+  LESSONS.forEach((lesson, idx) => {
+    const tab = document.querySelectorAll('.lesson-tab')[idx];
+    if (!tab) return;
+    const statuses = lesson.hls.map(hl => (hlState[hl.id] || {}).status || 'unsaved');
+    const hasAny  = statuses.some(s => s !== 'unsaved');
+    const allDone = statuses.every(s => s === 'submitted' || s === 'graded');
+    tab.classList.remove('status-done','status-progress');
+    if (allDone && hasAny)   tab.classList.add('status-done');
+    else if (hasAny)         tab.classList.add('status-progress');
   });
 }
 
@@ -1176,6 +1225,7 @@ async function doLogin() {
         localStorage.removeItem(LOCK_KEY); localStorage.removeItem(ATTEMPT_KEY);
         sessionStorage.setItem(SESSION_KEY, JSON.stringify({ ...gv, role: 'gv' }));
         await enterAppGV(gv, true);
+      setTimeout(() => document.querySelectorAll(".grading-section").forEach(s => s.classList.add("open")), 600);
       } else {
         const att = (parseInt(localStorage.getItem(ATTEMPT_KEY)) || 0) + 1;
         localStorage.setItem(ATTEMPT_KEY, att);
@@ -1200,11 +1250,13 @@ async function enterAppHS(student, doLog) {
   currentRole = 'hs';
   document.body.classList.remove('gv-logged');
   document.getElementById('loginOverlay').classList.add('hidden');
-  document.getElementById('sessionBar').classList.remove('hidden');
-  document.getElementById('sessionBar').classList.remove('gv-mode');
-  document.getElementById('sessionLabel').textContent = '🎓 ' + student.ten + ' · ' + student.lop + ' · ' + student.nhom;
   document.getElementById('studentBar').style.display = '';
   document.getElementById('teacherBar').classList.remove('visible');
+  const avatar = student.ten.trim().split(' ').pop()[0].toUpperCase();
+  document.getElementById('headerAvatar').textContent = avatar;
+  document.getElementById('headerUserName').textContent = student.ten;
+  document.getElementById('headerUserRole').textContent = '🎓 ' + student.lop + ' · ' + student.nhom;
+  document.getElementById('headerUser').classList.add('visible');
 
   document.getElementById('s_name').value = student.ten;
   document.getElementById('s_lop').value  = student.lop;
@@ -1222,12 +1274,15 @@ async function enterAppGV(gv, doLog) {
   currentRole = 'gv';
   document.body.classList.add('gv-logged');
   document.getElementById('loginOverlay').classList.add('hidden');
-  document.getElementById('sessionBar').classList.remove('hidden');
-  document.getElementById('sessionBar').classList.add('gv-mode');
-  document.getElementById('sessionLabel').textContent = '👩‍🏫 GV: ' + gv.ten;
   document.getElementById('studentBar').style.display = 'none';
   document.getElementById('teacherBar').classList.add('visible');
   document.getElementById('gv_display').textContent = '👩‍🏫 ' + gv.ten;
+  const gvAvatar = gv.ten.trim().split(' ').pop()[0].toUpperCase();
+  document.getElementById('headerAvatar').textContent = gvAvatar;
+  document.getElementById('headerAvatar').style.background = '#4C1D95';
+  document.getElementById('headerUserName').textContent = gv.ten;
+  document.getElementById('headerUserRole').textContent = '👩‍🏫 Giáo viên';
+  document.getElementById('headerUser').classList.add('visible');
 
   // Build lớp dropdown từ allStudents
   buildLopDropdown();
@@ -1284,9 +1339,9 @@ function doLogout() {
   hlState = {}; studentRecords = [];
   document.body.classList.remove('gv-logged');
   document.getElementById('loginOverlay').classList.remove('hidden');
-  document.getElementById('sessionBar').classList.add('hidden');
-  document.getElementById('sessionBar').classList.remove('gv-mode');
   document.getElementById('studentBar').style.display = 'none';
+  document.getElementById('headerUser').classList.remove('visible');
+  document.getElementById('headerAvatar').style.background = '';
   document.getElementById('teacherBar').classList.remove('visible');
   document.getElementById('gv_lop').innerHTML = '<option value="">-- Chọn lớp --</option>';
   document.getElementById('gv_student').innerHTML = '<option value="">-- Chọn học sinh --</option>';
