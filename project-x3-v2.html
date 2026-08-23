@@ -181,9 +181,98 @@ tbody td textarea:focus,tbody td input[type="text"]:focus{background:#fff}
   .student-bar{grid-template-columns:1fr 1fr}
   .header-title{font-size:18px}
 }
+
+/* LOGIN MODAL */
+#loginOverlay{position:fixed;inset:0;background:rgba(15,43,91,.72);z-index:9998;display:flex;align-items:center;justify-content:center}
+#loginOverlay.hidden{display:none}
+.login-card{background:#fff;border-radius:16px;padding:36px 40px;width:380px;max-width:94vw;box-shadow:0 8px 40px rgba(15,43,91,.25);display:flex;flex-direction:column;gap:18px}
+.login-title{font-size:20px;font-weight:700;color:var(--navy);text-align:center}
+.login-sub{font-size:13px;color:var(--slate);text-align:center;margin-top:-10px}
+.login-field{display:flex;flex-direction:column;gap:6px}
+.login-field label{font-size:12px;font-weight:600;color:var(--ink);text-transform:uppercase;letter-spacing:.8px}
+.login-field select,.login-field input{padding:10px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:inherit;font-size:14px;color:var(--ink);background:#FAFCFF;transition:border-color .15s}
+.login-field select:focus,.login-field input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(27,79,216,.1)}
+.btn-login{width:100%;padding:12px;background:var(--blue);color:#fff;border:none;border-radius:var(--radius-sm);font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;transition:background .15s}
+.btn-login:hover:not(:disabled){background:#1440B0}
+.btn-login:disabled{opacity:.5;cursor:not-allowed}
+.login-err{font-size:13px;color:var(--red);font-weight:600;text-align:center;min-height:20px}
+.login-lock{font-size:13px;color:#92400E;font-weight:600;background:var(--amber-light);padding:8px 12px;border-radius:var(--radius-sm);text-align:center}
+.session-bar{background:var(--green-light);border-bottom:1px solid #6EE7B7;padding:8px 32px;font-size:13px;color:#065F46;font-weight:600;display:flex;align-items:center;justify-content:space-between}
+.session-bar.hidden{display:none}
+/* GV AUTH inside grading */
+.gv-auth-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px dashed #DDD6FE;margin-top:8px}
+.gv-pw-input{padding:7px 12px;border:1.5px solid #DDD6FE;border-radius:var(--radius-sm);font-family:inherit;font-size:13px;width:160px;color:var(--ink)}
+.gv-pw-input:focus{outline:none;border-color:#7C3AED}
+.gv-auth-err{font-size:12px;color:var(--red);font-weight:600}
+/* ROLE TOGGLE */
+.role-toggle{display:flex;border:1.5px solid var(--border);border-radius:var(--radius-sm);overflow:hidden}
+.role-btn{flex:1;padding:9px 0;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;border:none;background:#F8FAFC;color:var(--slate);transition:all .15s;text-align:center}
+.role-btn.active{background:var(--blue);color:#fff}
+.role-btn.active.gv{background:#4C1D95}
+/* LOGIN FIELD hidden */
+.login-field.hidden{display:none}
+/* TEACHER STUDENT BAR */
+.teacher-bar{background:#EDE9FE;border-bottom:2px solid #DDD6FE;padding:10px 32px;display:none;gap:12px;align-items:center;flex-wrap:wrap}
+.teacher-bar.visible{display:flex}
+.teacher-bar label{font-size:11px;font-weight:700;color:#4C1D95;text-transform:uppercase;letter-spacing:.7px}
+.teacher-bar select{padding:7px 12px;border:1.5px solid #DDD6FE;border-radius:var(--radius-sm);font-family:inherit;font-size:14px;color:var(--ink);background:#fff;cursor:pointer;min-width:130px}
+.teacher-bar select:focus{outline:none;border-color:#7C3AED}
+.teacher-name-display{font-size:14px;font-weight:700;color:#4C1D95}
+/* session bar GV */
+.session-bar.gv-mode{background:#EDE9FE;border-bottom-color:#DDD6FE;color:#4C1D95}
+/* grading section: ẩn gv-auth-row khi đã đăng nhập với vai trò GV */
+body.gv-logged .gv-auth-row{display:none!important}
+body.gv-logged .btn-grade{display:inline-flex}
 </style>
 </head>
 <body>
+
+
+<!-- LOGIN MODAL -->
+<div id="loginOverlay">
+  <div class="login-card">
+    <div class="login-title">🔐 Đăng nhập</div>
+    <div class="login-sub">PROJECT X3 · PDP FSchools 2026–2027</div>
+
+    <!-- Role toggle -->
+    <div class="role-toggle">
+      <button class="role-btn active" id="role_hs" onclick="setRole('hs')">🎓 Học sinh</button>
+      <button class="role-btn gv" id="role_gv" onclick="setRole('gv')">👩‍🏫 Giáo viên</button>
+    </div>
+
+    <!-- HS: chọn tên -->
+    <div class="login-field" id="field_hs_name">
+      <label>Họ và tên</label>
+      <select id="login_name">
+        <option value="">-- Chọn tên --</option>
+      </select>
+    </div>
+
+    <!-- GV: chọn tên GV -->
+    <div class="login-field hidden" id="field_gv_name">
+      <label>Tên giáo viên</label>
+      <select id="login_gv_name">
+        <option value="">-- Chọn GV --</option>
+      </select>
+    </div>
+
+    <!-- Mật khẩu chung -->
+    <div class="login-field">
+      <label>Mật khẩu</label>
+      <input type="password" id="login_pw" placeholder="Nhập mật khẩu..."
+             onkeydown="if(event.key==='Enter')doLogin()"/>
+    </div>
+
+    <div class="login-err" id="login_err"></div>
+    <button class="btn-login" id="btn_login" onclick="doLogin()">Đăng nhập →</button>
+  </div>
+</div>
+
+<!-- SESSION BAR -->
+<div class="session-bar hidden" id="sessionBar">
+  <span id="sessionLabel">👤 Đang đăng nhập...</span>
+  <button class="btn btn-reset" style="padding:5px 12px;font-size:12px" onclick="doLogout()">🚪 Đăng xuất</button>
+</div>
 
 <!-- GLOBAL LOADER -->
 <div id="globalLoader"><div class="spinner"></div><span id="loaderMsg">Đang tải...</span></div>
@@ -203,23 +292,36 @@ tbody td textarea:focus,tbody td input[type="text"]:focus{background:#fff}
   <span id="syncStatus" style="font-size:12px;color:var(--slate)"></span>
 </div>
 
-<!-- STUDENT BAR -->
-<div class="student-bar">
+<!-- STUDENT BAR: HS mode = readonly, GV mode = ẩn -->
+<div class="student-bar" id="studentBar" style="display:none">
   <div class="student-field">
     <label>Họ và tên</label>
-    <select id="s_name" onchange="onStudentChange()">
-      <option value="">-- Chọn tên --</option>
-    </select>
+    <input type="text" id="s_name" readonly style="background:var(--slate-light);font-weight:600"/>
   </div>
   <div class="student-field">
     <label>Lớp</label>
-    <input type="text" id="s_lop" placeholder="VD: 11A1" readonly style="background:var(--slate-light)"/>
+    <input type="text" id="s_lop" readonly style="background:var(--slate-light)"/>
   </div>
   <div class="student-field">
     <label>Nhóm</label>
-    <input type="text" id="s_nhom" placeholder="VD: Nhóm 2"/>
+    <input type="text" id="s_nhom" readonly style="background:var(--slate-light)"/>
   </div>
   <div id="loadStatus" style="font-size:12px;color:var(--slate);align-self:center"></div>
+</div>
+
+<!-- TEACHER BAR: chỉ hiện khi GV đăng nhập -->
+<div class="teacher-bar" id="teacherBar">
+  <span class="teacher-name-display" id="gv_display">👩‍🏫 Giáo viên</span>
+  <span style="color:#DDD6FE;font-size:16px">|</span>
+  <label>Lớp</label>
+  <select id="gv_lop" onchange="onGVLopChange()">
+    <option value="">-- Chọn lớp --</option>
+  </select>
+  <label>Học sinh</label>
+  <select id="gv_student" onchange="onGVStudentChange()">
+    <option value="">-- Chọn học sinh --</option>
+  </select>
+  <div id="loadStatus" style="font-size:12px;color:#4C1D95;margin-left:8px"></div>
 </div>
 
 <!-- LESSON TABS (Tầng 1) -->
@@ -265,6 +367,19 @@ tbody td textarea:focus,tbody td input[type="text"]:focus{background:#fff}
 // ═══════════════════════════════════════════════════════════
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbxVOX7TZqTfbhsGkk6E5_wu2sh70zseNx1a5xh1OEMXMyuHcroEPxf9yXIYIviYaNjk9Q/exec';
 const SHEET_ID = '1zoZvZcRpPsdGN2Wqj_C9qe7kDQTnGICk_4T5WU7_pjQ';
+
+// ═══════════════════════════════════════════════════════════
+// AUTH STATE
+// ═══════════════════════════════════════════════════════════
+const MAX_ATTEMPTS = 3;
+const LOCK_MS      = 5 * 60 * 1000; // 5 phút
+const LOCK_KEY     = 'x3_lock';
+const ATTEMPT_KEY  = 'x3_attempts';
+const SESSION_KEY  = 'x3_session'; // sessionStorage — xóa khi đóng tab
+
+let currentStudent = null; // { ten, lop, nhom } — chỉ set sau verify OK
+let currentRole    = 'hs'; // 'hs' | 'gv'
+let allStudents    = [];   // cache full list for GV filter
 
 // ═══════════════════════════════════════════════════════════
 // LESSON / HL DATA STRUCTURE
@@ -711,7 +826,7 @@ let hlState = {};
 document.addEventListener('DOMContentLoaded', () => {
   buildAllPanels();
   switchLesson(0, document.querySelector('.lesson-tab'));
-  loadStudentList();
+  initApp();
 });
 
 function buildAllPanels() {
@@ -818,6 +933,29 @@ function panelHeader(hl) {
   gradeBtn.onclick = () => gradeHL(hl.id);
   gradeBtn.textContent = '✔ Chấm bài';
 
+  // GV auth row
+  const gvAuthRow = document.createElement('div');
+  gvAuthRow.className = 'gv-auth-row';
+  gvAuthRow.id = 'gvauth-' + hl.id;
+
+  const gvLbl = document.createElement('label');
+  gvLbl.style.cssText = 'font-size:12px;font-weight:600;color:#4C1D95;white-space:nowrap';
+  gvLbl.textContent = '🔑 Mã GV:';
+
+  const gvPwInput = document.createElement('input');
+  gvPwInput.type = 'password';
+  gvPwInput.id = 'gv-pw-' + hl.id;
+  gvPwInput.className = 'gv-pw-input';
+  gvPwInput.placeholder = 'Nhập mã bí mật GV...';
+
+  const gvErrSpan = document.createElement('span');
+  gvErrSpan.id = 'gv-err-' + hl.id;
+  gvErrSpan.className = 'gv-auth-err';
+
+  gvAuthRow.appendChild(gvLbl);
+  gvAuthRow.appendChild(gvPwInput);
+  gvAuthRow.appendChild(gvErrSpan);
+
   const gradeResult = document.createElement('span');
   gradeResult.id = 'grade-result-' + hl.id;
   gradeResult.className = 'grade-result';
@@ -845,6 +983,7 @@ function panelHeader(hl) {
 
   gradingBody.appendChild(scoreRow);
   gradingBody.appendChild(commentWrap);
+  gradingBody.appendChild(gvAuthRow);
   gradingDiv.appendChild(gradingHdr);
   gradingDiv.appendChild(gradingBody);
   wrap.appendChild(gradingDiv);
@@ -893,74 +1032,307 @@ function showHL(idx) {
 // ═══════════════════════════════════════════════════════════
 // STUDENT LIST
 // ═══════════════════════════════════════════════════════════
-async function loadStudentList() {
-  if (!GAS_URL || GAS_URL.includes('YOUR_')) {
-    // Demo mode — no backend
-    setSyncStatus('⚠ Chưa cấu hình GAS URL — chạy demo offline');
-    return;
+// ROLE
+// ═══════════════════════════════════════════════════════════
+function setRole(role) {
+  currentRole = role;
+  document.getElementById('role_hs').classList.toggle('active', role === 'hs');
+  document.getElementById('role_gv').classList.toggle('active', role === 'gv');
+  document.getElementById('field_hs_name').classList.toggle('hidden', role !== 'hs');
+  document.getElementById('field_gv_name').classList.toggle('hidden', role !== 'gv');
+  document.getElementById('login_pw').value = '';
+  document.getElementById('login_err').textContent = '';
+}
+
+// ═══════════════════════════════════════════════════════════
+// LOGIN / LOGOUT
+// ═══════════════════════════════════════════════════════════
+async function initApp() {
+  const saved = sessionStorage.getItem(SESSION_KEY);
+  if (saved) {
+    try {
+      const sess = JSON.parse(saved);
+      if (sess.role === 'gv') {
+        currentRole = 'gv';
+        await enterAppGV(sess, false);
+      } else {
+        currentRole = 'hs';
+        currentStudent = sess;
+        await enterAppHS(sess, false);
+      }
+      return;
+    } catch(e) { sessionStorage.removeItem(SESSION_KEY); }
   }
+  await loadNameList();
+  checkLockout();
+}
+
+async function loadNameList() {
   try {
-    showLoader('Đang tải danh sách học sinh...');
-    const res = await fetch(GAS_URL + '?action=getStudents');
-    const json = await res.json();
-    students = json.students || [];
-    const sel = document.getElementById('s_name');
+    // HS list
+    const res   = await fetch(GAS_URL + '?action=list');
+    const json  = await res.json();
+    allStudents = json.students || [];
+    const sel   = document.getElementById('login_name');
     sel.innerHTML = '<option value="">-- Chọn tên --</option>';
-    students.forEach(s => {
+    allStudents.forEach(s => {
       const opt = document.createElement('option');
-      opt.value = s.ten;
-      opt.dataset.lop = s.lop;
-      opt.dataset.nhom = s.nhom;
+      opt.value = JSON.stringify({ ten: s.ten, lop: s.lop, nhom: s.nhom });
       opt.textContent = s.ten + (s.lop ? ' (' + s.lop + ')' : '');
       sel.appendChild(opt);
     });
-    setSyncStatus('✓ Đã tải danh sách (' + students.length + ' học sinh)');
+    // GV list
+    const res2  = await fetch(GAS_URL + '?action=listGV');
+    const json2 = await res2.json();
+    const sel2  = document.getElementById('login_gv_name');
+    sel2.innerHTML = '<option value="">-- Chọn GV --</option>';
+    (json2.teachers || []).forEach(t => {
+      const opt = document.createElement('option');
+      opt.value = JSON.stringify({ ten: t.ten, ma_gv: t.ma_gv });
+      opt.textContent = t.ten;
+      sel2.appendChild(opt);
+    });
   } catch(e) {
-    setSyncStatus('❌ Không kết nối được Sheet');
-  } finally {
-    hideLoader();
+    document.getElementById('login_err').textContent = '❌ Không kết nối được server.';
   }
 }
 
-async function onStudentChange() {
-  const sel = document.getElementById('s_name');
-  const opt = sel.selectedOptions[0];
-  if (!opt || !opt.value) return;
-  document.getElementById('s_lop').value = opt.dataset.lop || '';
-  document.getElementById('s_nhom').value = opt.dataset.nhom || '';
-  await loadStudentData(opt.value, opt.dataset.lop);
+function checkLockout() {
+  const lock = localStorage.getItem(LOCK_KEY);
+  if (!lock) return false;
+  const remaining = parseInt(lock) - Date.now();
+  if (remaining > 0) {
+    const mins = Math.ceil(remaining / 60000);
+    const loginBtn = document.getElementById('btn_login');
+    loginBtn.disabled = true;
+    loginBtn.textContent = '🔒 Khóa ' + mins + ' phút nữa...';
+    setTimeout(() => {
+      localStorage.removeItem(LOCK_KEY);
+      localStorage.removeItem(ATTEMPT_KEY);
+      loginBtn.disabled = false;
+      loginBtn.textContent = 'Đăng nhập →';
+    }, remaining);
+    return true;
+  }
+  localStorage.removeItem(LOCK_KEY);
+  localStorage.removeItem(ATTEMPT_KEY);
+  return false;
+}
+
+async function doLogin() {
+  if (checkLockout()) return;
+  const errEl = document.getElementById('login_err');
+  const pw    = document.getElementById('login_pw').value.trim();
+  const btn   = document.getElementById('btn_login');
+  errEl.textContent = '';
+
+  if (currentRole === 'hs') {
+    // ── Học sinh ────────────────────────────────────────────
+    const selVal = document.getElementById('login_name').value;
+    if (!selVal) { errEl.textContent = 'Vui lòng chọn tên.'; return; }
+    if (!pw)     { errEl.textContent = 'Vui lòng nhập mật khẩu.'; return; }
+    let student;
+    try { student = JSON.parse(selVal); } catch(e) { errEl.textContent = 'Lỗi dữ liệu.'; return; }
+
+    btn.disabled = true; btn.textContent = 'Đang xác thực...';
+    try {
+      const res  = await fetch(GAS_URL + '?action=verify&name=' + encodeURIComponent(student.ten) + '&pw=' + encodeURIComponent(pw));
+      const json = await res.json();
+      if (json.valid) {
+        localStorage.removeItem(LOCK_KEY); localStorage.removeItem(ATTEMPT_KEY);
+        currentStudent = student;
+        sessionStorage.setItem(SESSION_KEY, JSON.stringify({ ...student, role: 'hs' }));
+        await enterAppHS(student, true);
+      } else {
+        const att = (parseInt(localStorage.getItem(ATTEMPT_KEY)) || 0) + 1;
+        localStorage.setItem(ATTEMPT_KEY, att);
+        if (att >= MAX_ATTEMPTS) {
+          localStorage.setItem(LOCK_KEY, Date.now() + LOCK_MS);
+          errEl.textContent = '🔒 Sai ' + MAX_ATTEMPTS + ' lần — khóa 5 phút.';
+          checkLockout();
+        } else {
+          errEl.textContent = '❌ Mật khẩu không đúng. Còn ' + (MAX_ATTEMPTS - att) + ' lần thử.';
+          btn.disabled = false; btn.textContent = 'Đăng nhập →';
+        }
+      }
+    } catch(e) {
+      errEl.textContent = '❌ Lỗi kết nối: ' + e.message;
+      btn.disabled = false; btn.textContent = 'Đăng nhập →';
+    }
+
+  } else {
+    // ── Giáo viên ───────────────────────────────────────────
+    const selVal = document.getElementById('login_gv_name').value;
+    if (!selVal) { errEl.textContent = 'Vui lòng chọn tên GV.'; return; }
+    if (!pw)     { errEl.textContent = 'Vui lòng nhập mật khẩu.'; return; }
+    let gv;
+    try { gv = JSON.parse(selVal); } catch(e) { errEl.textContent = 'Lỗi dữ liệu.'; return; }
+
+    btn.disabled = true; btn.textContent = 'Đang xác thực...';
+    try {
+      const res  = await fetch(GAS_URL + '?action=verifyGV&name=' + encodeURIComponent(gv.ten) + '&pw=' + encodeURIComponent(pw));
+      const json = await res.json();
+      if (json.valid) {
+        localStorage.removeItem(LOCK_KEY); localStorage.removeItem(ATTEMPT_KEY);
+        sessionStorage.setItem(SESSION_KEY, JSON.stringify({ ...gv, role: 'gv' }));
+        await enterAppGV(gv, true);
+      } else {
+        const att = (parseInt(localStorage.getItem(ATTEMPT_KEY)) || 0) + 1;
+        localStorage.setItem(ATTEMPT_KEY, att);
+        if (att >= MAX_ATTEMPTS) {
+          localStorage.setItem(LOCK_KEY, Date.now() + LOCK_MS);
+          errEl.textContent = '🔒 Sai ' + MAX_ATTEMPTS + ' lần — khóa 5 phút.';
+          checkLockout();
+        } else {
+          errEl.textContent = '❌ Mật khẩu GV không đúng. Còn ' + (MAX_ATTEMPTS - att) + ' lần thử.';
+          btn.disabled = false; btn.textContent = 'Đăng nhập →';
+        }
+      }
+    } catch(e) {
+      errEl.textContent = '❌ Lỗi kết nối: ' + e.message;
+      btn.disabled = false; btn.textContent = 'Đăng nhập →';
+    }
+  }
+}
+
+// ── VÀO APP — Học sinh ──────────────────────────────────────
+async function enterAppHS(student, doLog) {
+  currentRole = 'hs';
+  document.body.classList.remove('gv-logged');
+  document.getElementById('loginOverlay').classList.add('hidden');
+  document.getElementById('sessionBar').classList.remove('hidden');
+  document.getElementById('sessionBar').classList.remove('gv-mode');
+  document.getElementById('sessionLabel').textContent = '🎓 ' + student.ten + ' · ' + student.lop + ' · ' + student.nhom;
+  document.getElementById('studentBar').style.display = '';
+  document.getElementById('teacherBar').classList.remove('visible');
+
+  document.getElementById('s_name').value = student.ten;
+  document.getElementById('s_lop').value  = student.lop;
+  document.getElementById('s_nhom').value = student.nhom;
+
+  if (doLog) fetch(GAS_URL, { method:'POST', body: JSON.stringify({
+    action:'log', ten: student.ten, ua: navigator.userAgent, hanh_dong:'Đăng nhập (HS)'
+  })});
+
+  await loadStudentData(student.ten, student.lop);
+}
+
+// ── VÀO APP — Giáo viên ─────────────────────────────────────
+async function enterAppGV(gv, doLog) {
+  currentRole = 'gv';
+  document.body.classList.add('gv-logged');
+  document.getElementById('loginOverlay').classList.add('hidden');
+  document.getElementById('sessionBar').classList.remove('hidden');
+  document.getElementById('sessionBar').classList.add('gv-mode');
+  document.getElementById('sessionLabel').textContent = '👩‍🏫 GV: ' + gv.ten;
+  document.getElementById('studentBar').style.display = 'none';
+  document.getElementById('teacherBar').classList.add('visible');
+  document.getElementById('gv_display').textContent = '👩‍🏫 ' + gv.ten;
+
+  // Build lớp dropdown từ allStudents
+  buildLopDropdown();
+
+  if (doLog) fetch(GAS_URL, { method:'POST', body: JSON.stringify({
+    action:'log', ten: gv.ten, ua: navigator.userAgent, hanh_dong:'Đăng nhập (GV)'
+  })});
+}
+
+function buildLopDropdown() {
+  const lopSel = document.getElementById('gv_lop');
+  const lops   = [...new Set(allStudents.map(s => s.lop).filter(Boolean))].sort();
+  lopSel.innerHTML = '<option value="">-- Chọn lớp --</option>';
+  lops.forEach(lop => {
+    const opt = document.createElement('option');
+    opt.value = lop; opt.textContent = lop;
+    lopSel.appendChild(opt);
+  });
+  document.getElementById('gv_student').innerHTML = '<option value="">-- Chọn học sinh --</option>';
+}
+
+function onGVLopChange() {
+  const lop    = document.getElementById('gv_lop').value;
+  const stSel  = document.getElementById('gv_student');
+  stSel.innerHTML = '<option value="">-- Chọn học sinh --</option>';
+  if (!lop) return;
+  const filtered = allStudents.filter(s => s.lop === lop);
+  filtered.forEach(s => {
+    const opt = document.createElement('option');
+    opt.value = JSON.stringify({ ten: s.ten, lop: s.lop, nhom: s.nhom });
+    opt.textContent = s.ten + (s.nhom ? ' · ' + s.nhom : '');
+    stSel.appendChild(opt);
+  });
+}
+
+async function onGVStudentChange() {
+  const val = document.getElementById('gv_student').value;
+  if (!val) return;
+  let st;
+  try { st = JSON.parse(val); } catch(e) { return; }
+  currentStudent = st;
+  // Update display
+  document.getElementById('s_name').value = st.ten;
+  await loadStudentData(st.ten, st.lop);
+}
+
+function doLogout() {
+  const name = currentRole === 'gv'
+    ? (sessionStorage.getItem(SESSION_KEY) ? JSON.parse(sessionStorage.getItem(SESSION_KEY)).ten : 'GV')
+    : (currentStudent?.ten || '');
+  if (!confirm('Đăng xuất khỏi tài khoản ' + name + '?')) return;
+  sessionStorage.removeItem(SESSION_KEY);
+  currentStudent = null; currentRole = 'hs';
+  hlState = {}; studentRecords = [];
+  document.body.classList.remove('gv-logged');
+  document.getElementById('loginOverlay').classList.remove('hidden');
+  document.getElementById('sessionBar').classList.add('hidden');
+  document.getElementById('sessionBar').classList.remove('gv-mode');
+  document.getElementById('studentBar').style.display = 'none';
+  document.getElementById('teacherBar').classList.remove('visible');
+  document.getElementById('gv_lop').innerHTML = '<option value="">-- Chọn lớp --</option>';
+  document.getElementById('gv_student').innerHTML = '<option value="">-- Chọn học sinh --</option>';
+  document.getElementById('login_pw').value = '';
+  document.getElementById('login_err').textContent = '';
+  document.getElementById('btn_login').disabled = false;
+  document.getElementById('btn_login').textContent = 'Đăng nhập →';
+  setRole('hs');
+  document.querySelectorAll('textarea,[data-fid]').forEach(el => {
+    if (el.tagName==='TEXTAREA'||el.type==='text') el.value='';
+    if (el.type==='checkbox'||el.type==='radio') el.checked=false;
+  });
+  showToast('Đã đăng xuất.', 'success');
 }
 
 async function loadStudentData(ten, lop) {
-  if (!GAS_URL || GAS_URL.includes('YOUR_')) return;
   try {
-    showLoader('Đang tải dữ liệu của ' + ten + '...');
-    const res = await fetch(`${GAS_URL}?action=getData&ten=${encodeURIComponent(ten)}&lop=${encodeURIComponent(lop)}`);
+    showLoader('Đang tải bài làm của ' + ten + '...');
+    const res  = await fetch(GAS_URL + '?action=load&name=' + encodeURIComponent(ten) + '&lop=' + encodeURIComponent(lop));
     const json = await res.json();
     studentRecords = json.records || [];
     hlState = {};
-    // Restore data into panels
     studentRecords.forEach(rec => {
       hlState[rec.hoc_lieu] = {
-        status: rec.trang_thai,
-        data: rec.du_lieu,
-        submitted_at: rec.submitted_at || '',
-        graded_at: rec.graded_at || '',
-        grade_score: rec.grade_score || '',
+        status:        rec.trang_thai,
+        data:          rec.du_lieu,
+        submitted_at:  rec.submitted_at  || '',
+        graded_at:     rec.graded_at     || '',
+        grade_score:   rec.grade_score   || '',
         grade_comment: rec.grade_comment || ''
       };
-      const isSubmitted = rec.trang_thai === 'submitted' || rec.trang_thai === 'graded';
-      restorePanel(rec.hoc_lieu, rec.du_lieu, isSubmitted, rec);
+      const isLocked = rec.trang_thai === 'submitted' || rec.trang_thai === 'graded';
+      restorePanel(rec.hoc_lieu, rec.du_lieu, isLocked, rec);
     });
-    // Refresh HL tabs
     renderHLTabs();
-    showToast('✓ Đã tải dữ liệu bài làm', 'success');
+    showToast('✓ Đã tải bài làm của ' + ten, 'success');
   } catch(e) {
     showToast('❌ Lỗi tải dữ liệu: ' + e.message, 'error');
   } finally {
     hideLoader();
   }
 }
+
+// Legacy aliases
+async function loadStudentList() { await loadNameList(); }
+function onStudentChange() {}
 
 // ═══════════════════════════════════════════════════════════
 // RESTORE PANEL from saved data
@@ -1057,6 +1429,7 @@ function collectPanel(hlId) {
 // SAVE / SUBMIT
 // ═══════════════════════════════════════════════════════════
 function getStudent() {
+  if (currentStudent) return currentStudent;
   return {
     ten:  document.getElementById('s_name').value,
     lop:  document.getElementById('s_lop').value,
@@ -1086,7 +1459,7 @@ async function saveHL(hlId) {
         action:'save',
         ten: st.ten, lop: st.lop, nhom: st.nhom,
         bai: lesson?.bai, hoc_lieu: hlId,
-        du_lieu: data
+        du_lieu: data, ua: navigator.userAgent
       })
     });
     const json = await res.json();
@@ -1128,7 +1501,7 @@ async function submitHL(hlId) {
         action:'submit',
         ten: st.ten, lop: st.lop, nhom: st.nhom,
         bai: lesson?.bai, hoc_lieu: hlId,
-        du_lieu: data
+        du_lieu: data, ua: navigator.userAgent
       })
     });
     const json = await res.json();
@@ -1184,12 +1557,21 @@ async function gradeHL(hlId) {
   const scoreEl   = document.getElementById('grade-score-' + hlId);
   const commentEl = document.getElementById('grade-comment-' + hlId);
   const resultEl  = document.getElementById('grade-result-' + hlId);
+  const gvPwEl    = document.getElementById('gv-pw-' + hlId);
+  const gvErrEl   = document.getElementById('gv-err-' + hlId);
 
   const score = parseFloat(scoreEl?.value);
+  const gvPw  = gvPwEl?.value?.trim() || '';
+
+  if (!gvPw) {
+    if (gvErrEl) gvErrEl.textContent = '⚠ Nhập mã GV trước!';
+    return;
+  }
   if (isNaN(score) || score < 0 || score > 10) {
     showToast('❌ Điểm số phải từ 0 đến 10!', 'error'); return;
   }
   if (!confirm('Xác nhận chấm điểm ' + score + '/10 cho học liệu "' + hlId + '"?\nSau khi chấm sẽ không thể thay đổi.')) return;
+  if (gvErrEl) gvErrEl.textContent = '';
 
   const st = getStudent();
   if (!st.ten) { showToast('Chưa chọn học sinh!', 'error'); return; }
@@ -1219,7 +1601,9 @@ async function gradeHL(hlId) {
         ten: st.ten, lop: st.lop,
         bai: lesson?.bai, hoc_lieu: hlId,
         grade_score: score,
-        grade_comment: commentEl?.value || ''
+        grade_comment: commentEl?.value || '',
+        gv_pw: gvPw,
+        ua: navigator.userAgent
       })
     });
     const json = await res.json();
@@ -1235,7 +1619,9 @@ async function gradeHL(hlId) {
       updateStatusBadge(hlId, 'graded', score + '/10 lúc ' + ts);
       showToast('★ Đã chấm điểm thành công!', 'success');
     } else {
-      showToast('❌ ' + (json.error || 'Lỗi chấm điểm'), 'error');
+      const errMsg = json.error || 'Lỗi chấm điểm';
+      if (gvErrEl && errMsg.includes('GV')) gvErrEl.textContent = '❌ ' + errMsg;
+      else showToast('❌ ' + errMsg, 'error');
     }
   } catch(e) {
     showToast('❌ Lỗi kết nối: ' + e.message, 'error');
