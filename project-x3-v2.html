@@ -120,9 +120,13 @@ body{font-family:"Be Vietnam Pro",sans-serif;background:#F0F4FF;color:var(--ink)
 .grading-section{margin-top:20px;border:1.5px solid #DDD6FE;border-radius:var(--radius);overflow:hidden;transition:box-shadow .2s;display:none}
 .hl-panel.submitted .grading-section,.hl-panel.graded .grading-section{display:block}
 .hl-panel.submitted .grading-body,.hl-panel.graded .grading-body{max-height:600px!important;opacity:1!important;padding:16px 18px!important;overflow:visible!important}
-/* GV mode: always show grading if gv-logged */
+/* GV mode: always show grading */
 body.gv-logged .grading-section{display:block}
 body.gv-logged .grading-section .grading-body{max-height:600px!important;opacity:1!important;padding:16px 18px!important;overflow:visible!important}
+/* GV: student fields read-only (visual) */
+body.gv-logged [data-fid]{pointer-events:none!important;background:#F8FAFC!important;color:var(--ink-soft)!important;border-color:#E2E8F0!important;cursor:default!important;opacity:.75}
+/* GV: ẩn nút học sinh */
+body.gv-logged .btn-save,body.gv-logged .btn-submit,body.gv-logged .btn-reset{display:none!important}
 .grading-section:hover{box-shadow:0 0 0 3px rgba(124,58,237,.1)}
 .grading-header{background:linear-gradient(135deg,#4C1D95,#6D28D9);color:#fff;padding:11px 18px;font-size:12px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;transition:background .15s}
 .grading-header:hover{background:linear-gradient(135deg,#3B0764,#5B21B6)}
@@ -2195,22 +2199,24 @@ function lockPanel(hlId) {
   panel.classList.add('locked');
   const st = (hlState[hlId] || {}).status || 'submitted';
   panel.classList.add(st);
-  // Disable student-only buttons (Save/Submit/Reset) — NOT grading buttons
-  panel.querySelectorAll('.btn-save, .btn-submit, .btn-reset').forEach(b => {
-    b.disabled = true;
-    b.style.opacity = '.4';
-    b.style.cursor = 'not-allowed';
-  });
-  // Add locked banner if not already there
-  if (!panel.querySelector('.locked-banner')) {
-    const banner = document.createElement('div');
-    banner.className = 'locked-banner';
-    const submittedTime = hlState[hlId]?.submitted_at || '';
-    banner.innerHTML = '🔒 Đã nộp' + (submittedTime ? ' lúc ' + submittedTime : '') + ' — không thể chỉnh sửa';
-    const headerEl = panel.querySelector('.hl-panel-header');
-    if (headerEl) headerEl.insertAdjacentElement('afterend', banner);
+  const isGV = document.body.classList.contains('gv-logged');
+  if (!isGV) {
+    // HS: disable nút + hiện banner
+    panel.querySelectorAll('.btn-save, .btn-submit, .btn-reset').forEach(b => {
+      b.disabled = true;
+      b.style.opacity = '.4';
+      b.style.cursor = 'not-allowed';
+    });
+    if (!panel.querySelector('.locked-banner')) {
+      const banner = document.createElement('div');
+      banner.className = 'locked-banner';
+      const submittedTime = hlState[hlId]?.submitted_at || '';
+      banner.innerHTML = '🔒 Đã nộp' + (submittedTime ? ' lúc ' + submittedTime : '') + ' — không thể chỉnh sửa';
+      const headerEl = panel.querySelector('.hl-panel-header');
+      if (headerEl) headerEl.insertAdjacentElement('afterend', banner);
+    }
   }
-  // Auto-open grading section so it's always interactive when visible
+  // Auto-open grading section
   const gradingSection = panel.querySelector('.grading-section');
   if (gradingSection) gradingSection.classList.add('open');
 }
