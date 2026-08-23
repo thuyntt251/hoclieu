@@ -61,7 +61,7 @@ body{font-family:"Be Vietnam Pro",sans-serif;background:#F0F4FF;color:var(--ink)
 #loadStatus{font-size:12px;color:var(--slate);padding:4px 0;align-self:flex-end}
 
 /* LESSON TABS (Row 1) */
-.lesson-tabs-wrap{background:#fff;border-bottom:1px solid var(--sky-deep);padding:0 32px;overflow-x:auto;position:sticky;top:64px;z-index:90;box-shadow:0 1px 0 var(--sky-deep)}
+.lesson-tabs-wrap{background:#fff;border-bottom:1px solid var(--sky-deep);padding:0 32px;overflow-x:auto}
 .lesson-tabs{display:flex;gap:3px;padding:8px 0 0;flex-wrap:nowrap;overflow-x:auto}
 .lesson-tab{padding:6px 9px;font-size:11px;font-weight:600;background:var(--pending-bg);color:var(--pending);border:1.5px solid var(--pending-border);border-radius:var(--radius-sm) var(--radius-sm) 0 0;cursor:pointer;transition:all .15s;white-space:normal;border-bottom:none;font-family:inherit;position:relative;min-height:48px;width:72px;text-align:center;line-height:1.3;display:inline-flex;align-items:center;justify-content:center;word-break:break-word}
 .lesson-tab::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:2px;background:transparent;transition:background .15s}
@@ -74,7 +74,7 @@ body{font-family:"Be Vietnam Pro",sans-serif;background:#F0F4FF;color:var(--ink)
 .lesson-tab.status-progress.active{background:#fff;color:var(--progress)}
 
 /* HL TABS (Row 2) */
-.hl-tabs-wrap{background:#F8FAFF;border-bottom:2px solid var(--sky-deep);padding:8px 32px;display:flex;gap:6px;flex-wrap:wrap;position:sticky;top:var(--hl-tabs-top,120px);z-index:89}
+.hl-tabs-wrap{background:#F8FAFF;border-bottom:2px solid var(--sky-deep);padding:8px 32px;display:flex;gap:6px;flex-wrap:wrap;position:sticky;top:0;z-index:200;box-shadow:0 2px 8px rgba(15,43,91,.10)}
 .hl-tab{padding:5px 12px;font-size:11.5px;font-weight:600;background:var(--pending-bg);color:var(--pending);border:1.5px solid var(--pending-border);border-radius:20px;cursor:pointer;transition:all .15s;font-family:inherit;display:flex;align-items:center;gap:6px}
 .hl-tab:hover{filter:brightness(.96)}
 .hl-tab.active{box-shadow:0 0 0 2px var(--blue);border-color:var(--blue);background:#fff;color:var(--blue)}
@@ -146,7 +146,7 @@ body.gv-logged .btn-save,body.gv-logged .btn-submit,body.gv-logged .btn-reset{di
 .grade-comment{width:100%;padding:9px 13px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:inherit;font-size:13.5px;color:var(--ink);background:#fff;resize:vertical;min-height:60px}
 .grade-comment:focus{outline:none;border-color:#7C3AED}
 .grade-comment[readonly]{background:var(--slate-light);cursor:not-allowed}
-.grade-result{font-size:13px;color:#4C1D95;font-weight:600;padding:8px 14px;background:#EDE9FE;border-radius:var(--radius-sm);display:flex;align-items:center;gap:6px}
+.grade-result{font-size:14px;color:#4C1D95;font-weight:700;padding:10px 16px;background:#EDE9FE;border:1.5px solid #C4B5FD;border-radius:var(--radius-sm);display:flex;align-items:center;gap:6px;margin-top:8px}
 
 /* SECTION CARD */
 .section-card{background:#fff;border-radius:var(--radius);border:1px solid var(--border);padding:20px 22px;margin-bottom:16px;box-shadow:var(--shadow)}
@@ -1695,19 +1695,7 @@ let hlState = {};
 // ═══════════════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════════════
-function updateStickyTops() {
-  const header = document.querySelector('.site-header');
-  const tBar   = document.getElementById('teacherBar');
-  const ltWrap = document.querySelector('.lesson-tabs-wrap');
-  if (!header || !ltWrap) return;
-  const hH  = header.getBoundingClientRect().height;
-  const tbH = (tBar && tBar.classList.contains('visible')) ? tBar.getBoundingClientRect().height : 0;
-  const ltH = ltWrap.getBoundingClientRect().height;
-  const lessonTop = Math.round(hH + tbH);
-  const hlTop     = Math.round(hH + tbH + ltH);
-  ltWrap.style.top = lessonTop + 'px';
-  document.querySelector('.hl-tabs-wrap').style.top = hlTop + 'px';
-}
+function updateStickyTops() { /* no-op: only hl-tabs is sticky now */ }
 
 document.addEventListener('DOMContentLoaded', () => {
   buildAllPanels();
@@ -2451,58 +2439,55 @@ function restoreGrading(hlId, rec) {
 // GRADE HL — Giáo viên chấm điểm
 // ═══════════════════════════════════════════════════════════
 async function gradeHL(hlId) {
-  const scoreEl   = document.getElementById('grade-score-' + hlId);
-  const commentEl = document.getElementById('grade-comment-' + hlId);
-  const resultEl  = document.getElementById('grade-result-' + hlId);
-  const gvPwEl    = document.getElementById('gv-pw-' + hlId);
-  const gvErrEl   = document.getElementById('gv-err-' + hlId);
-
-  const score = parseFloat(scoreEl?.value);
-  // Nếu GV đã đăng nhập: lấy pw từ session. Nếu không: lấy từ input field.
-  let gvPw = gvPwEl?.value?.trim() || '';
-  if (!gvPw && document.body.classList.contains('gv-logged')) {
-    try {
-      const sess = JSON.parse(sessionStorage.getItem('x3_session') || '{}');
-      gvPw = sess._pw || '';
-    } catch(e) {}
+  // Lấy GV password: từ session (GV đã login) hoặc từ input field
+  let gvPw = '';
+  if (document.body.classList.contains('gv-logged')) {
+    try { gvPw = (JSON.parse(sessionStorage.getItem('x3_session') || '{}')||{})._pw || ''; } catch(e) {}
   }
-
   if (!gvPw) {
-    if (gvErrEl) gvErrEl.textContent = '⚠ Nhập mã GV trước!';
+    const el = document.getElementById('gv-pw-' + hlId);
+    gvPw = el ? el.value.trim() : '';
+  }
+  if (!gvPw) {
+    showToast('❌ Không tìm thấy mã GV — vui lòng đăng xuất và đăng nhập lại', 'error');
     return;
   }
+
+  const scoreEl = document.getElementById('grade-score-' + hlId);
+  const score = parseFloat(scoreEl ? scoreEl.value : '');
   if (isNaN(score) || score < 0 || score > 10) {
-    showToast('❌ Điểm số phải từ 0 đến 10!', 'error'); return;
+    showToast('❌ Vui lòng nhập điểm số từ 0 đến 10', 'error'); return;
   }
-  if (!confirm('Xác nhận chấm điểm ' + score + '/10 cho học liệu "' + hlId + '"?\nSau khi chấm sẽ không thể thay đổi.')) return;
-  if (gvErrEl) gvErrEl.textContent = '';
 
   const st = getStudent();
-  if (!st.ten) { showToast('Chưa chọn học sinh!', 'error'); return; }
+  if (!st || !st.ten) { showToast('❌ Chưa chọn học sinh', 'error'); return; }
+
+  const commentEl = document.getElementById('grade-comment-' + hlId);
+  const resultEl  = document.getElementById('grade-result-'  + hlId);
   const lesson = LESSONS.find(l => l.hls.some(h => h.id === hlId));
   const now = new Date().toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' });
 
+  // Offline mode
   if (!GAS_URL || GAS_URL.includes('YOUR_')) {
-    // Offline
-    if (!document.body.classList.contains('gv-logged')) { scoreEl.readOnly = true; commentEl.readOnly = true; }
-    resultEl.style.display = 'flex';
-    resultEl.textContent = '★ ' + score + '/10 — Chấm lúc ' + now;
+    if (resultEl) { resultEl.style.display = 'flex'; resultEl.textContent = '★ ' + score + '/10 — ' + now; }
     hlState[hlId] = { ...(hlState[hlId]||{}), status:'graded', graded_at: now, grade_score: score };
-    updateStatusBadge(hlId, 'graded', score + '/10 lúc ' + now);
-    showToast('★ Đã chấm điểm (offline)', 'success');
+    updateStatusBadge(hlId, 'graded', now);
+    showToast('★ Đã chấm ' + score + '/10 (offline)', 'success');
     return;
   }
 
+  showLoader('Đang lưu điểm...');
   try {
-    showLoader('Đang lưu điểm...');
-    const res = await fetchWithTimeout(GAS_URL, { method: 'POST',
+    const res = await fetchWithTimeout(GAS_URL, {
+      method: 'POST',
       headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify({
         action: 'grade',
         ten: st.ten, lop: st.lop,
-        bai: lesson?.bai, hoc_lieu: hlId,
+        bai: lesson ? lesson.bai : '',
+        hoc_lieu: hlId,
         grade_score: score,
-        grade_comment: commentEl?.value || '',
+        grade_comment: commentEl ? commentEl.value : '',
         gv_pw: gvPw,
         ua: navigator.userAgent
       })
@@ -2510,19 +2495,16 @@ async function gradeHL(hlId) {
     const json = await res.json();
     if (json.ok) {
       const ts = json.graded_at || now;
-      if (!document.body.classList.contains('gv-logged')) { scoreEl.readOnly = true; commentEl.readOnly = true; }
-      resultEl.style.display = 'flex';
-      resultEl.textContent = '★ ' + score + '/10 — Chấm lúc ' + ts;
+      if (resultEl) { resultEl.style.display = 'flex'; resultEl.textContent = '★ ' + score + '/10 — ' + ts; }
       hlState[hlId] = { ...(hlState[hlId]||{}), status:'graded', graded_at: ts, grade_score: score };
-      updateStatusBadge(hlId, 'graded', score + '/10 lúc ' + ts);
-      showToast('★ Đã chấm điểm thành công!', 'success');
+      updateStatusBadge(hlId, 'graded', ts);
+      showToast('★ Đã chấm ' + score + '/10 lúc ' + ts, 'success');
     } else {
-      const errMsg = json.error || 'Lỗi chấm điểm';
-      if (gvErrEl && errMsg.includes('GV')) gvErrEl.textContent = '❌ ' + errMsg;
-      else showToast('❌ ' + errMsg, 'error');
+      showToast('❌ ' + (json.error || 'Lỗi chấm điểm'), 'error');
     }
   } catch(e) {
-    showToast('❌ Lỗi kết nối: ' + e.message, 'error');
+    const msg = e.name === 'AbortError' ? 'Kết nối quá chậm, thử lại' : e.message;
+    showToast('❌ ' + msg, 'error');
   } finally {
     hideLoader();
   }
