@@ -2,6 +2,10 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<!-- v20260823-162441 -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PROJECT X3 · Truyền Thông Sáng Tạo · Bộ Học Liệu Tổng Hợp</title>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -1717,46 +1721,48 @@ function buildAllPanels() {
 
 // Returns static HTML string for panel header (no onclick — wired in wirePanel)
 function buildPanelHeaderHTML(hl) {
-  return \`<div class="hl-panel-header">
-    <div class="hl-panel-title-wrap">
-      <span class="hl-badge">\${hl.id.replace('_',' ')}</span>
-      <div>
-        <div style="font-size:18px;font-weight:700;color:var(--navy)">\${hl.label}</div>
-        <div id="status-\${hl.id}" class="hl-status-badge unsaved" style="display:inline-block;margin-top:4px">● Chưa lưu</div>
-      </div>
-    </div>
-    <div class="hl-panel-actions">
-      <button class="btn btn-reset" data-hlid="\${hl.id}" style="margin-right:16px">🔄 Xóa trắng</button>
-      <button class="btn btn-save" data-hlid="\${hl.id}">💾 Lưu</button>
-      <button class="btn btn-submit" data-hlid="\${hl.id}">✅ Nộp bài</button>
-    </div>
-  </div>\`;
+  var id = hl.id, lbl = hl.label, sid = id.replace('_',' ');
+  return '<div class="hl-panel-header">' +
+    '<div class="hl-panel-title-wrap">' +
+      '<span class="hl-badge">' + sid + '</span>' +
+      '<div>' +
+        '<div style="font-size:18px;font-weight:700;color:var(--navy)">' + lbl + '</div>' +
+        '<div id="status-' + id + '" class="hl-status-badge unsaved" style="display:inline-block;margin-top:4px">&#9679; Chưa lưu</div>' +
+      '</div>' +
+    '</div>' +
+    '<div class="hl-panel-actions">' +
+      '<button class="btn btn-reset" data-hlid="' + id + '" style="margin-right:16px">&#x1F504; Xóa trắng</button>' +
+      '<button class="btn btn-save" data-hlid="' + id + '">&#x1F4BE; Lưu</button>' +
+      '<button class="btn btn-submit" data-hlid="' + id + '">&#x2705; Nộp bài</button>' +
+    '</div>' +
+  '</div>';
 }
 
 // Returns static HTML string for grading section
 function buildGradingHTML(hl) {
-  return \`<div class="grading-section" id="grading-\${hl.id}">
-    <div class="grading-header" data-hlid="\${hl.id}">
-      <span>📝 Chấm điểm — Giáo viên</span><span class="grading-toggle-icon">▾</span>
-    </div>
-    <div class="grading-body">
-      <div class="grading-row">
-        <label style="font-size:13px;font-weight:600;color:var(--ink);white-space:nowrap">Điểm số (0–10):</label>
-        <input type="number" id="grade-score-\${hl.id}" class="grade-input" min="0" max="10" step="0.5" placeholder="—"/>
-        <button class="btn-grade" data-hlid="\${hl.id}">✔ Chấm bài</button>
-        <span id="grade-result-\${hl.id}" class="grade-result" style="display:none"></span>
-      </div>
-      <div>
-        <label style="font-size:13px;font-weight:600;color:var(--ink);display:block;margin-bottom:5px">Nhận xét của GV:</label>
-        <textarea id="grade-comment-\${hl.id}" class="grade-comment" placeholder="Nhận xét, góp ý cho học sinh..."></textarea>
-      </div>
-      <div class="gv-auth-row" id="gvauth-\${hl.id}">
-        <label style="font-size:12px;font-weight:600;color:#4C1D95;white-space:nowrap">🔑 Mã GV:</label>
-        <input type="password" id="gv-pw-\${hl.id}" class="gv-pw-input" placeholder="Nhập mã bí mật GV..."/>
-        <span id="gv-err-\${hl.id}" class="gv-auth-err"></span>
-      </div>
-    </div>
-  </div>\`;
+  var id = hl.id;
+  return '<div class="grading-section" id="grading-' + id + '">' +
+    '<div class="grading-header" data-hlid="' + id + '">' +
+      '<span>&#x1F4DD; Chấm điểm — Giáo viên</span><span class="grading-toggle-icon">&#9662;</span>' +
+    '</div>' +
+    '<div class="grading-body">' +
+      '<div class="grading-row">' +
+        '<label style="font-size:13px;font-weight:600;color:var(--ink);white-space:nowrap">Điểm số (0–10):</label>' +
+        '<input type="number" id="grade-score-' + id + '" class="grade-input" min="0" max="10" step="0.5" placeholder="—"/>' +
+        '<button class="btn-grade" data-hlid="' + id + '">✔ Chấm bài</button>' +
+        '<span id="grade-result-' + id + '" class="grade-result" style="display:none"></span>' +
+      '</div>' +
+      '<div>' +
+        '<label style="font-size:13px;font-weight:600;color:var(--ink);display:block;margin-bottom:5px">Nhận xét của GV:</label>' +
+        '<textarea id="grade-comment-' + id + '" class="grade-comment" placeholder="Nhận xét, góp ý cho học sinh..."></textarea>' +
+      '</div>' +
+      '<div class="gv-auth-row" id="gvauth-' + id + '">' +
+        '<label style="font-size:12px;font-weight:600;color:#4C1D95;white-space:nowrap">&#x1F511; Mã GV:</label>' +
+        '<input type="password" id="gv-pw-' + id + '" class="gv-pw-input" placeholder="Nhập mã bí mật GV..."/>' +
+        '<span id="gv-err-' + id + '" class="gv-auth-err"></span>' +
+      '</div>' +
+    '</div>' +
+  '</div>';
 }
 
 // Wire event listeners onto the already-built panel DOM node
