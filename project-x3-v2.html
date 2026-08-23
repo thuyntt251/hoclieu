@@ -43,7 +43,7 @@ body{font-family:"Be Vietnam Pro",sans-serif;background:#F0F4FF;color:var(--ink)
 .header-logout:hover{background:rgba(255,255,255,.28)}
 
 /* ACTION BAR */
-.action-bar{background:#fff;border-bottom:1px solid var(--border);padding:8px 32px;display:flex;align-items:center;gap:8px;position:sticky;top:64px;z-index:100;box-shadow:0 1px 4px rgba(15,43,91,.08);min-height:40px}
+.action-bar{background:#fff;border-bottom:1px solid var(--border);padding:8px 32px;display:flex;align-items:center;gap:8px;position:sticky;top:64px;z-index:100;box-shadow:0 1px 4px rgba(15,43,91,.08)}
 .btn{display:inline-flex;align-items:center;gap:5px;padding:6px 14px;border-radius:var(--radius-sm);font-size:12.5px;font-weight:600;cursor:pointer;border:1.5px solid transparent;transition:all .18s;font-family:inherit;white-space:nowrap}
 .btn:disabled{opacity:.4;cursor:not-allowed}
 .btn-reset{background:var(--red-light);color:var(--red);border-color:#FECACA}.btn-reset:hover:not(:disabled){background:#FEE2E2;border-color:var(--red)}
@@ -63,9 +63,9 @@ body{font-family:"Be Vietnam Pro",sans-serif;background:#F0F4FF;color:var(--ink)
 #loadStatus{font-size:12px;color:var(--slate);padding:4px 0;align-self:flex-end}
 
 /* LESSON TABS (Row 1) */
-.lesson-tabs-wrap{background:#fff;border-bottom:1px solid var(--sky-deep);padding:0 32px;overflow-x:auto;position:sticky;top:64px;z-index:90;box-shadow:0 1px 0 var(--sky-deep)}
-.lesson-tabs{display:flex;gap:3px;padding:8px 0 0;flex-wrap:nowrap;overflow-x:auto}
-.lesson-tab{padding:6px 9px;font-size:11px;font-weight:600;background:var(--pending-bg);color:var(--pending);border:1.5px solid var(--pending-border);border-radius:var(--radius-sm) var(--radius-sm) 0 0;cursor:pointer;transition:all .15s;white-space:normal;border-bottom:none;font-family:inherit;position:relative;min-height:48px;width:72px;text-align:center;line-height:1.3;display:inline-flex;align-items:center;justify-content:center;word-break:break-word}
+.lesson-tabs-wrap{background:#fff;border-bottom:1px solid var(--sky-deep);padding:0 32px;overflow-x:auto;position:sticky;top:104px;z-index:90;box-shadow:0 1px 0 var(--sky-deep)}
+.lesson-tabs{display:flex;gap:3px;padding:8px 0 0;min-width:max-content}
+.lesson-tab{padding:7px 13px;font-size:12px;font-weight:600;background:var(--pending-bg);color:var(--pending);border:1.5px solid var(--pending-border);border-radius:var(--radius-sm) var(--radius-sm) 0 0;cursor:pointer;transition:all .15s;white-space:nowrap;border-bottom:none;font-family:inherit;position:relative}
 .lesson-tab::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:2px;background:transparent;transition:background .15s}
 .lesson-tab:hover{background:#E2E8F0;color:var(--ink)}
 .lesson-tab.active{background:#fff;color:var(--blue);border-color:var(--sky-deep);border-bottom-color:#fff;z-index:1}
@@ -76,7 +76,7 @@ body{font-family:"Be Vietnam Pro",sans-serif;background:#F0F4FF;color:var(--ink)
 .lesson-tab.status-progress.active{background:#fff;color:var(--progress)}
 
 /* HL TABS (Row 2) */
-.hl-tabs-wrap{background:#F8FAFF;border-bottom:2px solid var(--sky-deep);padding:8px 32px;display:flex;gap:6px;flex-wrap:wrap;position:sticky;top:112px;z-index:89}
+.hl-tabs-wrap{background:#F8FAFF;border-bottom:2px solid var(--sky-deep);padding:8px 32px;display:flex;gap:6px;flex-wrap:wrap;position:sticky;top:149px;z-index:89}
 .hl-tab{padding:5px 12px;font-size:11.5px;font-weight:600;background:var(--pending-bg);color:var(--pending);border:1.5px solid var(--pending-border);border-radius:20px;cursor:pointer;transition:all .15s;font-family:inherit;display:flex;align-items:center;gap:6px}
 .hl-tab:hover{filter:brightness(.96)}
 .hl-tab.active{box-shadow:0 0 0 2px var(--blue);border-color:var(--blue);background:#fff;color:var(--blue)}
@@ -113,10 +113,7 @@ body{font-family:"Be Vietnam Pro",sans-serif;background:#F0F4FF;color:var(--ink)
 .hl-tab.graded .status-dot{background:#7C3AED}
 .hl-status-badge.graded{background:#EDE9FE;color:#4C1D95}
 /* GRADING SECTION — collapsible */
-.grading-section{margin-top:20px;border:1.5px solid #DDD6FE;border-radius:var(--radius);overflow:hidden;transition:box-shadow .2s;display:none}
-.hl-panel.submitted .grading-section,.hl-panel.graded .grading-section{display:block}
-/* GV mode: always show grading if gv-logged */
-body.gv-logged .grading-section{display:block}
+.grading-section{margin-top:20px;border:1.5px solid #DDD6FE;border-radius:var(--radius);overflow:hidden;transition:box-shadow .2s}
 .grading-section:hover{box-shadow:0 0 0 3px rgba(124,58,237,.1)}
 .grading-header{background:linear-gradient(135deg,#4C1D95,#6D28D9);color:#fff;padding:11px 18px;font-size:12px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;transition:background .15s}
 .grading-header:hover{background:linear-gradient(135deg,#3B0764,#5B21B6)}
@@ -329,12 +326,21 @@ body.gv-logged .btn-grade{display:inline-flex}
   <span id="syncStatus" style="font-size:12px;color:var(--slate);margin-left:4px"></span>
 </div>
 
-<!-- Hidden inputs for student data binding -->
-<div id="studentBar" style="display:none">
-  <input type="text" id="s_name"/>
-  <input type="text" id="s_lop"/>
-  <input type="text" id="s_nhom"/>
-  <div id="loadStatus"></div>
+<!-- STUDENT BAR: HS mode = readonly, GV mode = ẩn -->
+<div class="student-bar" id="studentBar" style="display:none">
+  <div class="student-field">
+    <label>Họ và tên</label>
+    <input type="text" id="s_name" readonly style="background:var(--slate-light);font-weight:600"/>
+  </div>
+  <div class="student-field">
+    <label>Lớp</label>
+    <input type="text" id="s_lop" readonly style="background:var(--slate-light)"/>
+  </div>
+  <div class="student-field">
+    <label>Nhóm</label>
+    <input type="text" id="s_nhom" readonly style="background:var(--slate-light)"/>
+  </div>
+  <div id="loadStatus" style="font-size:12px;color:var(--slate);align-self:center"></div>
 </div>
 
 <!-- TEACHER BAR: chỉ hiện khi GV đăng nhập -->
@@ -712,15 +718,16 @@ function hlHTML(hlId) {
 'B2_HL3': `
 <div class="section-card">
   <div class="section-title"><span class="section-code">B2.3</span> 8 câu hỏi giải mã</div>
-  <div class="section-instruction">Sử dụng Bộ nguồn HL-B2.0 hoặc một thông điệp bạn tự chọn để trả lời 8 câu hỏi dưới đây.</div>
-  <div class="field-group"><label class="field-label"><strong>1.</strong> Ai đã tạo ra thông điệp này?</label><textarea data-fid="b2q_1" class="short" placeholder="..."></textarea></div>
-  <div class="field-group"><label class="field-label"><strong>2.</strong> Thông điệp này được tạo ra vì mục đích gì?</label><textarea data-fid="b2q_2" class="short" placeholder="..."></textarea></div>
-  <div class="field-group"><label class="field-label"><strong>3.</strong> Hướng tới đối tượng nào?</label><textarea data-fid="b2q_3" class="short" placeholder="..."></textarea></div>
-  <div class="field-group"><label class="field-label"><strong>4.</strong> Dùng kỹ thuật gì để thu hút sự chú ý?</label><textarea data-fid="b2q_4" class="short" placeholder="..."></textarea></div>
-  <div class="field-group"><label class="field-label"><strong>5.</strong> Truyền tải những giá trị hay góc nhìn nào?</label><textarea data-fid="b2q_5" class="short" placeholder="..."></textarea></div>
-  <div class="field-group"><label class="field-label"><strong>6.</strong> Điều gì hoặc thông tin nào đã bị bỏ sót?</label><textarea data-fid="b2q_6" class="short" placeholder="..."></textarea></div>
-  <div class="field-group"><label class="field-label"><strong>7.</strong> Có thể được hiểu khác nhau như thế nào?</label><textarea data-fid="b2q_7" class="short" placeholder="..."></textarea></div>
-  <div class="field-group"><label class="field-label"><strong>8.</strong> Ai được hưởng lợi và ai chịu thiệt thòi?</label><textarea data-fid="b2q_8" class="short" placeholder="..."></textarea></div>
+  <div style="background:var(--sky);border-radius:var(--radius-sm);padding:14px;font-size:13.5px;line-height:2">
+    <p><strong>1.</strong> Ai đã tạo ra thông điệp này?</p>
+    <p><strong>2.</strong> Thông điệp này được tạo ra vì mục đích gì?</p>
+    <p><strong>3.</strong> Hướng tới đối tượng nào?</p>
+    <p><strong>4.</strong> Dùng kỹ thuật gì để thu hút sự chú ý?</p>
+    <p><strong>5.</strong> Truyền tải những giá trị hay góc nhìn nào?</p>
+    <p><strong>6.</strong> Điều gì hoặc thông tin nào đã bị bỏ sót?</p>
+    <p><strong>7.</strong> Có thể được hiểu khác nhau thế nào?</p>
+    <p><strong>8.</strong> Ai được hưởng lợi và ai chịu thiệt thòi?</p>
+  </div>
 </div>`,
 
 'B2_HL4': `
@@ -864,7 +871,16 @@ function buildAllPanels() {
       const div = document.createElement('div');
       div.className = 'hl-panel';
       div.id = 'panel-' + hl.id;
-      div.innerHTML = panelHeader(hl) + hlHTML(hl.id);
+      // panelHeader trả về DOM element — dùng appendChild để giữ event listeners
+      const headerEl = panelHeader(hl);
+      if (typeof headerEl === 'string') {
+        div.innerHTML = headerEl + hlHTML(hl.id);
+      } else {
+        div.appendChild(headerEl);
+        const contentDiv = document.createElement('div');
+        contentDiv.innerHTML = hlHTML(hl.id);
+        while (contentDiv.firstChild) div.appendChild(contentDiv.firstChild);
+      }
       ca.appendChild(div);
     });
   });
@@ -1016,7 +1032,7 @@ function panelHeader(hl) {
   gradingDiv.appendChild(gradingBody);
   wrap.appendChild(gradingDiv);
 
-  return wrap.innerHTML;
+  return wrap;  // trả về DOM node để giữ onclick handlers
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -1420,8 +1436,6 @@ function lockPanel(hlId) {
   const panel = document.getElementById('panel-' + hlId);
   if (!panel) return;
   panel.classList.add('locked');
-  const st = (hlState[hlId] || {}).status || 'submitted';
-  panel.classList.add(st);
   // Hide save/submit buttons
   panel.querySelectorAll('.btn-save, .btn-submit').forEach(b => {
     b.disabled = true;
@@ -1454,12 +1468,6 @@ function updateStatusBadge(hlId, status, time) {
     tab.className = tab.className.replace(/(draft|submitted|graded|unsaved)/g,'').trim() + ' ' + status;
   }
 
-  // Apply status class to panel for CSS targeting (e.g., showing grading section)
-  const panel = document.getElementById('panel-' + hlId);
-  if (panel) {
-    panel.classList.remove('draft','submitted','graded','unsaved');
-    panel.classList.add(status);
-  }
   hlState[hlId] = hlState[hlId] || {};
   hlState[hlId].status = status;
 }
@@ -1511,7 +1519,6 @@ async function saveHL(hlId) {
   try {
     showLoader('Đang lưu...');
     const res = await fetch(GAS_URL, { method: 'POST',
-      headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify({
         action:'save',
         ten: st.ten, lop: st.lop, nhom: st.nhom,
@@ -1553,7 +1560,6 @@ async function submitHL(hlId) {
   try {
     showLoader('Đang nộp bài...');
     const res = await fetch(GAS_URL, { method: 'POST',
-      headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify({
         action:'submit',
         ten: st.ten, lop: st.lop, nhom: st.nhom,
@@ -1652,7 +1658,6 @@ async function gradeHL(hlId) {
   try {
     showLoader('Đang lưu điểm...');
     const res = await fetch(GAS_URL, { method: 'POST',
-      headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify({
         action: 'grade',
         ten: st.ten, lop: st.lop,
