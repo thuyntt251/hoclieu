@@ -365,8 +365,8 @@ body.gv-logged .btn-grade{display:inline-flex}
 // ═══════════════════════════════════════════════════════════
 // CONFIG — Replace with your deployed Apps Script URL
 // ═══════════════════════════════════════════════════════════
-const GAS_URL = 'https://script.google.com/a/macros/fpt.edu.vn/s/AKfycbwTImeeSCoLHx0uh3ym5SUsCO_VmnQCD5aWNG4-Fwkh76LlWItpRX6aDNWZQ6zBDMc9Jg/exec';
-const SHEET_ID = '1zoZvZcRpPsdGN2Wqj_C9qe7kDQTnGICk_4T5WU7_pjQ';
+const GAS_URL  = 'https://script.google.com/macros/s/AKfycbxr8D0edJmYkTbroZOo1eHB6K79AmVUBsvlpH8WXYdRde5B-4GuyKQSiXsLf5dWSf8b/exec'; // ← Thay bằng URL GAS từ Gmail cá nhân
+const SHEET_ID = '1DpojpfuQpyEnXw6eQJc_fOakgiwDZhf9k0IrO1RhtMI';
 
 // ═══════════════════════════════════════════════════════════
 // AUTH STATE
@@ -377,9 +377,9 @@ const LOCK_KEY     = 'x3_lock';
 const ATTEMPT_KEY  = 'x3_attempts';
 const SESSION_KEY  = 'x3_session'; // sessionStorage — xóa khi đóng tab
 
-let currentStudent = null; // { ten, lop, nhom } — chỉ set sau verify OK
-let currentRole    = 'hs'; // 'hs' | 'gv'
-let allStudents    = [];   // cache full list for GV filter
+let currentStudent = null;  // { ten, lop, nhom }
+let currentRole    = 'hs';  // 'hs' | 'gv'
+let allStudents    = [];    // cache full list for GV filter
 
 // ═══════════════════════════════════════════════════════════
 // LESSON / HL DATA STRUCTURE
@@ -1069,11 +1069,11 @@ async function initApp() {
 
 async function loadNameList() {
   try {
-    // HS list
-    const res   = await fetch(GAS_URL + '?action=list');
-    const json  = await res.json();
+    // ── Danh sách HS từ GAS ──────────────────────────────────────
+    const res  = await fetch(GAS_URL + '?action=list');
+    const json = await res.json();
     allStudents = json.students || [];
-    const sel   = document.getElementById('login_name');
+    const sel  = document.getElementById('login_name');
     sel.innerHTML = '<option value="">-- Chọn tên --</option>';
     allStudents.forEach(s => {
       const opt = document.createElement('option');
@@ -1081,19 +1081,19 @@ async function loadNameList() {
       opt.textContent = s.ten + (s.lop ? ' (' + s.lop + ')' : '');
       sel.appendChild(opt);
     });
-    // GV list
+    // ── Danh sách GV từ GAS ─────────────────────────────────────
     const res2  = await fetch(GAS_URL + '?action=listGV');
     const json2 = await res2.json();
     const sel2  = document.getElementById('login_gv_name');
     sel2.innerHTML = '<option value="">-- Chọn GV --</option>';
     (json2.teachers || []).forEach(t => {
       const opt = document.createElement('option');
-      opt.value = JSON.stringify({ ten: t.ten, ma_gv: t.ma_gv });
+      opt.value = JSON.stringify({ ten: t.ten, mon: t.mon || '' });
       opt.textContent = t.ten;
       sel2.appendChild(opt);
     });
   } catch(e) {
-    document.getElementById('login_err').textContent = '❌ Không kết nối được server.';
+    document.getElementById('login_err').textContent = '❌ Không kết nối được server: ' + e.message;
   }
 }
 
@@ -1210,7 +1210,7 @@ async function enterAppHS(student, doLog) {
   document.getElementById('s_lop').value  = student.lop;
   document.getElementById('s_nhom').value = student.nhom;
 
-  if (doLog) fetch(GAS_URL, { method:'POST', body: JSON.stringify({
+  if (doLog) fetch(GAS_URL, { method: 'POST', body: JSON.stringify({
     action:'log', ten: student.ten, ua: navigator.userAgent, hanh_dong:'Đăng nhập (HS)'
   })});
 
@@ -1232,7 +1232,7 @@ async function enterAppGV(gv, doLog) {
   // Build lớp dropdown từ allStudents
   buildLopDropdown();
 
-  if (doLog) fetch(GAS_URL, { method:'POST', body: JSON.stringify({
+  if (doLog) fetch(GAS_URL, { method: 'POST', body: JSON.stringify({
     action:'log', ten: gv.ten, ua: navigator.userAgent, hanh_dong:'Đăng nhập (GV)'
   })});
 }
@@ -1305,7 +1305,8 @@ function doLogout() {
 async function loadStudentData(ten, lop) {
   try {
     showLoader('Đang tải bài làm của ' + ten + '...');
-    const res  = await fetch(GAS_URL + '?action=load&name=' + encodeURIComponent(ten) + '&lop=' + encodeURIComponent(lop));
+    // Vẫn dùng GAS để đọc bài làm (GAS xử lý filter phức tạp)
+    const res  = await fetch(GAS_URL + '?action=load&name=' + encodeURIComponent(ten) + '&lop=' + encodeURIComponent(lop), { });
     const json = await res.json();
     studentRecords = json.records || [];
     hlState = {};
@@ -1453,8 +1454,7 @@ async function saveHL(hlId) {
 
   try {
     showLoader('Đang lưu...');
-    const res = await fetch(GAS_URL, {
-      method:'POST',
+    const res = await fetch(GAS_URL, { method: 'POST',
       body: JSON.stringify({
         action:'save',
         ten: st.ten, lop: st.lop, nhom: st.nhom,
@@ -1495,8 +1495,7 @@ async function submitHL(hlId) {
 
   try {
     showLoader('Đang nộp bài...');
-    const res = await fetch(GAS_URL, {
-      method:'POST',
+    const res = await fetch(GAS_URL, { method: 'POST',
       body: JSON.stringify({
         action:'submit',
         ten: st.ten, lop: st.lop, nhom: st.nhom,
@@ -1594,8 +1593,7 @@ async function gradeHL(hlId) {
 
   try {
     showLoader('Đang lưu điểm...');
-    const res = await fetch(GAS_URL, {
-      method: 'POST',
+    const res = await fetch(GAS_URL, { method: 'POST',
       body: JSON.stringify({
         action: 'grade',
         ten: st.ten, lop: st.lop,
