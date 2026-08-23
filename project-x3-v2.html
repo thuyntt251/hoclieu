@@ -43,7 +43,7 @@ body{font-family:"Be Vietnam Pro",sans-serif;background:#F0F4FF;color:var(--ink)
 .header-logout:hover{background:rgba(255,255,255,.28)}
 
 /* ACTION BAR */
-.action-bar{background:#fff;border-bottom:1px solid var(--border);padding:8px 32px;display:flex;align-items:center;gap:8px;position:sticky;top:64px;z-index:100;box-shadow:0 1px 4px rgba(15,43,91,.08)}
+.action-bar{background:#fff;border-bottom:1px solid var(--border);padding:8px 32px;display:flex;align-items:center;gap:8px;position:sticky;top:64px;z-index:100;box-shadow:0 1px 4px rgba(15,43,91,.08);min-height:40px}
 .btn{display:inline-flex;align-items:center;gap:5px;padding:6px 14px;border-radius:var(--radius-sm);font-size:12.5px;font-weight:600;cursor:pointer;border:1.5px solid transparent;transition:all .18s;font-family:inherit;white-space:nowrap}
 .btn:disabled{opacity:.4;cursor:not-allowed}
 .btn-reset{background:var(--red-light);color:var(--red);border-color:#FECACA}.btn-reset:hover:not(:disabled){background:#FEE2E2;border-color:var(--red)}
@@ -63,9 +63,9 @@ body{font-family:"Be Vietnam Pro",sans-serif;background:#F0F4FF;color:var(--ink)
 #loadStatus{font-size:12px;color:var(--slate);padding:4px 0;align-self:flex-end}
 
 /* LESSON TABS (Row 1) */
-.lesson-tabs-wrap{background:#fff;border-bottom:1px solid var(--sky-deep);padding:0 32px;overflow-x:auto;position:sticky;top:104px;z-index:90;box-shadow:0 1px 0 var(--sky-deep)}
-.lesson-tabs{display:flex;gap:3px;padding:8px 0 0;min-width:max-content}
-.lesson-tab{padding:7px 13px;font-size:12px;font-weight:600;background:var(--pending-bg);color:var(--pending);border:1.5px solid var(--pending-border);border-radius:var(--radius-sm) var(--radius-sm) 0 0;cursor:pointer;transition:all .15s;white-space:nowrap;border-bottom:none;font-family:inherit;position:relative}
+.lesson-tabs-wrap{background:#fff;border-bottom:1px solid var(--sky-deep);padding:0 32px;overflow-x:auto;position:sticky;top:64px;z-index:90;box-shadow:0 1px 0 var(--sky-deep)}
+.lesson-tabs{display:flex;gap:3px;padding:8px 0 0;flex-wrap:nowrap;overflow-x:auto}
+.lesson-tab{padding:6px 9px;font-size:11px;font-weight:600;background:var(--pending-bg);color:var(--pending);border:1.5px solid var(--pending-border);border-radius:var(--radius-sm) var(--radius-sm) 0 0;cursor:pointer;transition:all .15s;white-space:normal;border-bottom:none;font-family:inherit;position:relative;min-height:48px;width:72px;text-align:center;line-height:1.3;display:inline-flex;align-items:center;justify-content:center;word-break:break-word}
 .lesson-tab::after{content:'';position:absolute;bottom:-2px;left:0;right:0;height:2px;background:transparent;transition:background .15s}
 .lesson-tab:hover{background:#E2E8F0;color:var(--ink)}
 .lesson-tab.active{background:#fff;color:var(--blue);border-color:var(--sky-deep);border-bottom-color:#fff;z-index:1}
@@ -76,7 +76,7 @@ body{font-family:"Be Vietnam Pro",sans-serif;background:#F0F4FF;color:var(--ink)
 .lesson-tab.status-progress.active{background:#fff;color:var(--progress)}
 
 /* HL TABS (Row 2) */
-.hl-tabs-wrap{background:#F8FAFF;border-bottom:2px solid var(--sky-deep);padding:8px 32px;display:flex;gap:6px;flex-wrap:wrap;position:sticky;top:149px;z-index:89}
+.hl-tabs-wrap{background:#F8FAFF;border-bottom:2px solid var(--sky-deep);padding:8px 32px;display:flex;gap:6px;flex-wrap:wrap;position:sticky;top:112px;z-index:89}
 .hl-tab{padding:5px 12px;font-size:11.5px;font-weight:600;background:var(--pending-bg);color:var(--pending);border:1.5px solid var(--pending-border);border-radius:20px;cursor:pointer;transition:all .15s;font-family:inherit;display:flex;align-items:center;gap:6px}
 .hl-tab:hover{filter:brightness(.96)}
 .hl-tab.active{box-shadow:0 0 0 2px var(--blue);border-color:var(--blue);background:#fff;color:var(--blue)}
@@ -106,14 +106,19 @@ body{font-family:"Be Vietnam Pro",sans-serif;background:#F0F4FF;color:var(--ink)
 .hl-panel.active{display:block}
 
 /* LOCKED OVERLAY */
-.hl-panel.locked textarea,.hl-panel.locked input[type="text"],.hl-panel.locked select:not(#s_name):not(#s_lop):not(#s_nhom){background:#F8FAFC!important;color:var(--ink-soft)!important;pointer-events:none;border-color:#E2E8F0!important;cursor:not-allowed}
-.hl-panel.locked input[type="checkbox"],.hl-panel.locked input[type="radio"]{pointer-events:none;opacity:.65}
+.hl-panel.locked textarea:not(.grade-comment),.hl-panel.locked input[type="text"]:not(.gv-pw-input),.hl-panel.locked select:not(#s_name):not(#s_lop):not(#s_nhom){background:#F8FAFC!important;color:var(--ink-soft)!important;pointer-events:none;border-color:#E2E8F0!important;cursor:not-allowed}
+.hl-panel.locked input[type="checkbox"]:not(.grading-section input),.hl-panel.locked input[type="radio"]:not(.grading-section input){pointer-events:none;opacity:.65}
+.hl-panel.locked .grading-section textarea,.hl-panel.locked .grading-section input{pointer-events:auto!important;opacity:1!important;cursor:auto!important;background:#fff!important;border-color:var(--border)!important;color:var(--ink)!important}
+.hl-panel.locked .grade-input:not([readonly]){background:#fff!important}
 .locked-banner{background:var(--green-light);border:1px solid #6EE7B7;border-radius:var(--radius-sm);padding:10px 16px;font-size:13px;color:#065F46;font-weight:600;margin-bottom:16px;display:flex;align-items:center;gap:8px}
 /* STATUS extras */
 .hl-tab.graded .status-dot{background:#7C3AED}
 .hl-status-badge.graded{background:#EDE9FE;color:#4C1D95}
 /* GRADING SECTION — collapsible */
-.grading-section{margin-top:20px;border:1.5px solid #DDD6FE;border-radius:var(--radius);overflow:hidden;transition:box-shadow .2s}
+.grading-section{margin-top:20px;border:1.5px solid #DDD6FE;border-radius:var(--radius);overflow:hidden;transition:box-shadow .2s;display:none}
+.hl-panel.submitted .grading-section,.hl-panel.graded .grading-section{display:block}
+/* GV mode: always show grading if gv-logged */
+body.gv-logged .grading-section{display:block}
 .grading-section:hover{box-shadow:0 0 0 3px rgba(124,58,237,.1)}
 .grading-header{background:linear-gradient(135deg,#4C1D95,#6D28D9);color:#fff;padding:11px 18px;font-size:12px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;transition:background .15s}
 .grading-header:hover{background:linear-gradient(135deg,#3B0764,#5B21B6)}
@@ -326,21 +331,12 @@ body.gv-logged .btn-grade{display:inline-flex}
   <span id="syncStatus" style="font-size:12px;color:var(--slate);margin-left:4px"></span>
 </div>
 
-<!-- STUDENT BAR: HS mode = readonly, GV mode = ẩn -->
-<div class="student-bar" id="studentBar" style="display:none">
-  <div class="student-field">
-    <label>Họ và tên</label>
-    <input type="text" id="s_name" readonly style="background:var(--slate-light);font-weight:600"/>
-  </div>
-  <div class="student-field">
-    <label>Lớp</label>
-    <input type="text" id="s_lop" readonly style="background:var(--slate-light)"/>
-  </div>
-  <div class="student-field">
-    <label>Nhóm</label>
-    <input type="text" id="s_nhom" readonly style="background:var(--slate-light)"/>
-  </div>
-  <div id="loadStatus" style="font-size:12px;color:var(--slate);align-self:center"></div>
+<!-- Hidden inputs for student data binding -->
+<div id="studentBar" style="display:none">
+  <input type="text" id="s_name"/>
+  <input type="text" id="s_lop"/>
+  <input type="text" id="s_nhom"/>
+  <div id="loadStatus"></div>
 </div>
 
 <!-- TEACHER BAR: chỉ hiện khi GV đăng nhập -->
@@ -718,16 +714,15 @@ function hlHTML(hlId) {
 'B2_HL3': `
 <div class="section-card">
   <div class="section-title"><span class="section-code">B2.3</span> 8 câu hỏi giải mã</div>
-  <div style="background:var(--sky);border-radius:var(--radius-sm);padding:14px;font-size:13.5px;line-height:2">
-    <p><strong>1.</strong> Ai đã tạo ra thông điệp này?</p>
-    <p><strong>2.</strong> Thông điệp này được tạo ra vì mục đích gì?</p>
-    <p><strong>3.</strong> Hướng tới đối tượng nào?</p>
-    <p><strong>4.</strong> Dùng kỹ thuật gì để thu hút sự chú ý?</p>
-    <p><strong>5.</strong> Truyền tải những giá trị hay góc nhìn nào?</p>
-    <p><strong>6.</strong> Điều gì hoặc thông tin nào đã bị bỏ sót?</p>
-    <p><strong>7.</strong> Có thể được hiểu khác nhau thế nào?</p>
-    <p><strong>8.</strong> Ai được hưởng lợi và ai chịu thiệt thòi?</p>
-  </div>
+  <div class="section-instruction">Sử dụng Bộ nguồn HL-B2.0 hoặc một thông điệp bạn tự chọn để trả lời 8 câu hỏi dưới đây.</div>
+  <div class="field-group"><label class="field-label"><strong>1.</strong> Ai đã tạo ra thông điệp này?</label><textarea data-fid="b2q_1" class="short" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label"><strong>2.</strong> Thông điệp này được tạo ra vì mục đích gì?</label><textarea data-fid="b2q_2" class="short" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label"><strong>3.</strong> Hướng tới đối tượng nào?</label><textarea data-fid="b2q_3" class="short" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label"><strong>4.</strong> Dùng kỹ thuật gì để thu hút sự chú ý?</label><textarea data-fid="b2q_4" class="short" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label"><strong>5.</strong> Truyền tải những giá trị hay góc nhìn nào?</label><textarea data-fid="b2q_5" class="short" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label"><strong>6.</strong> Điều gì hoặc thông tin nào đã bị bỏ sót?</label><textarea data-fid="b2q_6" class="short" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label"><strong>7.</strong> Có thể được hiểu khác nhau như thế nào?</label><textarea data-fid="b2q_7" class="short" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label"><strong>8.</strong> Ai được hưởng lợi và ai chịu thiệt thòi?</label><textarea data-fid="b2q_8" class="short" placeholder="..."></textarea></div>
 </div>`,
 
 'B2_HL4': `
@@ -829,6 +824,837 @@ function hlHTML(hlId) {
   <div class="field-group" style="margin-top:12px"><label class="field-label">Tự định vị mức độ + 1 thói quen tư duy phản biện sẽ rèn luyện:</label><textarea data-fid="b3_tudinvi" placeholder="..."></textarea></div>
 </div>`,
 
+
+// ─── B1 corrections ─────────────────────────────────────────
+// B1_HL1: 7 rows in diary (was 5), add signature line
+'B1_HL1': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B1.1 · Phần A</span> Giao ước học tập</div>
+  <div class="section-instruction">Trong khóa học này, chúng ta học bằng cách:</div>
+  <div class="checkbox-list">
+    <label class="checkbox-item"><input type="checkbox" data-fid="ck_trainhiem"/><span>Trải nghiệm — làm trước, rút ra sau.</span></label>
+    <label class="checkbox-item"><input type="checkbox" data-fid="ck_duan"/><span>Dự án thật — tạo sản phẩm truyền thông cho audience thật (CP2).</span></label>
+    <label class="checkbox-item"><input type="checkbox" data-fid="ck_portfolio"/><span>Portfolio — lưu hành trình học tập để phản tư cuối khóa.</span></label>
+    <label class="checkbox-item"><input type="checkbox" data-fid="ck_danhgia"/><span>Đánh giá vì tiến bộ — không dùng để xét đỗ/trượt hay loại.</span></label>
+  </div>
+  <hr class="divider"/>
+  <p style="font-size:14px;font-weight:600;margin-bottom:10px;">Giao ước lớp — tôi cam kết:</p>
+  <div class="checkbox-list">
+    <label class="checkbox-item"><input type="checkbox" data-fid="ck_thatthat"/><span>Tham gia chia sẻ thật, không giả tạo.</span></label>
+    <label class="checkbox-item"><input type="checkbox" data-fid="ck_tonton"/><span>Tôn trọng quan điểm khác nhau trong lớp.</span></label>
+    <label class="checkbox-item"><input type="checkbox" data-fid="ck_luugiu"/><span>Lưu portfolio đầy đủ sau mỗi bài.</span></label>
+    <label class="checkbox-item"><input type="checkbox" data-fid="ck_khac"/><span>Khác: <input type="text" data-fid="ck_khac_text" style="display:inline;width:240px;margin-left:6px" placeholder="Ghi thêm..."/></span></label>
+  </div>
+</div>
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B1.1 · Phần B</span> Nhật ký media 24h</div>
+  <div class="section-instruction">Ghi lại MỌI lần bạn chạm với phương tiện truyền thông trong 24 giờ qua. Hãy chân thực, kể cả những lần lướt mạng vô thức.</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Khung giờ</th><th>Loại media</th><th>Khoảng thời gian</th><th>Chủ động / Bị cuốn?</th></tr></thead>
+    <tbody>
+      <tr><td><input type="text" data-fid="nk_gio_1" placeholder="VD: 6:30 sáng"/></td><td><input type="text" data-fid="nk_loai_1" placeholder="VD: TikTok"/></td><td><input type="text" data-fid="nk_tg_1" placeholder="20 phút"/></td><td><input type="text" data-fid="nk_cd_1" placeholder="Bị cuốn"/></td></tr>
+      <tr><td><input type="text" data-fid="nk_gio_2"/></td><td><input type="text" data-fid="nk_loai_2"/></td><td><input type="text" data-fid="nk_tg_2"/></td><td><input type="text" data-fid="nk_cd_2"/></td></tr>
+      <tr><td><input type="text" data-fid="nk_gio_3"/></td><td><input type="text" data-fid="nk_loai_3"/></td><td><input type="text" data-fid="nk_tg_3"/></td><td><input type="text" data-fid="nk_cd_3"/></td></tr>
+      <tr><td><input type="text" data-fid="nk_gio_4"/></td><td><input type="text" data-fid="nk_loai_4"/></td><td><input type="text" data-fid="nk_tg_4"/></td><td><input type="text" data-fid="nk_cd_4"/></td></tr>
+      <tr><td><input type="text" data-fid="nk_gio_5"/></td><td><input type="text" data-fid="nk_loai_5"/></td><td><input type="text" data-fid="nk_tg_5"/></td><td><input type="text" data-fid="nk_cd_5"/></td></tr>
+      <tr><td><input type="text" data-fid="nk_gio_6"/></td><td><input type="text" data-fid="nk_loai_6"/></td><td><input type="text" data-fid="nk_tg_6"/></td><td><input type="text" data-fid="nk_cd_6"/></td></tr>
+      <tr><td><input type="text" data-fid="nk_gio_7"/></td><td><input type="text" data-fid="nk_loai_7"/></td><td><input type="text" data-fid="nk_tg_7"/></td><td><input type="text" data-fid="nk_cd_7"/></td></tr>
+    </tbody>
+  </table></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+    <div class="field-group"><label class="field-label">Tổng số LOẠI media đã chạm:</label><input type="text" data-fid="nk_tong_loai" placeholder="VD: 5 loại"/></div>
+    <div class="field-group"><label class="field-label">Tổng GIỜ ước lượng:</label><input type="text" data-fid="nk_tong_gio" placeholder="VD: 4.5 giờ"/></div>
+  </div>
+  <div class="field-group"><label class="field-label">Điều làm em bất ngờ nhất khi nhìn lại Nhật ký 24h:</label><textarea data-fid="nk_batgo" placeholder="Trả lời..."></textarea></div>
+</div>`,
+
+// ─── B4 ─────────────────────────────────────────────────────
+'B4_HL0': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B4.0</span> Bộ nguồn — Hai tin đang lan truyền</div>
+  <div class="source-box"><div class="source-label">CASE 1 · Bài đăng lan truyền — mẹo giảm cân</div>"Chỉ cần uống nước chanh ấm mỗi sáng, bạn sẽ giảm 5kg trong 1 tuần!" — kèm ảnh "before/after" và hàng chục nghìn lượt chia sẻ. Bài không ghi nguồn nghiên cứu, không tên chuyên gia, không nêu điều kiện kèm theo.</div>
+  <div class="source-box"><div class="source-label">CASE 2 · Biểu đồ lan truyền — điện thoại &amp; điểm số</div>"Học sinh dùng điện thoại trên 6 giờ/ngày có điểm số thấp hơn 40%." Hình thức trông như số liệu khoa học, màu sắc chuyên nghiệp — nhưng không ghi ai khảo sát, cỡ mẫu bao nhiêu, hay thực hiện năm nào.</div>
+  <div class="field-group"><label class="field-label">Phản ứng đầu tiên của em với mỗi tin: tin / nghi ngờ / không chắc — vì sao?</label><textarea data-fid="b4_phanung" placeholder="..."></textarea></div>
+</div>`,
+
+'B4_HL1': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B4.1</span> Tin hay không tin?</div>
+  <div class="section-instruction">Dùng Bộ nguồn (HL-B4.0).</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Câu hỏi</th><th>CASE 1</th><th>CASE 2</th></tr></thead>
+    <tbody>
+      <tr><td class="row-header">Điều gì khiến nó "đáng tin" ngay?</td><td><textarea data-fid="b4_tin_1" class="short"></textarea></td><td><textarea data-fid="b4_tin_2" class="short"></textarea></td></tr>
+      <tr><td class="row-header">Dấu hiệu khiến em nghi ngờ?</td><td><textarea data-fid="b4_nghi_1" class="short"></textarea></td><td><textarea data-fid="b4_nghi_2" class="short"></textarea></td></tr>
+      <tr><td class="row-header">Tin này nói cho ai? Bỏ qua ai?</td><td><textarea data-fid="b4_cho_1" class="short"></textarea></td><td><textarea data-fid="b4_cho_2" class="short"></textarea></td></tr>
+    </tbody>
+  </table></div>
+  <div class="field-group"><label class="field-label">Nếu phải quyết ngay "chia sẻ hay không", em chọn gì — vì sao?</label><textarea data-fid="b4_quyet" placeholder="..."></textarea></div>
+</div>`,
+
+'B4_HL2': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B4.2</span> 5 dạng thông tin sai lệch &amp; cảm giác vs kiểm chứng</div>
+  <div class="field-group"><label class="field-label">KN1. Tin theo ___ ≠ tin có ___</label>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <input type="text" data-fid="kn1_b4_a" placeholder="Điền từ đầu..."/>
+      <input type="text" data-fid="kn1_b4_b" placeholder="Điền từ sau..."/>
+    </div>
+  </div>
+  <p style="font-size:13px;font-weight:600;color:var(--navy);margin-bottom:8px">5 dạng thông tin sai lệch — ghi 1 ví dụ cho mỗi dạng:</p>
+  <div class="field-group"><label class="field-label">1. Tin giả (fabricated) — ví dụ:</label><textarea data-fid="b4_d1" class="short" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">2. Giật tít câu view (clickbait) — ví dụ:</label><textarea data-fid="b4_d2" class="short" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">3. Thiếu bối cảnh (missing context) — ví dụ:</label><textarea data-fid="b4_d3" class="short" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">4. Quảng cáo trá hình (native ad) — ví dụ:</label><textarea data-fid="b4_d4" class="short" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">5. Cảm xúc hóa (emotional) — ví dụ:</label><textarea data-fid="b4_d5" class="short" placeholder="..."></textarea></div>
+</div>`,
+
+'B4_HL3': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B4.3</span> Công cụ — Đọc ngang + Tiêu chí + Đọc thiên kiến</div>
+  <div class="section-instruction">Theo dõi thầy/cô làm mẫu, rồi áp theo nhóm. Đọc ngang: rời nguồn — mở nguồn KHÁC để kiểm chứng, đừng chỉ đọc sâu một mình.</div>
+  <div class="field-group"><label class="field-label">Nguồn — Ai công bố? Kiểm ở nguồn khác có đáng tin không?</label><textarea data-fid="b4_nguon" class="short" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">Bằng chứng — Có dữ kiện/dẫn chứng kiểm tra được không?</label><textarea data-fid="b4_bc" class="short" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">Bối cảnh — Đặt đúng bối cảnh chưa? Khớp nguồn đáng tin khác?</label><textarea data-fid="b4_bocanh" class="short" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">Nhất quán — Các nguồn nói có khớp nhau không?</label><textarea data-fid="b4_nhatquan" class="short" placeholder="..."></textarea></div>
+  <hr class="divider"/>
+  <p style="font-size:13px;font-weight:600;color:var(--navy);margin-bottom:8px">3 câu hỏi thiên kiến:</p>
+  <div class="field-group"><label class="field-label">Góc nhìn nào?</label><textarea data-fid="b4_gocnhin" class="short" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">Bỏ sót gì?</label><textarea data-fid="b4_bosot" class="short" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">Đóng khung ra sao?</label><textarea data-fid="b4_dongkhung" class="short" placeholder="..."></textarea></div>
+</div>`,
+
+'B4_HL4': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B4.4</span> Worksheet — Kiểm chứng độc lập (Stanford COR)</div>
+  <div class="field-group"><label class="field-label">Nguồn em kiểm chứng (link / mô tả ngắn):</label><input type="text" data-fid="b4_nguon_check" placeholder="..."/></div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Tiêu chí COR</th><th>Trả lời / Phân tích</th><th>Bằng chứng cụ thể</th></tr></thead>
+    <tbody>
+      <tr><td class="row-header">C — Credibility<br/>(Uy tín nguồn)</td><td><textarea data-fid="cor_c" class="short"></textarea></td><td><textarea data-fid="cor_c_bc" class="short"></textarea></td></tr>
+      <tr><td class="row-header">O — Origin<br/>(Nguồn gốc)</td><td><textarea data-fid="cor_o" class="short"></textarea></td><td><textarea data-fid="cor_o_bc" class="short"></textarea></td></tr>
+      <tr><td class="row-header">R — Reasoning<br/>(Lập luận/Bằng chứng)</td><td><textarea data-fid="cor_r" class="short"></textarea></td><td><textarea data-fid="cor_r_bc" class="short"></textarea></td></tr>
+    </tbody>
+  </table></div>
+  <div class="field-group"><label class="field-label">Kết luận kiểm chứng của em:</label><textarea data-fid="b4_ketluan" placeholder="Tin / Chưa tin / Cần kiểm thêm — vì sao?"></textarea></div>
+  <div class="checkbox-list">
+    <label class="checkbox-item"><input type="checkbox" data-fid="ck_b4_nguon"/><span>Đã xác minh nguồn qua đọc ngang.</span></label>
+    <label class="checkbox-item"><input type="checkbox" data-fid="ck_b4_ketluan"/><span>Mỗi kết luận có bằng chứng cụ thể.</span></label>
+    <label class="checkbox-item"><input type="checkbox" data-fid="ck_b4_fallacy"/><span>Đã nhận ra ít nhất 1 dạng fallacy/sai lệch.</span></label>
+  </div>
+</div>`,
+
+'B4_HL5': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B4.5</span> Phản tư — "Trước / Giờ"</div>
+  <div class="field-group"><label class="field-label">Trước khi học bài này, khi gặp tin lan truyền tôi thường:</label><textarea data-fid="b4_truoc" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">Bây giờ, sau khi có công cụ kiểm chứng, tôi sẽ:</label><textarea data-fid="b4_gio" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">Công cụ/câu hỏi tôi thấy hữu ích nhất là ___ vì:</label>
+    <input type="text" data-fid="b4_congcu_nhat" placeholder="Công cụ..." style="margin-bottom:8px"/>
+    <textarea data-fid="b4_congcu_vi" class="short" placeholder="Lý do..."></textarea>
+  </div>
+</div>
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B4.6</span> Phiếu ra cửa</div>
+  <div class="field-group"><label class="field-label">Một loại tin tôi sẽ kiểm chứng kỹ hơn từ hôm nay:</label><textarea data-fid="b4_racua" placeholder="..."></textarea></div>
+  <p style="font-size:13px;font-weight:600;color:var(--navy);margin-bottom:8px">Tự đánh giá:</p>
+  <div class="rating-group">
+    <label class="rating-option"><input type="radio" name="b4_level" data-fid="b4_level" value="1"/><label><span class="rating-level">Mức 1</span> — Nhận diện được, thực hiện với hỗ trợ.</label></label>
+    <label class="rating-option"><input type="radio" name="b4_level" data-fid="b4_level" value="2"/><label><span class="rating-level">Mức 2</span> — Áp dụng độc lập trong ngữ cảnh cho trước.</label></label>
+    <label class="rating-option"><input type="radio" name="b4_level" data-fid="b4_level" value="3"/><label><span class="rating-level">Mức 3</span> — Vận dụng linh hoạt, giải thích được lý do.</label></label>
+  </div>
+</div>`,
+
+// ─── B5 ─────────────────────────────────────────────────────
+'B5_HL1': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B5.1</span> Thẻ Common Fallacies — Lỗi lập luận phổ biến</div>
+  <div class="section-instruction">Dùng thẻ này để nhận diện và đặt câu hỏi khi gặp lập luận đáng ngờ. Mục tiêu là nhận ra, không phải học thuộc tên.</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Tên fallacy</th><th>Mô tả ngắn</th><th>Câu hỏi nhận diện</th></tr></thead>
+    <tbody>
+      <tr><td class="row-header">Đánh vào cảm xúc<br/><em>(Appeal to emotion)</em></td><td style="font-size:13px">Dùng cảm xúc thay cho bằng chứng</td><td style="font-size:13px">Bỏ cảm xúc đi, bằng chứng còn lại là gì?</td></tr>
+      <tr><td class="row-header">A dua đám đông<br/><em>(Appeal to popularity)</em></td><td style="font-size:13px">"Ai cũng tin" nên là đúng</td><td style="font-size:13px">Số đông tin có làm nó đúng không?</td></tr>
+      <tr><td class="row-header">Khái quát vội<br/><em>(Hasty generalization)</em></td><td style="font-size:13px">Kết luận chung từ vài trường hợp</td><td style="font-size:13px">Mẫu có đủ lớn để kết luận không?</td></tr>
+      <tr><td class="row-header">Công kích cá nhân<br/><em>(Ad hominem)</em></td><td style="font-size:13px">Công kích người nói thay vì lập luận</td><td style="font-size:13px">Họ đang phản bác ý hay đang chê người?</td></tr>
+      <tr><td class="row-header">Bóp méo ý<br/><em>(Straw man)</em></td><td style="font-size:13px">Bóp méo ý đối phương rồi bác bỏ</td><td style="font-size:13px">Đây có đúng là điều đối phương nói không?</td></tr>
+      <tr><td class="row-header">Hai lựa chọn giả tạo<br/><em>(False dichotomy)</em></td><td style="font-size:13px">Chỉ đưa 2 lựa chọn, bỏ qua phương án khác</td><td style="font-size:13px">Có thật chỉ có 2 cách không?</td></tr>
+    </tbody>
+  </table></div>
+</div>`,
+
+'B5_HL2': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B5.2</span> Case lan truyền — Practice &amp; Apply</div>
+  <div class="section-instruction">Mỗi case cần được kiểm chứng theo tiêu chí + thẻ fallacies. Viết lại phân tích theo CER.</div>
+  <div style="background:var(--sky);border-radius:var(--radius-sm);padding:14px;margin-bottom:14px;font-size:13.5px">
+    <strong>Case 1:</strong> Một bài đăng tiêu đề viết hoa "KHẨN CẤP", kêu gọi chia sẻ gấp, không dẫn nguồn.
+  </div>
+  <div class="field-group"><label class="field-label">Phân tích Case 1 theo CER (Claim / Evidence / Reasoning):</label><textarea data-fid="b5_c1_cer" placeholder="Claim: ...\nEvidence: ...\nReasoning: ..."></textarea></div>
+  <div class="field-group"><label class="field-label">Fallacy nhận ra trong Case 1:</label><input type="text" data-fid="b5_c1_fallacy" placeholder="Tên fallacy + giải thích ngắn..."/></div>
+  <hr class="divider"/>
+  <div style="background:var(--sky);border-radius:var(--radius-sm);padding:14px;margin-bottom:14px;font-size:13.5px">
+    <strong>Case 2:</strong> Một "nghiên cứu" được trích dẫn không tên tác giả, không link gốc, kết luận gây sốc.
+  </div>
+  <div class="field-group"><label class="field-label">Phân tích Case 2 theo CER:</label><textarea data-fid="b5_c2_cer" placeholder="Claim: ...\nEvidence: ...\nReasoning: ..."></textarea></div>
+  <div class="field-group"><label class="field-label">Fallacy nhận ra trong Case 2:</label><input type="text" data-fid="b5_c2_fallacy" placeholder="Tên fallacy + giải thích ngắn..."/></div>
+</div>`,
+
+'B5_HL3': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B5.3</span> Phiếu Self-check Protocol</div>
+  <div class="section-instruction">Đúc kết quy trình kiểm chứng của bạn thành 4–5 câu hỏi tự kiểm. Dùng được cho mọi tin bạn gặp trong đời sống số.</div>
+  <div class="field-group"><label class="field-label">Câu hỏi 1 — về NGUỒN (ai nói? xác minh chéo được không?)</label><textarea data-fid="b5_q1" class="short" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">Câu hỏi 2 — về BẰNG CHỨNG (gốc ở đâu? có thể kiểm tra?)</label><textarea data-fid="b5_q2" class="short" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">Câu hỏi 3 — về LẬP LUẬN (có fallacy/bias không?)</label><textarea data-fid="b5_q3" class="short" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">Câu hỏi 4 — về CẢM XÚC (tin này có đang thúc tôi phản ứng nhanh?)</label><textarea data-fid="b5_q4" class="short" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">Câu hỏi 5 (tùy chọn) — bước tôi sẽ làm trước khi chia sẻ:</label><textarea data-fid="b5_q5" class="short" placeholder="..."></textarea></div>
+</div>`,
+
+'B5_HL4': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B5.4</span> Rubric CRI + Tự đánh giá</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Tiêu chí</th><th>Mức bước đầu (đang trải nghiệm)</th><th>Mức định hình (vững hơn)</th></tr></thead>
+    <tbody>
+      <tr><td class="row-header">Kiểm chứng nguồn<br/>(Evaluation)</td><td style="font-size:12.5px">Có đặt câu hỏi khi được nhắc</td><td style="font-size:12.5px">Chủ động kiểm chứng nguồn + xác minh chéo</td></tr>
+      <tr><td class="row-header">Nhận diện fallacy</td><td style="font-size:12.5px">Nhận ra 1–2 dạng quen</td><td style="font-size:12.5px">Nhận ra và gọi tên nhiều dạng fallacy/bias</td></tr>
+      <tr><td class="row-header">Tự điều chỉnh<br/>(Self-regulation)</td><td style="font-size:12.5px">Dừng lại khi được nhắc</td><td style="font-size:12.5px">Tự dừng kiểm chứng trước khi tin/chia sẻ</td></tr>
+    </tbody>
+  </table></div>
+  <div class="field-group" style="margin-top:12px"><label class="field-label">Tự đánh giá: tôi đang ở mức nào + một thói quen kiểm chứng tôi sẽ giữ:</label><textarea data-fid="b5_tudinvi" placeholder="..."></textarea></div>
+</div>`,
+
+// ─── B6 ─────────────────────────────────────────────────────
+'B6_HL0': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B6.0</span> Bộ nguồn — Video lan truyền &amp; Feed mẫu</div>
+  <div class="source-box"><div class="source-label">CASE · Video ngắn lan truyền — "Thử thách 24h ăn đồ màu xanh"</div>Một bạn trẻ quay video "thử thách 24h chỉ ăn đồ màu xanh": giọng điệu hài hước, nhạc nền bắt tai, dựng cảnh nhanh dồn dập. Cuối video kêu gọi "theo dõi để xem phần 2" và gắn link một loại đồ uống màu xanh. Video đạt hàng triệu lượt xem chỉ sau 2 ngày.</div>
+  <div class="source-box"><div class="source-label">FEED MẪU · Ba bạn cùng tìm một chủ đề nhưng thấy khác nhau</div>Bạn A: toàn video giải trí ngắn. Bạn B: bài phân tích dài, tin chuyên sâu. Bạn C: quảng cáo + sản phẩm + xu hướng mua sắm. Cùng một chủ đề — feed mỗi người một khác.</div>
+  <div class="field-group"><label class="field-label">Cảm xúc / hành động đầu tiên video gợi ra ở em là…</label><textarea data-fid="b6_camxuc" class="short" placeholder="..."></textarea></div>
+</div>`,
+
+'B6_HL2': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B6.1</span> Khởi động — Algorithm trace</div>
+  <div class="section-instruction">So sánh feed của em với bạn (hoặc dùng FEED MẪU ở HL-B6.0).</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Khía cạnh</th><th>Feed của tôi</th><th>Feed của bạn</th></tr></thead>
+    <tbody>
+      <tr><td class="row-header">Loại nội dung chủ yếu</td><td><textarea data-fid="b6_feed_toi_1" class="short"></textarea></td><td><textarea data-fid="b6_feed_ban_1" class="short"></textarea></td></tr>
+      <tr><td class="row-header">Chủ đề lặp lại</td><td><textarea data-fid="b6_feed_toi_2" class="short"></textarea></td><td><textarea data-fid="b6_feed_ban_2" class="short"></textarea></td></tr>
+      <tr><td class="row-header">Quảng cáo thấy gì</td><td><textarea data-fid="b6_feed_toi_3" class="short"></textarea></td><td><textarea data-fid="b6_feed_ban_3" class="short"></textarea></td></tr>
+    </tbody>
+  </table></div>
+  <div class="field-group"><label class="field-label">Feed của tôi đang được "may đo" theo điều gì?</label><textarea data-fid="b6_maydo" placeholder="..."></textarea></div>
+</div>
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B6.2</span> Khái niệm — Cơ chế định hình feed</div>
+  <div class="field-group"><label class="field-label">KN1. Feed của tôi không "tự nhiên" — nó được ___ bởi thuật toán, viral và xu hướng.</label><input type="text" data-fid="b6_kn1" placeholder="Điền từ..."/></div>
+  <div class="field-group"><label class="field-label">1. Thuật toán (algorithm) =</label><textarea data-fid="b6_algo" class="short" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">2. Cơ chế viral (viral mechanics) =</label><textarea data-fid="b6_viral" class="short" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">3. Xu hướng (trends) =</label><textarea data-fid="b6_trends" class="short" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">4. Vòng lặp tương tác (engagement loop) =</label><textarea data-fid="b6_loop" class="short" placeholder="..."></textarea></div>
+</div>`,
+
+'B6_HL3': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B6.3</span> Công cụ — Khung Q-TIPS</div>
+  <div class="section-instruction">Q-TIPS giúp bóc tách ảnh hưởng của một thông điệp. Theo dõi thầy/cô làm mẫu với video HL-B6.0.</div>
+  <div class="field-group"><label class="field-label">Q — Tác nhân kích hoạt (Trigger): điều gì khơi cảm xúc / chú ý?</label><textarea data-fid="qtips_q" class="short" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">T — Mục tiêu (Target): đối tượng nhắm tới là ai?</label><textarea data-fid="qtips_t" class="short" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">I — Ảnh hưởng (Influence): tác động lên cảm xúc – nhận thức – thái độ – hành vi nào?</label><textarea data-fid="qtips_i" class="short" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">P — Quyền lực (Power): ai hưởng lợi?</label><textarea data-fid="qtips_p" class="short" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">S — Chiến lược (Strategies): kỹ thuật nào được dùng?</label><textarea data-fid="qtips_s" class="short" placeholder="..."></textarea></div>
+</div>`,
+
+'B6_HL5': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B6.4</span> Worksheet — Q-TIPS độc lập</div>
+  <div class="field-group"><label class="field-label">Case em phân tích (mô tả ngắn):</label><textarea data-fid="b6_case" class="short" placeholder="..."></textarea></div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Tầng Q-TIPS</th><th>Phân tích</th><th>Bằng chứng từ case</th></tr></thead>
+    <tbody>
+      <tr><td class="row-header">Q · Kích hoạt</td><td><textarea data-fid="b6_q4_q" class="short"></textarea></td><td><textarea data-fid="b6_q4_q_bc" class="short"></textarea></td></tr>
+      <tr><td class="row-header">T · Mục tiêu</td><td><textarea data-fid="b6_q4_t" class="short"></textarea></td><td><textarea data-fid="b6_q4_t_bc" class="short"></textarea></td></tr>
+      <tr><td class="row-header">I · Ảnh hưởng</td><td><textarea data-fid="b6_q4_i" class="short"></textarea></td><td><textarea data-fid="b6_q4_i_bc" class="short"></textarea></td></tr>
+      <tr><td class="row-header">P · Quyền lực</td><td><textarea data-fid="b6_q4_p" class="short"></textarea></td><td><textarea data-fid="b6_q4_p_bc" class="short"></textarea></td></tr>
+      <tr><td class="row-header">S · Chiến lược</td><td><textarea data-fid="b6_q4_s" class="short"></textarea></td><td><textarea data-fid="b6_q4_s_bc" class="short"></textarea></td></tr>
+    </tbody>
+  </table></div>
+  <div class="field-group"><label class="field-label">Một ảnh hưởng tới CHÍNH TÔI là…</label><textarea data-fid="b6_anhuong_toi" class="short" placeholder="..."></textarea></div>
+  <div class="checkbox-list">
+    <label class="checkbox-item"><input type="checkbox" data-fid="ck_b6_4tang"/><span>Điền đủ 4 tầng Q-TIPS.</span></label>
+    <label class="checkbox-item"><input type="checkbox" data-fid="ck_b6_bc"/><span>Mỗi tầng có bằng chứng từ case.</span></label>
+    <label class="checkbox-item"><input type="checkbox" data-fid="ck_b6_anhuong"/><span>Nêu 1 ảnh hưởng tới chính tôi.</span></label>
+  </div>
+</div>
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B6.5</span> Phản tư — "Trước / Giờ"</div>
+  <div class="field-group"><label class="field-label">Trước, tôi nghĩ feed phản ánh con người tôi vì…</label><textarea data-fid="b6_truoc" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">Giờ, tôi thấy feed cũng đang định hình tôi vì…</label><textarea data-fid="b6_gio" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">Một ảnh hưởng "ngầm" tôi mới nhận ra là…</label><textarea data-fid="b6_ngam" placeholder="..."></textarea></div>
+</div>
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B6.6</span> Phiếu ra cửa + Tự đánh giá</div>
+  <div class="field-group"><label class="field-label">Một ảnh hưởng truyền thông tôi sẽ để ý hơn từ nay là…</label><textarea data-fid="b6_racua" placeholder="..."></textarea></div>
+  <p style="font-size:13px;font-weight:600;color:var(--navy);margin-bottom:8px">Tự đánh giá:</p>
+  <div class="rating-group">
+    <label class="rating-option"><input type="radio" name="b6_level" data-fid="b6_level" value="1"/><label><span class="rating-level">Mức 1</span> — Nhận diện được, thực hiện với hỗ trợ.</label></label>
+    <label class="rating-option"><input type="radio" name="b6_level" data-fid="b6_level" value="2"/><label><span class="rating-level">Mức 2</span> — Áp dụng độc lập trong ngữ cảnh cho trước.</label></label>
+    <label class="rating-option"><input type="radio" name="b6_level" data-fid="b6_level" value="3"/><label><span class="rating-level">Mức 3</span> — Vận dụng linh hoạt, giải thích được lý do.</label></label>
+  </div>
+</div>`,
+
+// ─── B7 ─────────────────────────────────────────────────────
+'B7_HL0': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B7.0</span> Bộ nguồn — Ba tình huống sáng tạo có tranh cãi</div>
+  <div class="source-box"><div class="source-label">CASE 1 · Dùng ảnh người khác không xin phép</div>Một nhóm làm poster cổ động bảo vệ môi trường — thông điệp rất tốt. Nhưng họ lấy ảnh chân dung một người lạ trên mạng làm hình minh họa mà không xin phép, không ghi nguồn.</div>
+  <div class="source-box"><div class="source-label">CASE 2 · Chỉnh số liệu cho "thuyết phục" hơn</div>Một bạn làm infographic kêu gọi tiết kiệm nước. Để "gây ấn tượng mạnh", bạn làm tròn và phóng đại vài con số so với số liệu gốc, khiến biểu đồ trông kịch tính hơn thực tế.</div>
+  <div class="source-box"><div class="source-label">CASE 3 · Giật tít cảm xúc để tăng share</div>Một bài viết nội dung tốt về sức khỏe học đường, nhưng được đặt tiêu đề giật gân, gây sợ hãi để nhiều người bấm vào và chia sẻ hơn.</div>
+  <div class="field-group"><label class="field-label">Với mỗi tình huống: có trách nhiệm / không / lưỡng lự? Ghi nhanh lý do:</label><textarea data-fid="b7_phantuy" placeholder="..."></textarea></div>
+</div>`,
+
+'B7_HL2': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B7.1</span> Khởi động — Trách nhiệm hay không?</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Tình huống</th><th>Có trách nhiệm?</th><th>Vấn đề nằm ở đâu?</th></tr></thead>
+    <tbody>
+      <tr><td class="row-header">CASE 1</td><td><textarea data-fid="b7_c1_trach" class="short"></textarea></td><td><textarea data-fid="b7_c1_van" class="short"></textarea></td></tr>
+      <tr><td class="row-header">CASE 2</td><td><textarea data-fid="b7_c2_trach" class="short"></textarea></td><td><textarea data-fid="b7_c2_van" class="short"></textarea></td></tr>
+      <tr><td class="row-header">CASE 3</td><td><textarea data-fid="b7_c3_trach" class="short"></textarea></td><td><textarea data-fid="b7_c3_van" class="short"></textarea></td></tr>
+    </tbody>
+  </table></div>
+  <div class="field-group"><label class="field-label">Theo em, "sáng tạo có trách nhiệm" nghĩa là gì?</label><textarea data-fid="b7_sangcresp" placeholder="..."></textarea></div>
+</div>
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B7.2</span> Khái niệm — Ethical checklist</div>
+  <div class="field-group"><label class="field-label">KN1. Tạo lập là một chuỗi ___ có trách nhiệm.</label><input type="text" data-fid="b7_kn1" placeholder="Điền từ..."/></div>
+  <p style="font-size:13px;font-weight:600;color:var(--navy);margin-bottom:8px">Ethical checklist — với mỗi mục, ghi 1 câu "tôi sẽ…":</p>
+  <div class="field-group"><label class="field-label">1. Bản quyền (copyright) — tôi sẽ:</label><textarea data-fid="b7_copy" class="short" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">2. Quyền riêng tư (privacy) — tôi sẽ:</label><textarea data-fid="b7_priv" class="short" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">3. Tôn trọng (respect) — tôi sẽ:</label><textarea data-fid="b7_resp" class="short" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">4. Bằng chứng (evidence) — tôi sẽ:</label><textarea data-fid="b7_evid" class="short" placeholder="..."></textarea></div>
+</div>`,
+
+'B7_HL3': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B7.3</span> Công cụ — 7 Create Key Questions</div>
+  <div class="section-instruction">Bộ 7 câu hỏi để thiết kế thông điệp có trách nhiệm (đối xứng 8 câu hỏi giải mã ở B2). Theo dõi thầy/cô làm mẫu.</div>
+  <div class="field-group"><label class="field-label">1. Tôi muốn nói điều gì? (thông điệp cốt lõi)</label><textarea data-fid="b7_cq1" class="short" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">2. Cho ai? (đối tượng)</label><textarea data-fid="b7_cq2" class="short" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">3. Vì mục đích gì?</label><textarea data-fid="b7_cq3" class="short" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">4. Dùng hình thức / thể loại nào?</label><textarea data-fid="b7_cq4" class="short" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">5. Kỹ thuật nào để thu hút đúng cách?</label><textarea data-fid="b7_cq5" class="short" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">6. Có trung thực &amp; tôn trọng không?</label><textarea data-fid="b7_cq6" class="short" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">7. Tôi có quyền dùng các yếu tố này không? (bản quyền / riêng tư)</label><textarea data-fid="b7_cq7" class="short" placeholder="..."></textarea></div>
+</div>`,
+
+'B7_HL5': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B7.4</span> Worksheet — Mini-message của tôi</div>
+  <div class="field-group"><label class="field-label">Ý tưởng mini-message (hình thức: poster / mini-video / caption):</label><textarea data-fid="b7_ý" class="short" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">Thông điệp cốt lõi + đối tượng + mục đích:</label><textarea data-fid="b7_core" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">Hình thức &amp; kỹ thuật chính:</label><textarea data-fid="b7_hinhthuc" class="short" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">Rationale 1 lựa chọn sáng tạo (vì sao chọn vậy mà không khác):</label><textarea data-fid="b7_rationale" placeholder="..."></textarea></div>
+  <div class="checkbox-list">
+    <label class="checkbox-item"><input type="checkbox" data-fid="ck_b7_7q"/><span>Trả lời rõ 7 Create Key Questions.</span></label>
+    <label class="checkbox-item"><input type="checkbox" data-fid="ck_b7_eth"/><span>Qua ethical checklist (bản quyền · riêng tư · tôn trọng · bằng chứng).</span></label>
+    <label class="checkbox-item"><input type="checkbox" data-fid="ck_b7_rat"/><span>Nêu rationale cho 1 lựa chọn sáng tạo.</span></label>
+  </div>
+</div>
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B7.5</span> Phản tư — "Trước / Giờ"</div>
+  <div class="field-group"><label class="field-label">Trước, tôi tạo thông điệp theo…</label><textarea data-fid="b7_truoc" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">Giờ, tôi tạo theo những lựa chọn có trách nhiệm là…</label><textarea data-fid="b7_gio" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">Với 1 case ở HL-B7.0, tôi sẽ làm khác đi thế nào?</label><textarea data-fid="b7_lam_khac" placeholder="..."></textarea></div>
+</div>
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B7.6</span> Phiếu ra cửa</div>
+  <div class="field-group"><label class="field-label">Một nguyên tắc tạo lập có trách nhiệm tôi sẽ giữ là…</label><textarea data-fid="b7_racua" placeholder="..."></textarea></div>
+</div>`,
+
+// ─── B8 ─────────────────────────────────────────────────────
+'B8_HL1': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B8.1</span> Phiếu Voice Mapping</div>
+  <div class="section-instruction">Chọn 3 nhà sáng tạo bạn ngưỡng mộ. Tìm điều gì khiến bạn thích họ và điểm chung.</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Nhà sáng tạo</th><th>Điều khiến tôi thích họ</th><th>Chất riêng tôi nhận ra</th></tr></thead>
+    <tbody>
+      <tr><td><input type="text" data-fid="b8_ng1" placeholder="Tên..."/></td><td><textarea data-fid="b8_thich1" class="short"></textarea></td><td><textarea data-fid="b8_chat1" class="short"></textarea></td></tr>
+      <tr><td><input type="text" data-fid="b8_ng2" placeholder="Tên..."/></td><td><textarea data-fid="b8_thich2" class="short"></textarea></td><td><textarea data-fid="b8_chat2" class="short"></textarea></td></tr>
+      <tr><td><input type="text" data-fid="b8_ng3" placeholder="Tên..."/></td><td><textarea data-fid="b8_thich3" class="short"></textarea></td><td><textarea data-fid="b8_chat3" class="short"></textarea></td></tr>
+    </tbody>
+  </table></div>
+  <div class="field-group"><label class="field-label">Điểm chung của 3 người (gợi ý về tiếng nói của chính bạn):</label><textarea data-fid="b8_chung" class="short" placeholder="..."></textarea></div>
+</div>`,
+
+'B8_HL2': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B8.2</span> Personal Voice Statement</div>
+  <div style="background:var(--sky);border-radius:var(--radius-sm);padding:14px;margin-bottom:14px;font-size:13.5px">
+    <strong>Mẫu tham khảo:</strong> "Tôi muốn nói về những vấn đề gần gũi của tuổi học trò, theo cách hài hước và chân thật, từ góc người trong cuộc."
+  </div>
+  <div class="field-group"><label class="field-label">Personal voice statement v1 của tôi: "Tôi muốn nói về… theo cách…"</label><textarea data-fid="b8_statement" placeholder="Tôi muốn nói về..."></textarea></div>
+  <div class="field-group"><label class="field-label">Sau share-back: bạn nghe ra "chất" gì ở tôi?</label><textarea data-fid="b8_shareback" class="short" placeholder="..."></textarea></div>
+</div>`,
+
+'B8_HL3': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B8.3</span> Rubric CRE + Tự đánh giá</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Tiêu chí</th><th>Mức bước đầu (đang trải nghiệm)</th><th>Mức định hình (vững hơn)</th></tr></thead>
+    <tbody>
+      <tr><td class="row-header">Nét riêng<br/>(Originality)</td><td style="font-size:12.5px">Nêu được sở thích, còn lẫn với chủ đề</td><td style="font-size:12.5px">Phân biệt rõ "chất riêng" với chủ đề</td></tr>
+      <tr><td class="row-header">Tiếng nói<br/>(Personal voice)</td><td style="font-size:12.5px">Mô tả chung chung</td><td style="font-size:12.5px">Phát biểu được góc nhìn + cách thể hiện riêng</td></tr>
+    </tbody>
+  </table></div>
+  <div class="field-group" style="margin-top:12px"><label class="field-label">Tự đánh giá: tôi đang ở mức nào + một hướng tôi muốn phát triển tiếng nói:</label><textarea data-fid="b8_tudinvi" placeholder="..."></textarea></div>
+</div>`,
+
+// ─── B9 ─────────────────────────────────────────────────────
+'B9_HL1': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B9.1</span> Nhìn lại Nhật ký media B1</div>
+  <div class="section-instruction">Lấy lại Nhật ký media 24h em đã ghi ở Bài B1 (đầu CP1). Đối chiếu trước–sau.</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Khía cạnh</th><th>Trước (B1)</th><th>Bây giờ (B9)</th></tr></thead>
+    <tbody>
+      <tr><td class="row-header">Cách tôi tiếp nhận media</td><td><textarea data-fid="b9_tiepnhan_t" class="short"></textarea></td><td><textarea data-fid="b9_tiepnhan_n" class="short"></textarea></td></tr>
+      <tr><td class="row-header">Cách tôi chia sẻ media</td><td><textarea data-fid="b9_chiase_t" class="short"></textarea></td><td><textarea data-fid="b9_chiase_n" class="short"></textarea></td></tr>
+      <tr><td class="row-header">Cách tôi tạo lập media</td><td><textarea data-fid="b9_taolap_t" class="short"></textarea></td><td><textarea data-fid="b9_taolap_n" class="short"></textarea></td></tr>
+    </tbody>
+  </table></div>
+  <div class="field-group"><label class="field-label">Một thay đổi rõ nhất ở chính tôi là…</label><textarea data-fid="b9_thaydoi" placeholder="..."></textarea></div>
+</div>`,
+
+'B9_HL3': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B9.2</span> Từ người tiêu thụ đến người tham gia</div>
+  <div class="field-group"><label class="field-label">KN1. Tôi đã chuyển từ người ___ thụ động sang người ___ có ý thức.</label>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <input type="text" data-fid="b9_kn1_a" placeholder="Điền từ đầu..."/>
+      <input type="text" data-fid="b9_kn1_b" placeholder="Điền từ sau..."/>
+    </div>
+  </div>
+  <p style="font-size:13px;font-weight:600;color:var(--navy);margin-bottom:8px">Với mỗi năng lực CP1, ghi 1 bằng chứng tôi đã chuyển biến:</p>
+  <div class="field-group"><label class="field-label">Giải mã thông điệp (B2) — bằng chứng:</label><textarea data-fid="b9_bc_b2" class="short" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">Kiểm chứng nguồn (B4) — bằng chứng:</label><textarea data-fid="b9_bc_b4" class="short" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">Hiểu ảnh hưởng (B6) — bằng chứng:</label><textarea data-fid="b9_bc_b6" class="short" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">Tạo lập có trách nhiệm (B7) — bằng chứng:</label><textarea data-fid="b9_bc_b7" class="short" placeholder="..."></textarea></div>
+</div>
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B9.3</span> Tuyên ngôn đạo đức truyền thông cá nhân</div>
+  <div class="section-instruction">Bốn trụ cột cho tuyên ngôn của em. Nháp 1 nguyên tắc cho mỗi trụ.</div>
+  <div class="field-group"><label class="field-label">Tiếp nhận (consume) — tôi sẽ kiểm chứng &amp; đọc có phản biện bằng cách:</label><textarea data-fid="b9_consume" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">Chia sẻ (share) — tôi sẽ chia sẻ có trách nhiệm bằng cách:</label><textarea data-fid="b9_share" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">Sáng tạo (create) — tôi sẽ tạo lập tôn trọng &amp; trung thực bằng cách:</label><textarea data-fid="b9_create" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">Phát triển (grow) — tôi sẽ tiếp tục học Media Literacy bằng cách:</label><textarea data-fid="b9_grow" placeholder="..."></textarea></div>
+</div>`,
+
+// ─── B10 ─────────────────────────────────────────────────────
+'B10_HL1': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B10.1</span> Phiếu ghi trạm — Media provocation gallery</div>
+  <div class="section-instruction">Đi qua các trạm; mỗi trạm ghi điều khiến em bận tâm nhất và một câu hỏi nảy ra.</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Trạm (chủ đề)</th><th>Điều khiến em bận tâm nhất</th><th>Câu hỏi nảy ra</th></tr></thead>
+    <tbody>
+      <tr><td class="row-header">Tin giả lan truyền</td><td><textarea data-fid="b10_tram1_ban" class="short"></textarea></td><td><textarea data-fid="b10_tram1_q" class="short"></textarea></td></tr>
+      <tr><td class="row-header">Quảng cáo gây tranh cãi</td><td><textarea data-fid="b10_tram2_ban" class="short"></textarea></td><td><textarea data-fid="b10_tram2_q" class="short"></textarea></td></tr>
+      <tr><td class="row-header">Chiến dịch mạng xã hội</td><td><textarea data-fid="b10_tram3_ban" class="short"></textarea></td><td><textarea data-fid="b10_tram3_q" class="short"></textarea></td></tr>
+      <tr><td class="row-header">Nội dung do AI tạo</td><td><textarea data-fid="b10_tram4_ban" class="short"></textarea></td><td><textarea data-fid="b10_tram4_q" class="short"></textarea></td></tr>
+    </tbody>
+  </table></div>
+</div>`,
+
+'B10_HL2': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B10.2</span> Fake news challenge</div>
+  <div class="section-instruction">Với mỗi mẩu tin/hình, đoán Thật hay Giả và ghi dấu hiệu khiến em nghĩ vậy.</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>#</th><th>Dự đoán (Thật / Giả)</th><th>Dấu hiệu khiến em nghĩ vậy</th></tr></thead>
+    <tbody>
+      <tr><td style="font-weight:700;text-align:center">1</td><td><input type="text" data-fid="b10_fn1_du"/></td><td><textarea data-fid="b10_fn1_dh" class="short"></textarea></td></tr>
+      <tr><td style="font-weight:700;text-align:center">2</td><td><input type="text" data-fid="b10_fn2_du"/></td><td><textarea data-fid="b10_fn2_dh" class="short"></textarea></td></tr>
+      <tr><td style="font-weight:700;text-align:center">3</td><td><input type="text" data-fid="b10_fn3_du"/></td><td><textarea data-fid="b10_fn3_dh" class="short"></textarea></td></tr>
+      <tr><td style="font-weight:700;text-align:center">4</td><td><input type="text" data-fid="b10_fn4_du"/></td><td><textarea data-fid="b10_fn4_dh" class="short"></textarea></td></tr>
+      <tr><td style="font-weight:700;text-align:center">5</td><td><input type="text" data-fid="b10_fn5_du"/></td><td><textarea data-fid="b10_fn5_dh" class="short"></textarea></td></tr>
+      <tr><td style="font-weight:700;text-align:center">6</td><td><input type="text" data-fid="b10_fn6_du"/></td><td><textarea data-fid="b10_fn6_dh" class="short"></textarea></td></tr>
+    </tbody>
+  </table></div>
+  <div class="field-group"><label class="field-label">Dấu hiệu nhận biết tin giả (tổng hợp của lớp):</label><textarea data-fid="b10_dauhieu" placeholder="..."></textarea></div>
+</div>`,
+
+'B10_HL3': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B10.3</span> Pitch 60 giây + Checklist DQ</div>
+  <div class="section-instruction">Chuẩn bị pitch 60 giây về một mối quan tâm truyền thông. Câu hỏi dẫn: "Tôi muốn dự án truyền thông làm thay đổi điều gì?"</div>
+  <div class="field-group"><label class="field-label">Mối quan tâm / cơ hội truyền thông của em:</label><textarea data-fid="b10_quan_tam" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">Em muốn thay đổi điều gì ở đối tượng / cộng đồng:</label><textarea data-fid="b10_thaydoi" placeholder="..."></textarea></div>
+  <hr class="divider"/>
+  <p style="font-size:14px;font-weight:600;color:var(--navy);margin-bottom:10px">Checklist "DQ tốt":</p>
+  <div class="checkbox-list">
+    <label class="checkbox-item"><input type="checkbox" data-fid="ck_dq_open"/><span>Open-ended — không có một đáp án đóng / đúng-sai.</span></label>
+    <label class="checkbox-item"><input type="checkbox" data-fid="ck_dq_tranh"/><span>Gây tranh luận — đáng bàn, có nhiều góc nhìn.</span></label>
+    <label class="checkbox-item"><input type="checkbox" data-fid="ck_dq_doi"/><span>Gắn đối tượng thật — có audience cụ thể để truyền thông tới.</span></label>
+    <label class="checkbox-item"><input type="checkbox" data-fid="ck_dq_kha"/><span>Khả thi sản xuất — nhóm làm được một sản phẩm trong thời lượng.</span></label>
+  </div>
+  <div class="field-group" style="margin-top:12px"><label class="field-label">DQ nháp của nhóm (chỉnh đến khi đạt cả 4 tiêu chí):</label><textarea data-fid="b10_dq" placeholder="..."></textarea></div>
+</div>`,
+
+// ─── B11 ─────────────────────────────────────────────────────
+'B11_HL1': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B11.1</span> Research Log Template</div>
+  <div class="section-instruction">Dùng cho dự án. Mỗi nguồn một dòng. Giữ và mở rộng log xuyên suốt giai đoạn Acquire — không phải bài tập một lần.</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Nguồn (source + link)</th><th>Khẳng định / Bằng chứng<br/>(claim · evidence)</th><th>Vì sao tin/dùng<br/>(credibility rationale)</th></tr></thead>
+    <tbody>
+      <tr><td><textarea data-fid="b11_s1_ng" class="short" placeholder="Tên nguồn + link..."></textarea></td><td><textarea data-fid="b11_s1_ce" class="short"></textarea></td><td><textarea data-fid="b11_s1_rat" class="short"></textarea></td></tr>
+      <tr><td><textarea data-fid="b11_s2_ng" class="short"></textarea></td><td><textarea data-fid="b11_s2_ce" class="short"></textarea></td><td><textarea data-fid="b11_s2_rat" class="short"></textarea></td></tr>
+      <tr><td><textarea data-fid="b11_s3_ng" class="short"></textarea></td><td><textarea data-fid="b11_s3_ce" class="short"></textarea></td><td><textarea data-fid="b11_s3_rat" class="short"></textarea></td></tr>
+      <tr><td><textarea data-fid="b11_s4_ng" class="short"></textarea></td><td><textarea data-fid="b11_s4_ce" class="short"></textarea></td><td><textarea data-fid="b11_s4_rat" class="short"></textarea></td></tr>
+      <tr><td><textarea data-fid="b11_s5_ng" class="short"></textarea></td><td><textarea data-fid="b11_s5_ce" class="short"></textarea></td><td><textarea data-fid="b11_s5_rat" class="short"></textarea></td></tr>
+    </tbody>
+  </table></div>
+  <p style="font-size:12px;color:var(--slate);font-style:italic">Mỗi rationale phải cụ thể (xác minh chéo? phương pháp rõ? tác giả có chuyên môn?) — tránh "nguồn uy tín" chung chung.</p>
+</div>`,
+
+'B11_HL3': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B11.3</span> Peer Audit Research Log + Rubric CRI</div>
+  <div class="field-group"><label class="field-label">Nhóm được audit — nguồn nào có rationale tốt? vì sao?</label><textarea data-fid="b11_audit_tot" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">Nguồn nào rationale còn chung chung? Gợi ý bổ sung gì?</label><textarea data-fid="b11_audit_yeu" placeholder="..."></textarea></div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Tiêu chí</th><th>Mức 1 — nhận diện được, thực hiện với hỗ trợ</th><th>Mức 2 — áp dụng độc lập trong ngữ cảnh cho trước</th></tr></thead>
+    <tbody>
+      <tr><td class="row-header">Đánh giá nguồn<br/>(Evaluation)</td><td style="font-size:12.5px">Có ghi nguồn, rationale chung chung</td><td style="font-size:12.5px">Mỗi nguồn có rationale cụ thể, xác minh chéo</td></tr>
+      <tr><td class="row-header">Áp dụng vào dự án</td><td style="font-size:12.5px">Ghi rời rạc, chưa dùng tiếp</td><td style="font-size:12.5px">Log được dùng và mở rộng suốt research</td></tr>
+    </tbody>
+  </table></div>
+  <div class="field-group" style="margin-top:12px"><label class="field-label">Tự đánh giá: tôi đang ở mức nào + một tiêu chí chọn nguồn tôi sẽ giữ:</label><textarea data-fid="b11_tudinvi" placeholder="..."></textarea></div>
+</div>`,
+
+// ─── B13 ─────────────────────────────────────────────────────
+'B13_HL1': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B13.1</span> Crazy 8s — 8 ý trong 8 phút</div>
+  <div class="section-instruction">Mỗi ô một ý tưởng, mỗi ô ~1 phút. Quy tắc: KHÔNG phê phán — ưu tiên số lượng và đa dạng.</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <div class="field-group"><label class="field-label">Ô 1</label><textarea data-fid="c8_1" class="short" placeholder="Ý tưởng 1..."></textarea></div>
+    <div class="field-group"><label class="field-label">Ô 2</label><textarea data-fid="c8_2" class="short" placeholder="Ý tưởng 2..."></textarea></div>
+    <div class="field-group"><label class="field-label">Ô 3</label><textarea data-fid="c8_3" class="short" placeholder="Ý tưởng 3..."></textarea></div>
+    <div class="field-group"><label class="field-label">Ô 4</label><textarea data-fid="c8_4" class="short" placeholder="Ý tưởng 4..."></textarea></div>
+    <div class="field-group"><label class="field-label">Ô 5</label><textarea data-fid="c8_5" class="short" placeholder="Ý tưởng 5..."></textarea></div>
+    <div class="field-group"><label class="field-label">Ô 6</label><textarea data-fid="c8_6" class="short" placeholder="Ý tưởng 6..."></textarea></div>
+    <div class="field-group"><label class="field-label">Ô 7</label><textarea data-fid="c8_7" class="short" placeholder="Ý tưởng 7..."></textarea></div>
+    <div class="field-group"><label class="field-label">Ô 8</label><textarea data-fid="c8_8" class="short" placeholder="Ý tưởng 8..."></textarea></div>
+  </div>
+  <p style="font-size:12px;color:var(--slate);font-style:italic;margin-top:8px">Sau Crazy 8s, dùng SCAMPER/HMW (HL-B13.2) để mở thêm ý — đạt tổng ≥10 ý tưởng.</p>
+</div>`,
+
+'B13_HL2': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B13.2</span> SCAMPER + "How might we…"</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Chữ</th><th>Câu hỏi gợi</th><th>Ý mới của bạn</th></tr></thead>
+    <tbody>
+      <tr><td class="row-header">S — Substitute</td><td style="font-size:12.5px">Thay thành phần nào?</td><td><textarea data-fid="scamp_s" class="short"></textarea></td></tr>
+      <tr><td class="row-header">C — Combine</td><td style="font-size:12.5px">Kết hợp với gì?</td><td><textarea data-fid="scamp_c" class="short"></textarea></td></tr>
+      <tr><td class="row-header">A — Adapt</td><td style="font-size:12.5px">Mượn ý từ lĩnh vực khác?</td><td><textarea data-fid="scamp_a" class="short"></textarea></td></tr>
+      <tr><td class="row-header">M — Modify</td><td style="font-size:12.5px">Phóng to/thu nhỏ điều gì?</td><td><textarea data-fid="scamp_m" class="short"></textarea></td></tr>
+      <tr><td class="row-header">P — Put to other use</td><td style="font-size:12.5px">Dùng cho mục đích khác?</td><td><textarea data-fid="scamp_p" class="short"></textarea></td></tr>
+      <tr><td class="row-header">E — Eliminate</td><td style="font-size:12.5px">Bỏ bớt gì?</td><td><textarea data-fid="scamp_e" class="short"></textarea></td></tr>
+      <tr><td class="row-header">R — Reverse</td><td style="font-size:12.5px">Đảo ngược trình tự/góc?</td><td><textarea data-fid="scamp_r" class="short"></textarea></td></tr>
+    </tbody>
+  </table></div>
+  <div class="field-group"><label class="field-label">"How might we…" — viết lại vấn đề thành câu hỏi mở:</label><textarea data-fid="b13_hmw" class="short" placeholder='Làm sao chúng ta có thể khiến… trở nên gần gũi với bạn cùng tuổi?'></textarea></div>
+</div>`,
+
+'B13_HL3': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B13.3</span> Idea Evaluation Matrix</div>
+  <div class="section-instruction">Từ ideation log (≥10 ý), chấm điểm để chọn lọc. Chấm nhanh: cao / vừa / thấp.</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Ý tưởng</th><th>Hợp DQ</th><th>Khả thi</th><th>Ra dáng mình</th><th>Tác động</th></tr></thead>
+    <tbody>
+      <tr><td><input type="text" data-fid="b13_id1" placeholder="Ý tưởng 1..."/></td><td><input type="text" data-fid="b13_dq1" style="width:60px"/></td><td><input type="text" data-fid="b13_kt1" style="width:60px"/></td><td><input type="text" data-fid="b13_rm1" style="width:60px"/></td><td><input type="text" data-fid="b13_td1" style="width:60px"/></td></tr>
+      <tr><td><input type="text" data-fid="b13_id2" placeholder="Ý tưởng 2..."/></td><td><input type="text" data-fid="b13_dq2" style="width:60px"/></td><td><input type="text" data-fid="b13_kt2" style="width:60px"/></td><td><input type="text" data-fid="b13_rm2" style="width:60px"/></td><td><input type="text" data-fid="b13_td2" style="width:60px"/></td></tr>
+      <tr><td><input type="text" data-fid="b13_id3" placeholder="Ý tưởng 3..."/></td><td><input type="text" data-fid="b13_dq3" style="width:60px"/></td><td><input type="text" data-fid="b13_kt3" style="width:60px"/></td><td><input type="text" data-fid="b13_rm3" style="width:60px"/></td><td><input type="text" data-fid="b13_td3" style="width:60px"/></td></tr>
+      <tr><td><input type="text" data-fid="b13_id4" placeholder="Ý tưởng 4..."/></td><td><input type="text" data-fid="b13_dq4" style="width:60px"/></td><td><input type="text" data-fid="b13_kt4" style="width:60px"/></td><td><input type="text" data-fid="b13_rm4" style="width:60px"/></td><td><input type="text" data-fid="b13_td4" style="width:60px"/></td></tr>
+      <tr><td><input type="text" data-fid="b13_id5" placeholder="Ý tưởng 5..."/></td><td><input type="text" data-fid="b13_dq5" style="width:60px"/></td><td><input type="text" data-fid="b13_kt5" style="width:60px"/></td><td><input type="text" data-fid="b13_rm5" style="width:60px"/></td><td><input type="text" data-fid="b13_td5" style="width:60px"/></td></tr>
+    </tbody>
+  </table></div>
+  <div class="field-group"><label class="field-label">Chọn 2–3 ý điểm cao nhất + rationale (vì sao ý này, có "ra dáng mình" không):</label><textarea data-fid="b13_rat" placeholder="..."></textarea></div>
+</div>`,
+
+// ─── B15 ─────────────────────────────────────────────────────
+'B15_HL1': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B15.1</span> Thẻ Tuning Protocol</div>
+  <div class="section-instruction">Quy trình giúp phản hồi có cấu trúc và tôn trọng. Bám đúng thứ tự các bước.</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Bước</th><th>Ai làm</th><th>Nội dung</th></tr></thead>
+    <tbody>
+      <tr><td style="font-weight:700">1. Trình bày</td><td style="font-size:13px">Tác giả</td><td style="font-size:13px">Giới thiệu sản phẩm + câu hỏi muốn được góp ý</td></tr>
+      <tr><td style="font-weight:700">2. Làm rõ</td><td style="font-size:13px">Người góp ý</td><td style="font-size:13px">Hỏi câu làm rõ (chưa đánh giá)</td></tr>
+      <tr><td style="font-weight:700">3. Warm feedback</td><td style="font-size:13px">Người góp ý</td><td style="font-size:13px">Ghi nhận điểm mạnh cụ thể</td></tr>
+      <tr><td style="font-weight:700">4. Cool feedback</td><td style="font-size:13px">Người góp ý</td><td style="font-size:13px">Đặt câu hỏi/lo ngại xây dựng</td></tr>
+      <tr><td style="font-weight:700">5. Phản hồi</td><td style="font-size:13px">Tác giả</td><td style="font-size:13px">Ghi nhận, không phản bác ngay; chọn lọc sau</td></tr>
+    </tbody>
+  </table></div>
+  <p style="font-size:12px;color:var(--slate);font-style:italic">Quy tắc: warm trước cool; cool là câu hỏi giúp tác giả tự thấy, không phải chê.</p>
+</div>`,
+
+'B15_HL2': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B15.2</span> Prompt Warm / Cool Feedback</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Loại</th><th>Mở đầu câu gợi ý</th></tr></thead>
+    <tbody>
+      <tr><td class="row-header" style="color:#059669">Warm ☀️</td><td style="font-size:13px">"Điều đang hiệu quả là…" · "Mình ấn tượng với…" · "Đoạn… làm rõ được…"</td></tr>
+      <tr><td class="row-header" style="color:#1B4FD8">Cool ❄️</td><td style="font-size:13px">"Mình tự hỏi nếu…" · "Mình chưa rõ ở…" · "Điều gì sẽ xảy ra nếu…?" · "Bạn muốn người xem nhớ gì nhất?"</td></tr>
+    </tbody>
+  </table></div>
+  <p style="font-size:12px;color:var(--slate);font-style:italic">Tránh: "dở", "sai", "làm lại" — thay bằng câu hỏi mở giúp tác giả nhìn ra hướng cải thiện.</p>
+</div>`,
+
+'B15_HL3': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B15.3</span> Revision Matrix</div>
+  <div class="section-instruction">Chuyển phản hồi thành quyết định revision cho draft v1. Mỗi dòng một feedback. Không revision nào thiếu cột rationale.</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Feedback nhận được</th><th>Quyết định (giữ/sửa/bỏ)</th><th>Rationale (vì sao)</th></tr></thead>
+    <tbody>
+      <tr><td><textarea data-fid="b15_fb1" class="short"></textarea></td><td><input type="text" data-fid="b15_qd1" placeholder="Giữ/Sửa/Bỏ"/></td><td><textarea data-fid="b15_rat1" class="short"></textarea></td></tr>
+      <tr><td><textarea data-fid="b15_fb2" class="short"></textarea></td><td><input type="text" data-fid="b15_qd2" placeholder="Giữ/Sửa/Bỏ"/></td><td><textarea data-fid="b15_rat2" class="short"></textarea></td></tr>
+      <tr><td><textarea data-fid="b15_fb3" class="short"></textarea></td><td><input type="text" data-fid="b15_qd3" placeholder="Giữ/Sửa/Bỏ"/></td><td><textarea data-fid="b15_rat3" class="short"></textarea></td></tr>
+      <tr><td><textarea data-fid="b15_fb4" class="short"></textarea></td><td><input type="text" data-fid="b15_qd4" placeholder="Giữ/Sửa/Bỏ"/></td><td><textarea data-fid="b15_rat4" class="short"></textarea></td></tr>
+    </tbody>
+  </table></div>
+</div>`,
+
+'B15_HL4': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B15.4</span> Rubric CRI + Tự đánh giá</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Tiêu chí</th><th>Mức 1 — thực hiện với hỗ trợ</th><th>Mức 2 — áp dụng độc lập</th></tr></thead>
+    <tbody>
+      <tr><td class="row-header">Chất lượng feedback</td><td style="font-size:12.5px">Warm/cool còn lẫn khen/chê</td><td style="font-size:12.5px">Warm cụ thể; cool là câu hỏi xây dựng</td></tr>
+      <tr><td class="row-header">Chọn lọc revision</td><td style="font-size:12.5px">Sửa theo cảm tính / sửa hết</td><td style="font-size:12.5px">Chọn lọc, mỗi revision có rationale</td></tr>
+      <tr><td class="row-header">Tự điều chỉnh<br/>(Self-regulation)</td><td style="font-size:12.5px">Phản bác góp ý ngay</td><td style="font-size:12.5px">Tiếp nhận, cân nhắc trước khi quyết định</td></tr>
+    </tbody>
+  </table></div>
+  <div class="field-group" style="margin-top:12px"><label class="field-label">Tự đánh giá: tôi đang ở mức nào + một tiêu chí tôi sẽ giữ:</label><textarea data-fid="b15_tudinvi" placeholder="..."></textarea></div>
+</div>`,
+
+// ─── B16 ─────────────────────────────────────────────────────
+'B16_HL1': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B16.1</span> Phản hồi khán giả (theo tiêu chí)</div>
+  <div class="section-instruction">Cho 2–3 đại diện đối tượng đích trải nghiệm sản phẩm; thu phản hồi có cấu trúc.</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>#</th><th>Người test (đại diện đối tượng)</th><th>Hiểu thông điệp?</th><th>Phản ứng / nhận xét</th></tr></thead>
+    <tbody>
+      <tr><td style="font-weight:700;text-align:center">1</td><td><input type="text" data-fid="b16_t1_ng"/></td><td><input type="text" data-fid="b16_t1_hieu" placeholder="Có/Không/Phần nào"/></td><td><textarea data-fid="b16_t1_nxet" class="short"></textarea></td></tr>
+      <tr><td style="font-weight:700;text-align:center">2</td><td><input type="text" data-fid="b16_t2_ng"/></td><td><input type="text" data-fid="b16_t2_hieu" placeholder="Có/Không/Phần nào"/></td><td><textarea data-fid="b16_t2_nxet" class="short"></textarea></td></tr>
+      <tr><td style="font-weight:700;text-align:center">3</td><td><input type="text" data-fid="b16_t3_ng"/></td><td><input type="text" data-fid="b16_t3_hieu" placeholder="Có/Không/Phần nào"/></td><td><textarea data-fid="b16_t3_nxet" class="short"></textarea></td></tr>
+    </tbody>
+  </table></div>
+  <div class="field-group"><label class="field-label">≥2 insight rút ra từ audience thật:</label><textarea data-fid="b16_insight" placeholder="..."></textarea></div>
+</div>`,
+
+'B16_HL2': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B16.2</span> Ma trận chỉnh sửa</div>
+  <div class="section-instruction">Với mỗi phản hồi nhận được, ghi: phản hồi → quyết định → lý do. Đây là bằng chứng chỉnh sửa có lý lẽ.</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Phản hồi nhận được</th><th>Từ ai<br/>(peer/khán giả)</th><th>Quyết định<br/>(Giữ/Sửa/Chưa)</th><th>Lý do</th></tr></thead>
+    <tbody>
+      <tr><td><textarea data-fid="b16_ph1" class="short"></textarea></td><td><input type="text" data-fid="b16_ph1_ai"/></td><td><input type="text" data-fid="b16_ph1_qd" placeholder="Giữ/Sửa/Chưa"/></td><td><textarea data-fid="b16_ph1_ly" class="short"></textarea></td></tr>
+      <tr><td><textarea data-fid="b16_ph2" class="short"></textarea></td><td><input type="text" data-fid="b16_ph2_ai"/></td><td><input type="text" data-fid="b16_ph2_qd" placeholder="Giữ/Sửa/Chưa"/></td><td><textarea data-fid="b16_ph2_ly" class="short"></textarea></td></tr>
+      <tr><td><textarea data-fid="b16_ph3" class="short"></textarea></td><td><input type="text" data-fid="b16_ph3_ai"/></td><td><input type="text" data-fid="b16_ph3_qd" placeholder="Giữ/Sửa/Chưa"/></td><td><textarea data-fid="b16_ph3_ly" class="short"></textarea></td></tr>
+      <tr><td><textarea data-fid="b16_ph4" class="short"></textarea></td><td><input type="text" data-fid="b16_ph4_ai"/></td><td><input type="text" data-fid="b16_ph4_qd" placeholder="Giữ/Sửa/Chưa"/></td><td><textarea data-fid="b16_ph4_ly" class="short"></textarea></td></tr>
+    </tbody>
+  </table></div>
+  <div class="field-group"><label class="field-label">Ưu tiên xử lý: 2–3 chỉnh sửa quan trọng nhất sẽ làm ở B18:</label><textarea data-fid="b16_uutien" placeholder="..."></textarea></div>
+</div>`,
+
+'B16_HL3': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B16.3</span> Peer Critique — Feedback Log (Tuning Protocol)</div>
+  <div class="section-instruction">Nhận phản hồi theo Tuning Protocol; ghi Warm/Cool rồi phân loại — CHƯA sửa ở bước này.</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>WARM ☀️ — điểm mạnh, điều hiệu quả</th><th>COOL ❄️ — điểm có thể cải thiện (gắn bằng chứng)</th></tr></thead>
+    <tbody>
+      <tr><td><textarea data-fid="b16_warm1" class="short"></textarea></td><td><textarea data-fid="b16_cool1" class="short"></textarea></td></tr>
+      <tr><td><textarea data-fid="b16_warm2" class="short"></textarea></td><td><textarea data-fid="b16_cool2" class="short"></textarea></td></tr>
+      <tr><td><textarea data-fid="b16_warm3" class="short"></textarea></td><td><textarea data-fid="b16_cool3" class="short"></textarea></td></tr>
+    </tbody>
+  </table></div>
+  <hr class="divider"/>
+  <p style="font-size:13px;font-weight:600;color:var(--navy);margin-bottom:8px">Phân loại từng điểm feedback:</p>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Điểm feedback</th><th>Phân loại (Giữ / Cân nhắc / Chưa cần)</th></tr></thead>
+    <tbody>
+      <tr><td><textarea data-fid="b16_fb1_nd" class="short"></textarea></td><td><input type="text" data-fid="b16_fb1_pl" placeholder="Giữ/Cân nhắc/Chưa cần"/></td></tr>
+      <tr><td><textarea data-fid="b16_fb2_nd" class="short"></textarea></td><td><input type="text" data-fid="b16_fb2_pl" placeholder="Giữ/Cân nhắc/Chưa cần"/></td></tr>
+      <tr><td><textarea data-fid="b16_fb3_nd" class="short"></textarea></td><td><input type="text" data-fid="b16_fb3_pl" placeholder="Giữ/Cân nhắc/Chưa cần"/></td></tr>
+    </tbody>
+  </table></div>
+</div>`,
+
+// ─── B17 ─────────────────────────────────────────────────────
+'B17_HL1': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B17.1</span> Side-by-side v1 vs v2 Comparison</div>
+  <div class="section-instruction">Đặt phiên bản 1 cạnh phiên bản 2 để thấy rõ thay đổi. Đánh dấu khía cạnh nào là thay đổi LỚN (có chủ đích).</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Khía cạnh</th><th>Bản v1</th><th>Bản v2 (dự kiến)</th></tr></thead>
+    <tbody>
+      <tr><td class="row-header">Thông điệp chính</td><td><textarea data-fid="b17_v1_td" class="short"></textarea></td><td><textarea data-fid="b17_v2_td" class="short"></textarea></td></tr>
+      <tr><td class="row-header">Hình ảnh / hình thức</td><td><textarea data-fid="b17_v1_ha" class="short"></textarea></td><td><textarea data-fid="b17_v2_ha" class="short"></textarea></td></tr>
+      <tr><td class="row-header">Cấu trúc / nhịp</td><td><textarea data-fid="b17_v1_ct" class="short"></textarea></td><td><textarea data-fid="b17_v2_ct" class="short"></textarea></td></tr>
+      <tr><td class="row-header">Giọng / lời kêu gọi</td><td><textarea data-fid="b17_v1_giong" class="short"></textarea></td><td><textarea data-fid="b17_v2_giong" class="short"></textarea></td></tr>
+    </tbody>
+  </table></div>
+  <div class="field-group"><label class="field-label">Khía cạnh thay đổi LỚN có chủ đích — trọng tâm vòng lặp này:</label><input type="text" data-fid="b17_thaydon_lon" placeholder="..."/></div>
+</div>`,
+
+'B17_HL2': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B17.2</span> Iteration Log</div>
+  <div class="section-instruction">Ghi mỗi quyết định lớn của một vòng lặp. Mỗi quyết định phải gắn với một feedback cụ thể từ Delve A — không có "sửa vì thấy chưa ưng".</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Quyết định lớn</th><th>Đổi gì (v1 → v2)</th><th>Vì sao (gắn feedback nào)</th><th>Hiệu quả mong đợi</th></tr></thead>
+    <tbody>
+      <tr><td style="font-weight:700;text-align:center">1</td><td><textarea data-fid="b17_iter1_doi" class="short"></textarea></td><td><textarea data-fid="b17_iter1_vi" class="short"></textarea></td><td><textarea data-fid="b17_iter1_hq" class="short"></textarea></td></tr>
+      <tr><td style="font-weight:700;text-align:center">2</td><td><textarea data-fid="b17_iter2_doi" class="short"></textarea></td><td><textarea data-fid="b17_iter2_vi" class="short"></textarea></td><td><textarea data-fid="b17_iter2_hq" class="short"></textarea></td></tr>
+      <tr><td style="font-weight:700;text-align:center">3</td><td><textarea data-fid="b17_iter3_doi" class="short"></textarea></td><td><textarea data-fid="b17_iter3_vi" class="short"></textarea></td><td><textarea data-fid="b17_iter3_hq" class="short"></textarea></td></tr>
+    </tbody>
+  </table></div>
+</div>
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B17.3</span> Iteration Plan + Rubric CRE</div>
+  <div class="field-group"><label class="field-label">Iteration plan — chọn 1–3 thay đổi lớn cho v2 (làm gì · vì sao · đo hiệu quả thế nào):</label><textarea data-fid="b17_plan" class="tall" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">Creative process retrospective — quá trình sáng tạo đã đổi thế nào? điều gì khiến lặp hiệu quả?</label><textarea data-fid="b17_retro" placeholder="..."></textarea></div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Tiêu chí</th><th>Mức 1</th><th>Mức 2</th></tr></thead>
+    <tbody>
+      <tr><td class="row-header">Kỷ luật lặp<br/>(Iteration)</td><td style="font-size:12.5px">Sửa tràn lan / ngẫu hứng</td><td style="font-size:12.5px">Mỗi vòng nhắm 1–3 thay đổi lớn có lý do</td></tr>
+      <tr><td class="row-header">Đào sâu<br/>(Elaboration)</td><td style="font-size:12.5px">Sửa bề mặt câu chữ</td><td style="font-size:12.5px">Tinh chỉnh có chiều sâu, gắn thông điệp</td></tr>
+      <tr><td class="row-header">Siêu nhận thức<br/>(Creative metacognition)</td><td style="font-size:12.5px">Khó nói vì sao mình sửa</td><td style="font-size:12.5px">Giải thích được quá trình và lý do lặp</td></tr>
+    </tbody>
+  </table></div>
+  <div class="field-group" style="margin-top:12px"><label class="field-label">Tự đánh giá + một nguyên tắc lặp tôi sẽ giữ:</label><textarea data-fid="b17_tudinvi" placeholder="..."></textarea></div>
+</div>`,
+
+// ─── B18 ─────────────────────────────────────────────────────
+'B18_HL1': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B18.1</span> Nhật ký lặp (Revision log)</div>
+  <div class="section-instruction">Sắp xếp phản hồi theo ưu tiên; chỉ sửa điểm ưu tiên cao trước; ghi rõ lý do.</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>#</th><th>Điểm cần sửa (từ feedback)</th><th>Mức ưu tiên</th><th>Cách sửa + lý do (rationale)</th></tr></thead>
+    <tbody>
+      <tr><td style="font-weight:700;text-align:center">1</td><td><textarea data-fid="b18_r1_diem" class="short"></textarea></td><td><input type="text" data-fid="b18_r1_ut" placeholder="Cao/TB/Thấp"/></td><td><textarea data-fid="b18_r1_cach" class="short"></textarea></td></tr>
+      <tr><td style="font-weight:700;text-align:center">2</td><td><textarea data-fid="b18_r2_diem" class="short"></textarea></td><td><input type="text" data-fid="b18_r2_ut" placeholder="Cao/TB/Thấp"/></td><td><textarea data-fid="b18_r2_cach" class="short"></textarea></td></tr>
+      <tr><td style="font-weight:700;text-align:center">3</td><td><textarea data-fid="b18_r3_diem" class="short"></textarea></td><td><input type="text" data-fid="b18_r3_ut" placeholder="Cao/TB/Thấp"/></td><td><textarea data-fid="b18_r3_cach" class="short"></textarea></td></tr>
+      <tr><td style="font-weight:700;text-align:center">4</td><td><textarea data-fid="b18_r4_diem" class="short"></textarea></td><td><input type="text" data-fid="b18_r4_ut" placeholder="Cao/TB/Thấp"/></td><td><textarea data-fid="b18_r4_cach" class="short"></textarea></td></tr>
+    </tbody>
+  </table></div>
+</div>`,
+
+'B18_HL3': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B18.3</span> Ethics self-check (tầng 2)</div>
+  <div class="section-instruction">Kích hoạt nếu nhóm muốn công bố ra tầng 2 (ngoài trường); cần GV duyệt.</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Tiêu chí đạo đức</th><th>Đạt? (✔ / chưa)</th><th>Ghi chú / khắc phục</th></tr></thead>
+    <tbody>
+      <tr><td class="row-header">Tính chính xác (đã kiểm chứng)</td><td><input type="text" data-fid="b18_e1_dat" placeholder="✔/Chưa"/></td><td><textarea data-fid="b18_e1_note" class="short"></textarea></td></tr>
+      <tr><td class="row-header">Tôn trọng &amp; không gây hại</td><td><input type="text" data-fid="b18_e2_dat" placeholder="✔/Chưa"/></td><td><textarea data-fid="b18_e2_note" class="short"></textarea></td></tr>
+      <tr><td class="row-header">Quyền &amp; bản quyền tư liệu</td><td><input type="text" data-fid="b18_e3_dat" placeholder="✔/Chưa"/></td><td><textarea data-fid="b18_e3_note" class="short"></textarea></td></tr>
+      <tr><td class="row-header">Minh bạch trách nhiệm thông điệp</td><td><input type="text" data-fid="b18_e4_dat" placeholder="✔/Chưa"/></td><td><textarea data-fid="b18_e4_note" class="short"></textarea></td></tr>
+    </tbody>
+  </table></div>
+</div>`,
+
+// ─── B19 ─────────────────────────────────────────────────────
+'B19_HL1': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B19.1</span> Phản hồi showcase (khán giả)</div>
+  <div class="section-instruction">Thu phản hồi có cấu trúc từ công chúng sau khi công bố.</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>#</th><th>Người góp ý</th><th>Hiểu thông điệp?</th><th>Phản hồi / câu hỏi</th></tr></thead>
+    <tbody>
+      <tr><td style="font-weight:700;text-align:center">1</td><td><input type="text" data-fid="b19_fb1_ng"/></td><td><input type="text" data-fid="b19_fb1_hieu" placeholder="Có/Không/Phần nào"/></td><td><textarea data-fid="b19_fb1_nd" class="short"></textarea></td></tr>
+      <tr><td style="font-weight:700;text-align:center">2</td><td><input type="text" data-fid="b19_fb2_ng"/></td><td><input type="text" data-fid="b19_fb2_hieu" placeholder="Có/Không/Phần nào"/></td><td><textarea data-fid="b19_fb2_nd" class="short"></textarea></td></tr>
+      <tr><td style="font-weight:700;text-align:center">3</td><td><input type="text" data-fid="b19_fb3_ng"/></td><td><input type="text" data-fid="b19_fb3_hieu" placeholder="Có/Không/Phần nào"/></td><td><textarea data-fid="b19_fb3_nd" class="short"></textarea></td></tr>
+      <tr><td style="font-weight:700;text-align:center">4</td><td><input type="text" data-fid="b19_fb4_ng"/></td><td><input type="text" data-fid="b19_fb4_hieu" placeholder="Có/Không/Phần nào"/></td><td><textarea data-fid="b19_fb4_nd" class="short"></textarea></td></tr>
+      <tr><td style="font-weight:700;text-align:center">5</td><td><input type="text" data-fid="b19_fb5_ng"/></td><td><input type="text" data-fid="b19_fb5_hieu" placeholder="Có/Không/Phần nào"/></td><td><textarea data-fid="b19_fb5_nd" class="short"></textarea></td></tr>
+    </tbody>
+  </table></div>
+</div>`,
+
+'B19_HL3': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B19.3</span> Pitch 3 phút (showcase)</div>
+  <div class="section-instruction">Hoàn thiện pitch 3 phút với câu chuyện dự án để công bố.</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Phần (3 phút)</th><th>Nội dung em sẽ nói</th></tr></thead>
+    <tbody>
+      <tr><td class="row-header">Vấn đề</td><td><textarea data-fid="b19_pitch_van" class="short"></textarea></td></tr>
+      <tr><td class="row-header">Đối tượng</td><td><textarea data-fid="b19_pitch_doi" class="short"></textarea></td></tr>
+      <tr><td class="row-header">Thông điệp</td><td><textarea data-fid="b19_pitch_td" class="short"></textarea></td></tr>
+      <tr><td class="row-header">Sản phẩm</td><td><textarea data-fid="b19_pitch_sp" class="short"></textarea></td></tr>
+      <tr><td class="row-header">Tác động mong muốn</td><td><textarea data-fid="b19_pitch_tac" class="short"></textarea></td></tr>
+    </tbody>
+  </table></div>
+</div>`,
+
+// ─── B20 ─────────────────────────────────────────────────────
+'B20_HL1': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B20.1</span> Tuyên ngôn truyền thông cá nhân v2</div>
+  <div class="field-group"><label class="field-label">Manifesto v1 của tôi (điểm chính từ B9):</label><textarea data-fid="b20_v1_main" class="short" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">Manifesto v2 — Tôi tin gì về truyền thông:</label><textarea data-fid="b20_v2_tin" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">Tôi cam kết gì với tư cách người tạo lập có trách nhiệm:</label><textarea data-fid="b20_v2_camket" placeholder="..."></textarea></div>
+</div>`,
+
+'B20_HL2': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B20.2</span> Portfolio note cuối kỳ + Cam kết tiếp tục</div>
+  <div class="field-group"><label class="field-label">Điều tôi tự hào nhất về hành trình truyền thông của mình:</label><textarea data-fid="b20_tu_hao" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">Một điều tôi muốn làm tốt hơn lần sau:</label><textarea data-fid="b20_tot_hon" placeholder="..."></textarea></div>
+  <hr class="divider"/>
+  <p style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:10px">Commitment card</p>
+  <div class="field-group"><label class="field-label">Một việc tôi sẽ tiếp tục làm:</label><textarea data-fid="b20_tiep_tuc" class="short" placeholder="..."></textarea></div>
+  <div class="field-group"><label class="field-label">Cụ thể, đo được (làm gì · bao lâu / khi nào):</label><textarea data-fid="b20_cu_the" class="short" placeholder="..."></textarea></div>
+</div>`,
+
+'B20_HL3': `
+<div class="section-card">
+  <div class="section-title"><span class="section-code">B20.3</span> Reflection Circle — phiếu chuẩn bị</div>
+  <div class="section-instruction">Chuẩn bị chia sẻ trong vòng tròn: đối chiếu mình đầu CP1 và cuối CP2.</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>TÔI ĐẦU CP1 (người tiêu thụ)</th><th>TÔI CUỐI CP2 (người tạo lập)</th></tr></thead>
+    <tbody>
+      <tr><td><textarea data-fid="b20_dau_cp1_1" class="short"></textarea></td><td><textarea data-fid="b20_cuoi_cp2_1" class="short"></textarea></td></tr>
+      <tr><td><textarea data-fid="b20_dau_cp1_2" class="short"></textarea></td><td><textarea data-fid="b20_cuoi_cp2_2" class="short"></textarea></td></tr>
+      <tr><td><textarea data-fid="b20_dau_cp1_3" class="short"></textarea></td><td><textarea data-fid="b20_cuoi_cp2_3" class="short"></textarea></td></tr>
+    </tbody>
+  </table></div>
+  <div class="field-group"><label class="field-label">Một thay đổi rõ nhất ở bản thân:</label><textarea data-fid="b20_thaydoi_ro" placeholder="..."></textarea></div>
+  <div class="portfolio-note"><strong>Portfolio Note</strong>Lưu manifesto v2 vào Portfolio cuối kỳ. Viết 1 câu: "Kết thúc X3, tôi…"
+    <div class="field-group" style="margin-top:10px"><textarea data-fid="b20_portfolio_note" class="short" placeholder='Kết thúc X3, tôi...'></textarea></div>
+  </div>
+</div>`,
+
   }; // end T
 
   // Generic fallback for B4–B20 HLs not individually templated
@@ -871,169 +1697,80 @@ function buildAllPanels() {
       const div = document.createElement('div');
       div.className = 'hl-panel';
       div.id = 'panel-' + hl.id;
-      // panelHeader trả về DOM element — dùng appendChild để giữ event listeners
-      const headerEl = panelHeader(hl);
-      if (typeof headerEl === 'string') {
-        div.innerHTML = headerEl + hlHTML(hl.id);
-      } else {
-        div.appendChild(headerEl);
-        const contentDiv = document.createElement('div');
-        contentDiv.innerHTML = hlHTML(hl.id);
-        while (contentDiv.firstChild) div.appendChild(contentDiv.firstChild);
-      }
+      // Inject content first via innerHTML (no event handlers needed there)
+      div.innerHTML = buildPanelHeaderHTML(hl) + hlHTML(hl.id) + buildGradingHTML(hl);
+      // Then wire up event handlers via DOM references (survives innerHTML)
+      wirePanel(div, hl);
       ca.appendChild(div);
     });
   });
 }
 
-function panelHeader(hl) {
-  const wrap = document.createElement('div');
-
-  // ── Header row ──────────────────────────────────────────
-  const header = document.createElement('div');
-  header.className = 'hl-panel-header';
-
-  const titleWrap = document.createElement('div');
-  titleWrap.className = 'hl-panel-title-wrap';
-
-  const badge = document.createElement('span');
-  badge.className = 'hl-badge';
-  badge.textContent = hl.id.replace('_', ' ');
-
-  const titleDiv = document.createElement('div');
-
-  const titleText = document.createElement('div');
-  titleText.style.cssText = 'font-size:18px;font-weight:700;color:var(--navy)';
-  titleText.textContent = hl.label;
-
-  const statusBadge = document.createElement('div');
-  statusBadge.id = 'status-' + hl.id;
-  statusBadge.className = 'hl-status-badge unsaved';
-  statusBadge.style.cssText = 'display:inline-block;margin-top:4px';
-  statusBadge.textContent = '● Chưa lưu';
-
-  titleDiv.appendChild(titleText);
-  titleDiv.appendChild(statusBadge);
-  titleWrap.appendChild(badge);
-  titleWrap.appendChild(titleDiv);
-
-  const actions = document.createElement('div');
-  actions.className = 'hl-panel-actions';
-
-  const btnReset = document.createElement('button');
-  btnReset.className = 'btn btn-reset';
-  btnReset.style.marginRight = '16px';
-  btnReset.onclick = resetCurrent;
-  btnReset.innerHTML = '🔄 Xóa trắng';
-
-  const btnSave = document.createElement('button');
-  btnSave.className = 'btn btn-save';
-  btnSave.onclick = () => saveHL(hl.id);
-  btnSave.innerHTML = '💾 Lưu';
-
-  const btnSubmit = document.createElement('button');
-  btnSubmit.className = 'btn btn-submit';
-  btnSubmit.onclick = () => submitHL(hl.id);
-  btnSubmit.innerHTML = '✅ Nộp bài';
-
-  actions.appendChild(btnReset);
-  actions.appendChild(btnSave);
-  actions.appendChild(btnSubmit);
-
-  header.appendChild(titleWrap);
-  header.appendChild(actions);
-  wrap.appendChild(header);
-
-  // ── Grading section ──────────────────────────────────────
-  const gradingDiv = document.createElement('div');
-  gradingDiv.className = 'grading-section';
-  gradingDiv.id = 'grading-' + hl.id;
-
-  const gradingHdr = document.createElement('div');
-  gradingHdr.className = 'grading-header';
-  gradingHdr.innerHTML = '<span>📝 Chấm điểm — Giáo viên</span><span class="grading-toggle-icon">▾</span>';
-  gradingHdr.onclick = () => gradingHdr.closest('.grading-section').classList.toggle('open');
-
-  const gradingBody = document.createElement('div');
-  gradingBody.className = 'grading-body';
-
-  // Score row
-  const scoreRow = document.createElement('div');
-  scoreRow.className = 'grading-row';
-
-  const scoreLbl = document.createElement('label');
-  scoreLbl.style.cssText = 'font-size:13px;font-weight:600;color:var(--ink);white-space:nowrap';
-  scoreLbl.textContent = 'Điểm số (0–10):';
-
-  const scoreInput = document.createElement('input');
-  scoreInput.type = 'number';
-  scoreInput.id = 'grade-score-' + hl.id;
-  scoreInput.className = 'grade-input';
-  scoreInput.min = '0'; scoreInput.max = '10'; scoreInput.step = '0.5';
-  scoreInput.placeholder = '—';
-
-  const gradeBtn = document.createElement('button');
-  gradeBtn.className = 'btn-grade';
-  gradeBtn.onclick = () => gradeHL(hl.id);
-  gradeBtn.textContent = '✔ Chấm bài';
-
-  // GV auth row
-  const gvAuthRow = document.createElement('div');
-  gvAuthRow.className = 'gv-auth-row';
-  gvAuthRow.id = 'gvauth-' + hl.id;
-
-  const gvLbl = document.createElement('label');
-  gvLbl.style.cssText = 'font-size:12px;font-weight:600;color:#4C1D95;white-space:nowrap';
-  gvLbl.textContent = '🔑 Mã GV:';
-
-  const gvPwInput = document.createElement('input');
-  gvPwInput.type = 'password';
-  gvPwInput.id = 'gv-pw-' + hl.id;
-  gvPwInput.className = 'gv-pw-input';
-  gvPwInput.placeholder = 'Nhập mã bí mật GV...';
-
-  const gvErrSpan = document.createElement('span');
-  gvErrSpan.id = 'gv-err-' + hl.id;
-  gvErrSpan.className = 'gv-auth-err';
-
-  gvAuthRow.appendChild(gvLbl);
-  gvAuthRow.appendChild(gvPwInput);
-  gvAuthRow.appendChild(gvErrSpan);
-
-  const gradeResult = document.createElement('span');
-  gradeResult.id = 'grade-result-' + hl.id;
-  gradeResult.className = 'grade-result';
-  gradeResult.style.display = 'none';
-
-  scoreRow.appendChild(scoreLbl);
-  scoreRow.appendChild(scoreInput);
-  scoreRow.appendChild(gradeBtn);
-  scoreRow.appendChild(gradeResult);
-
-  // Comment row
-  const commentWrap = document.createElement('div');
-
-  const commentLbl = document.createElement('label');
-  commentLbl.style.cssText = 'font-size:13px;font-weight:600;color:var(--ink);display:block;margin-bottom:5px';
-  commentLbl.textContent = 'Nhận xét của GV:';
-
-  const commentTA = document.createElement('textarea');
-  commentTA.id = 'grade-comment-' + hl.id;
-  commentTA.className = 'grade-comment';
-  commentTA.placeholder = 'Nhận xét, góp ý cho học sinh...';
-
-  commentWrap.appendChild(commentLbl);
-  commentWrap.appendChild(commentTA);
-
-  gradingBody.appendChild(scoreRow);
-  gradingBody.appendChild(commentWrap);
-  gradingBody.appendChild(gvAuthRow);
-  gradingDiv.appendChild(gradingHdr);
-  gradingDiv.appendChild(gradingBody);
-  wrap.appendChild(gradingDiv);
-
-  return wrap;  // trả về DOM node để giữ onclick handlers
+// Returns static HTML string for panel header (no onclick — wired in wirePanel)
+function buildPanelHeaderHTML(hl) {
+  return \`<div class="hl-panel-header">
+    <div class="hl-panel-title-wrap">
+      <span class="hl-badge">\${hl.id.replace('_',' ')}</span>
+      <div>
+        <div style="font-size:18px;font-weight:700;color:var(--navy)">\${hl.label}</div>
+        <div id="status-\${hl.id}" class="hl-status-badge unsaved" style="display:inline-block;margin-top:4px">● Chưa lưu</div>
+      </div>
+    </div>
+    <div class="hl-panel-actions">
+      <button class="btn btn-reset" data-hlid="\${hl.id}" style="margin-right:16px">🔄 Xóa trắng</button>
+      <button class="btn btn-save" data-hlid="\${hl.id}">💾 Lưu</button>
+      <button class="btn btn-submit" data-hlid="\${hl.id}">✅ Nộp bài</button>
+    </div>
+  </div>\`;
 }
+
+// Returns static HTML string for grading section
+function buildGradingHTML(hl) {
+  return \`<div class="grading-section" id="grading-\${hl.id}">
+    <div class="grading-header" data-hlid="\${hl.id}">
+      <span>📝 Chấm điểm — Giáo viên</span><span class="grading-toggle-icon">▾</span>
+    </div>
+    <div class="grading-body">
+      <div class="grading-row">
+        <label style="font-size:13px;font-weight:600;color:var(--ink);white-space:nowrap">Điểm số (0–10):</label>
+        <input type="number" id="grade-score-\${hl.id}" class="grade-input" min="0" max="10" step="0.5" placeholder="—"/>
+        <button class="btn-grade" data-hlid="\${hl.id}">✔ Chấm bài</button>
+        <span id="grade-result-\${hl.id}" class="grade-result" style="display:none"></span>
+      </div>
+      <div>
+        <label style="font-size:13px;font-weight:600;color:var(--ink);display:block;margin-bottom:5px">Nhận xét của GV:</label>
+        <textarea id="grade-comment-\${hl.id}" class="grade-comment" placeholder="Nhận xét, góp ý cho học sinh..."></textarea>
+      </div>
+      <div class="gv-auth-row" id="gvauth-\${hl.id}">
+        <label style="font-size:12px;font-weight:600;color:#4C1D95;white-space:nowrap">🔑 Mã GV:</label>
+        <input type="password" id="gv-pw-\${hl.id}" class="gv-pw-input" placeholder="Nhập mã bí mật GV..."/>
+        <span id="gv-err-\${hl.id}" class="gv-auth-err"></span>
+      </div>
+    </div>
+  </div>\`;
+}
+
+// Wire event listeners onto the already-built panel DOM node
+function wirePanel(div, hl) {
+  // Header buttons
+  const btnReset  = div.querySelector('.btn-reset');
+  const btnSave   = div.querySelector('.btn-save');
+  const btnSubmit = div.querySelector('.btn-submit');
+  if (btnReset)  btnReset.addEventListener('click',  () => resetHL(hl.id));
+  if (btnSave)   btnSave.addEventListener('click',   () => saveHL(hl.id));
+  if (btnSubmit) btnSubmit.addEventListener('click', () => submitHL(hl.id));
+
+  // Grading toggle
+  const gradingHdr = div.querySelector('.grading-header');
+  if (gradingHdr) gradingHdr.addEventListener('click', () => gradingHdr.closest('.grading-section').classList.toggle('open'));
+
+  // Grade submit button
+  const gradeBtn = div.querySelector('.btn-grade');
+  if (gradeBtn) gradeBtn.addEventListener('click', () => gradeHL(hl.id));
+}
+
+// panelHeader kept as no-op (replaced by buildPanelHeaderHTML + buildGradingHTML)
+function panelHeader(hl) { return ''; }
 
 // ═══════════════════════════════════════════════════════════
 // LESSON / HL SWITCHING
@@ -1359,7 +2096,7 @@ function doLogout() {
   document.getElementById('btn_login').disabled = false;
   document.getElementById('btn_login').textContent = 'Đăng nhập →';
   setRole('hs');
-  document.querySelectorAll('textarea,[data-fid]').forEach(el => {
+  document.querySelectorAll('textarea:not(.grade-comment),input[type="text"]:not(.gv-pw-input),[data-fid]').forEach(el => {
     if (el.tagName==='TEXTAREA'||el.type==='text') el.value='';
     if (el.type==='checkbox'||el.type==='radio') el.checked=false;
   });
@@ -1436,8 +2173,10 @@ function lockPanel(hlId) {
   const panel = document.getElementById('panel-' + hlId);
   if (!panel) return;
   panel.classList.add('locked');
-  // Hide save/submit buttons
-  panel.querySelectorAll('.btn-save, .btn-submit').forEach(b => {
+  const st = (hlState[hlId] || {}).status || 'submitted';
+  panel.classList.add(st);
+  // Disable student-only buttons (Save/Submit/Reset) — NOT grading buttons
+  panel.querySelectorAll('.btn-save, .btn-submit, .btn-reset').forEach(b => {
     b.disabled = true;
     b.style.opacity = '.4';
     b.style.cursor = 'not-allowed';
@@ -1448,7 +2187,8 @@ function lockPanel(hlId) {
     banner.className = 'locked-banner';
     const submittedTime = hlState[hlId]?.submitted_at || '';
     banner.innerHTML = '🔒 Đã nộp' + (submittedTime ? ' lúc ' + submittedTime : '') + ' — không thể chỉnh sửa';
-    panel.querySelector('.hl-panel-header').insertAdjacentElement('afterend', banner);
+    const headerEl = panel.querySelector('.hl-panel-header');
+    if (headerEl) headerEl.insertAdjacentElement('afterend', banner);
   }
 }
 
@@ -1468,6 +2208,12 @@ function updateStatusBadge(hlId, status, time) {
     tab.className = tab.className.replace(/(draft|submitted|graded|unsaved)/g,'').trim() + ' ' + status;
   }
 
+  // Apply status class to panel for CSS targeting (e.g., showing grading section)
+  const panel = document.getElementById('panel-' + hlId);
+  if (panel) {
+    panel.classList.remove('draft','submitted','graded','unsaved');
+    panel.classList.add(status);
+  }
   hlState[hlId] = hlState[hlId] || {};
   hlState[hlId].status = status;
 }
@@ -1519,6 +2265,7 @@ async function saveHL(hlId) {
   try {
     showLoader('Đang lưu...');
     const res = await fetch(GAS_URL, { method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify({
         action:'save',
         ten: st.ten, lop: st.lop, nhom: st.nhom,
@@ -1560,6 +2307,7 @@ async function submitHL(hlId) {
   try {
     showLoader('Đang nộp bài...');
     const res = await fetch(GAS_URL, { method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify({
         action:'submit',
         ten: st.ten, lop: st.lop, nhom: st.nhom,
@@ -1598,18 +2346,21 @@ function restoreGrading(hlId, rec) {
 
   if (rec.grade_score !== '' && rec.grade_score !== undefined) {
     scoreEl.value = rec.grade_score;
-    scoreEl.readOnly = true;
+    // Only lock grading for non-GV sessions
+    if (!document.body.classList.contains('gv-logged')) scoreEl.readOnly = true;
   }
   if (rec.grade_comment) {
     commentEl.value = rec.grade_comment;
-    commentEl.readOnly = true;
+    if (!document.body.classList.contains('gv-logged')) commentEl.readOnly = true;
   }
   if (rec.trang_thai === 'graded' && rec.grade_score !== '') {
     resultEl.style.display = 'flex';
     resultEl.textContent = '★ ' + rec.grade_score + '/10 — Chấm lúc ' + (rec.graded_at || '');
-    // Lock grade button
-    const gradeBtn = scoreEl.closest('.grading-section')?.querySelector('.btn-grade');
-    if (gradeBtn) { gradeBtn.disabled = true; gradeBtn.textContent = '✔ Đã chấm'; }
+    // GV can re-grade; lock button only for student view
+    if (!document.body.classList.contains('gv-logged')) {
+      const gradeBtn = scoreEl.closest('.grading-section')?.querySelector('.btn-grade');
+      if (gradeBtn) { gradeBtn.disabled = true; gradeBtn.textContent = '✔ Đã chấm'; }
+    }
   }
 }
 
@@ -1643,12 +2394,9 @@ async function gradeHL(hlId) {
 
   if (!GAS_URL || GAS_URL.includes('YOUR_')) {
     // Offline
-    scoreEl.readOnly = true;
-    commentEl.readOnly = true;
+    if (!document.body.classList.contains('gv-logged')) { scoreEl.readOnly = true; commentEl.readOnly = true; }
     resultEl.style.display = 'flex';
     resultEl.textContent = '★ ' + score + '/10 — Chấm lúc ' + now;
-    const gradeBtn = scoreEl.closest('.grading-section')?.querySelector('.btn-grade');
-    if (gradeBtn) { gradeBtn.disabled = true; gradeBtn.textContent = '✔ Đã chấm'; }
     hlState[hlId] = { ...(hlState[hlId]||{}), status:'graded', graded_at: now, grade_score: score };
     updateStatusBadge(hlId, 'graded', score + '/10 lúc ' + now);
     showToast('★ Đã chấm điểm (offline)', 'success');
@@ -1658,6 +2406,7 @@ async function gradeHL(hlId) {
   try {
     showLoader('Đang lưu điểm...');
     const res = await fetch(GAS_URL, { method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify({
         action: 'grade',
         ten: st.ten, lop: st.lop,
@@ -1671,12 +2420,9 @@ async function gradeHL(hlId) {
     const json = await res.json();
     if (json.ok) {
       const ts = json.graded_at || now;
-      scoreEl.readOnly = true;
-      commentEl.readOnly = true;
+      if (!document.body.classList.contains('gv-logged')) { scoreEl.readOnly = true; commentEl.readOnly = true; }
       resultEl.style.display = 'flex';
       resultEl.textContent = '★ ' + score + '/10 — Chấm lúc ' + ts;
-      const gradeBtn = scoreEl.closest('.grading-section')?.querySelector('.btn-grade');
-      if (gradeBtn) { gradeBtn.disabled = true; gradeBtn.textContent = '✔ Đã chấm'; }
       hlState[hlId] = { ...(hlState[hlId]||{}), status:'graded', graded_at: ts, grade_score: score };
       updateStatusBadge(hlId, 'graded', score + '/10 lúc ' + ts);
       showToast('★ Đã chấm điểm thành công!', 'success');
@@ -1692,18 +2438,28 @@ async function gradeHL(hlId) {
   }
 }
 
+function resetHL(hlId) {
+  const panel = document.getElementById('panel-' + hlId);
+  if (!panel) return;
+  if (panel.classList.contains('locked')) { showToast('Bài đã nộp — không thể xóa trắng!', 'error'); return; }
+  // Find label from LESSONS
+  let hlLabel = hlId;
+  for (const lesson of LESSONS) {
+    const found = lesson.hls.find(h => h.id === hlId);
+    if (found) { hlLabel = found.label; break; }
+  }
+  if (!confirm('⚠ Xóa trắng toàn bộ nội dung đã điền trong:\n"' + hlLabel + '"\n\nHành động này không thể hoàn tác. Tiếp tục?')) return;
+  // Only clear student fields (not grading inputs)
+  panel.querySelectorAll('textarea:not(.grade-comment), input[type="text"]:not(.gv-pw-input)').forEach(e => e.value='');
+  panel.querySelectorAll('input[type="checkbox"]').forEach(e => e.checked=false);
+  panel.querySelectorAll('input[type="radio"]').forEach(e => e.checked=false);
+  updateStatusBadge(hlId, 'unsaved');
+  showToast('🔄 Đã reset học liệu này');
+}
 function resetCurrent() {
   const lesson = LESSONS[currentLesson];
   const hl = lesson.hls[currentHLIndex];
-  const panel = document.getElementById('panel-' + hl.id);
-  if (!panel) return;
-  if (panel.classList.contains('locked')) { showToast('Bài đã nộp — không thể xóa trắng!', 'error'); return; }
-  if (!confirm('⚠ Xóa trắng toàn bộ nội dung đã điền trong:\n"' + hl.label + '"\n\nHành động này không thể hoàn tác. Tiếp tục?')) return;
-  panel.querySelectorAll('textarea, input[type="text"]').forEach(e => e.value='');
-  panel.querySelectorAll('input[type="checkbox"]').forEach(e => e.checked=false);
-  panel.querySelectorAll('input[type="radio"]').forEach(e => e.checked=false);
-  updateStatusBadge(hl.id, 'unsaved');
-  showToast('🔄 Đã reset học liệu này');
+  resetHL(hl.id);
 }
 
 // ═══════════════════════════════════════════════════════════
