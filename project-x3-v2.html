@@ -729,35 +729,127 @@ function buildAllPanels() {
 }
 
 function panelHeader(hl) {
-  return `<div class="hl-panel-header">
-    <div class="hl-panel-title-wrap">
-      <span class="hl-badge">${hl.id.replace('_',' ')}</span>
-      <div>
-        <div style="font-size:18px;font-weight:700;color:var(--navy)">${hl.label}</div>
-        <div id="status-${hl.id}" class="hl-status-badge unsaved" style="display:inline-block;margin-top:4px">● Chưa lưu</div>
-      </div>
-    </div>
-    <div class="hl-panel-actions">
-      <button class="btn btn-reset" onclick="resetCurrent()" style="margin-right:16px">🔄 Xóa trắng</button>
-      <button class="btn btn-save" onclick="saveHL('${hl.id}')">💾 Lưu</button>
-      <button class="btn btn-submit" onclick="submitHL('${hl.id}')">✅ Nộp bài</button>
-    </div>
-  </div>
-  <div class="grading-section" id="grading-${hl.id}">
-    <div class="grading-header">✏️ Chấm điểm — Giáo viên</div>
-    <div class="grading-body">
-      <div class="grading-row">
-        <label style="font-size:13px;font-weight:600;color:var(--ink);white-space:nowrap">Điểm số (0–10):</label>
-        <input type="number" id="grade-score-${hl.id}" class="grade-input" min="0" max="10" step="0.5" placeholder="—"/>
-        <button class="btn-grade" onclick="gradeHL('${hl.id}')">&#x2714; Chấm bài</button>
-        <span id="grade-result-${hl.id}" class="grade-result" style="display:none"></span>
-      </div>
-      <div>
-        <label style="font-size:13px;font-weight:600;color:var(--ink);display:block;margin-bottom:5px">Nhận xét của GV:</label>
-        <textarea id="grade-comment-${hl.id}" class="grade-comment" placeholder="Nhận xét, góp ý cho học sinh..."></textarea>
-      </div>
-    </div>
-  </div>\`;
+  const wrap = document.createElement('div');
+
+  // ── Header row ──────────────────────────────────────────
+  const header = document.createElement('div');
+  header.className = 'hl-panel-header';
+
+  const titleWrap = document.createElement('div');
+  titleWrap.className = 'hl-panel-title-wrap';
+
+  const badge = document.createElement('span');
+  badge.className = 'hl-badge';
+  badge.textContent = hl.id.replace('_', ' ');
+
+  const titleDiv = document.createElement('div');
+
+  const titleText = document.createElement('div');
+  titleText.style.cssText = 'font-size:18px;font-weight:700;color:var(--navy)';
+  titleText.textContent = hl.label;
+
+  const statusBadge = document.createElement('div');
+  statusBadge.id = 'status-' + hl.id;
+  statusBadge.className = 'hl-status-badge unsaved';
+  statusBadge.style.cssText = 'display:inline-block;margin-top:4px';
+  statusBadge.textContent = '● Chưa lưu';
+
+  titleDiv.appendChild(titleText);
+  titleDiv.appendChild(statusBadge);
+  titleWrap.appendChild(badge);
+  titleWrap.appendChild(titleDiv);
+
+  const actions = document.createElement('div');
+  actions.className = 'hl-panel-actions';
+
+  const btnReset = document.createElement('button');
+  btnReset.className = 'btn btn-reset';
+  btnReset.style.marginRight = '16px';
+  btnReset.onclick = resetCurrent;
+  btnReset.innerHTML = '🔄 Xóa trắng';
+
+  const btnSave = document.createElement('button');
+  btnSave.className = 'btn btn-save';
+  btnSave.onclick = () => saveHL(hl.id);
+  btnSave.innerHTML = '💾 Lưu';
+
+  const btnSubmit = document.createElement('button');
+  btnSubmit.className = 'btn btn-submit';
+  btnSubmit.onclick = () => submitHL(hl.id);
+  btnSubmit.innerHTML = '✅ Nộp bài';
+
+  actions.appendChild(btnReset);
+  actions.appendChild(btnSave);
+  actions.appendChild(btnSubmit);
+
+  header.appendChild(titleWrap);
+  header.appendChild(actions);
+  wrap.appendChild(header);
+
+  // ── Grading section ──────────────────────────────────────
+  const gradingDiv = document.createElement('div');
+  gradingDiv.className = 'grading-section';
+  gradingDiv.id = 'grading-' + hl.id;
+
+  const gradingHdr = document.createElement('div');
+  gradingHdr.className = 'grading-header';
+  gradingHdr.textContent = '📝 Chấm điểm — Giáo viên';
+
+  const gradingBody = document.createElement('div');
+  gradingBody.className = 'grading-body';
+
+  // Score row
+  const scoreRow = document.createElement('div');
+  scoreRow.className = 'grading-row';
+
+  const scoreLbl = document.createElement('label');
+  scoreLbl.style.cssText = 'font-size:13px;font-weight:600;color:var(--ink);white-space:nowrap';
+  scoreLbl.textContent = 'Điểm số (0–10):';
+
+  const scoreInput = document.createElement('input');
+  scoreInput.type = 'number';
+  scoreInput.id = 'grade-score-' + hl.id;
+  scoreInput.className = 'grade-input';
+  scoreInput.min = '0'; scoreInput.max = '10'; scoreInput.step = '0.5';
+  scoreInput.placeholder = '—';
+
+  const gradeBtn = document.createElement('button');
+  gradeBtn.className = 'btn-grade';
+  gradeBtn.onclick = () => gradeHL(hl.id);
+  gradeBtn.textContent = '✔ Chấm bài';
+
+  const gradeResult = document.createElement('span');
+  gradeResult.id = 'grade-result-' + hl.id;
+  gradeResult.className = 'grade-result';
+  gradeResult.style.display = 'none';
+
+  scoreRow.appendChild(scoreLbl);
+  scoreRow.appendChild(scoreInput);
+  scoreRow.appendChild(gradeBtn);
+  scoreRow.appendChild(gradeResult);
+
+  // Comment row
+  const commentWrap = document.createElement('div');
+
+  const commentLbl = document.createElement('label');
+  commentLbl.style.cssText = 'font-size:13px;font-weight:600;color:var(--ink);display:block;margin-bottom:5px';
+  commentLbl.textContent = 'Nhận xét của GV:';
+
+  const commentTA = document.createElement('textarea');
+  commentTA.id = 'grade-comment-' + hl.id;
+  commentTA.className = 'grade-comment';
+  commentTA.placeholder = 'Nhận xét, góp ý cho học sinh...';
+
+  commentWrap.appendChild(commentLbl);
+  commentWrap.appendChild(commentTA);
+
+  gradingBody.appendChild(scoreRow);
+  gradingBody.appendChild(commentWrap);
+  gradingDiv.appendChild(gradingHdr);
+  gradingDiv.appendChild(gradingBody);
+  wrap.appendChild(gradingDiv);
+
+  return wrap.innerHTML;
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -775,12 +867,16 @@ function switchLesson(idx, btn) {
 function renderHLTabs() {
   const wrap = document.getElementById('hlTabsWrap');
   const lesson = LESSONS[currentLesson];
-  wrap.innerHTML = lesson.hls.map((hl, i) => {
+  wrap.innerHTML = '';
+  lesson.hls.forEach((hl, i) => {
     const st = (hlState[hl.id] || {}).status || 'unsaved';
-    return `<button class="hl-tab ${st} ${i===0?'active':''}" id="hltab-${hl.id}" onclick="showHL(${i})">
-      <span class="status-dot"></span>${hl.label}
-    </button>`;
-  }).join('');
+    const btn = document.createElement('button');
+    btn.className = 'hl-tab ' + st + (i === 0 ? ' active' : '');
+    btn.id = 'hltab-' + hl.id;
+    btn.onclick = () => showHL(i);
+    btn.innerHTML = '<span class="status-dot"></span>' + hl.label;
+    wrap.appendChild(btn);
+  });
 }
 
 function showHL(idx) {
