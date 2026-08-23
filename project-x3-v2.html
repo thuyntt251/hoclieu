@@ -1865,7 +1865,12 @@ async function initApp() {
         await enterAppHS(sess, false);
       }
       return;
-    } catch(e) { sessionStorage.removeItem(SESSION_KEY); }
+    } catch(e) {
+      // Session restore thất bại → xóa session, quay về màn hình đăng nhập
+      sessionStorage.removeItem(SESSION_KEY);
+      currentStudent = null; currentRole = 'hs';
+      document.body.classList.remove('gv-logged');
+    }
   }
   await loadNameList();
   checkLockout();
@@ -1978,7 +1983,7 @@ async function doLogin() {
 
     btn.disabled = true; btn.textContent = 'Đang xác thực...';
     try {
-      const res  = await fetchWithTimeout(GAS_URL + '?action=verify&name=', {} + encodeURIComponent(student.ten) + '&pw=' + encodeURIComponent(pw));
+      const res  = await fetchWithTimeout(GAS_URL + '?action=verify&name=' + encodeURIComponent(student.ten) + '&pw=' + encodeURIComponent(pw), {});
       const json = await res.json();
       if (json.valid) {
         localStorage.removeItem(LOCK_KEY); localStorage.removeItem(ATTEMPT_KEY);
@@ -2012,14 +2017,14 @@ async function doLogin() {
 
     btn.disabled = true; btn.textContent = 'Đang xác thực...';
     try {
-      const res  = await fetchWithTimeout(GAS_URL + '?action=verifyGV&name=', {} + encodeURIComponent(gv.ten) + '&pw=' + encodeURIComponent(pw));
+      const res  = await fetchWithTimeout(GAS_URL + '?action=verifyGV&name=' + encodeURIComponent(gv.ten) + '&pw=' + encodeURIComponent(pw), {});
       const json = await res.json();
       if (json.valid) {
         localStorage.removeItem(LOCK_KEY); localStorage.removeItem(ATTEMPT_KEY);
         sessionStorage.setItem(SESSION_KEY, JSON.stringify({ ...gv, role: 'gv' }));
         await enterAppGV(gv, true);
-      // Mở tất cả grading sections ngay khi GV đăng nhập
-      document.querySelectorAll('.grading-section').forEach(s => s.classList.add('open'));
+        // Mở tất cả grading sections ngay khi GV đăng nhập
+        document.querySelectorAll('.grading-section').forEach(s => s.classList.add('open'));
       } else {
         const att = (parseInt(localStorage.getItem(ATTEMPT_KEY)) || 0) + 1;
         localStorage.setItem(ATTEMPT_KEY, att);
