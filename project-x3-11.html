@@ -246,8 +246,8 @@ tbody td textarea:focus,tbody td input[type="text"]:focus{background:#fff}
 .login-lock{font-size:13px;color:#92400E;font-weight:600;background:var(--amber-light);padding:8px 12px;border-radius:var(--radius-sm);text-align:center}
 .session-bar{display:none!important}
 /* GV AUTH inside grading */
-.gv-auth-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px dashed #DDD6FE;margin-top:8px}
-.gv-pw-input{padding:7px 12px;border:1.5px solid #DDD6FE;border-radius:var(--radius-sm);font-family:inherit;font-size:13px;width:160px;color:var(--ink)}
+.gv-auth-row{display:flex;align-items:center;gap:10px;padding:12px 0;border-top:2px solid #DDD6FE;margin-top:10px;flex-wrap:wrap}
+.gv-pw-input{padding:8px 12px;border:1.5px solid #7C3AED;border-radius:var(--radius-sm);font-family:inherit;font-size:13px;width:200px;color:var(--ink);background:#FAF5FF}
 .gv-pw-input:focus{outline:none;border-color:#7C3AED}
 .gv-auth-err{font-size:12px;color:var(--red);font-weight:600}
 /* ROLE TOGGLE */
@@ -267,7 +267,7 @@ tbody td textarea:focus,tbody td input[type="text"]:focus{background:#fff}
 /* session bar GV */
 .session-bar.gv-mode{background:#EDE9FE;border-bottom-color:#DDD6FE;color:#4C1D95}
 /* GV đã đăng nhập: ẩn ô nhập mã GV (đã verify khi login) */
-body.gv-logged .gv-auth-row{display:none!important}
+/* gv-auth-row hiện khi GV logged để nhập mã chấm điểm (GB!A2) */
 /* GV: nút chấm bài luôn hiện */
 body.gv-logged .btn-grade{display:inline-flex!important}
 </style>
@@ -1761,8 +1761,8 @@ function buildGradingHTML(hl) {
         '<textarea id="grade-comment-' + id + '" class="grade-comment" placeholder="Nhận xét, góp ý cho học sinh..."></textarea>' +
       '</div>' +
       '<div class="gv-auth-row" id="gvauth-' + id + '">' +
-        '<label style="font-size:12px;font-weight:600;color:#4C1D95;white-space:nowrap">&#x1F511; Mã GV:</label>' +
-        '<input type="password" id="gv-pw-' + id + '" class="gv-pw-input" placeholder="Nhập mã bí mật GV..."/>' +
+        '<label style="font-size:12px;font-weight:600;color:#4C1D95;white-space:nowrap">&#x1F511; Mã chấm điểm (GB):</label>' +
+        '<input type="password" id="gv-pw-' + id + '" class="gv-pw-input" placeholder="Nhập mã chấm điểm..."/>' +
         '<span id="gv-err-' + id + '" class="gv-auth-err"></span>' +
       '</div>' +
     '</div>' +
@@ -2440,16 +2440,12 @@ function restoreGrading(hlId, rec) {
 // ═══════════════════════════════════════════════════════════
 async function gradeHL(hlId) {
   // Lấy GV password: từ session (GV đã login) hoặc từ input field
-  let gvPw = '';
-  if (document.body.classList.contains('gv-logged')) {
-    try { gvPw = (JSON.parse(sessionStorage.getItem('x3_session') || '{}')||{})._pw || ''; } catch(e) {}
-  }
+  // Lấy mã chấm điểm từ input (GB!A2) — khác mật khẩu đăng nhập
+  const gvPwEl = document.getElementById('gv-pw-' + hlId);
+  const gvPw = gvPwEl ? gvPwEl.value.trim() : '';
   if (!gvPw) {
-    const el = document.getElementById('gv-pw-' + hlId);
-    gvPw = el ? el.value.trim() : '';
-  }
-  if (!gvPw) {
-    showToast('❌ Không tìm thấy mã GV — vui lòng đăng xuất và đăng nhập lại', 'error');
+    if (gvPwEl) gvPwEl.focus();
+    showToast('❌ Vui lòng nhập mã chấm điểm (GB)', 'error');
     return;
   }
 
