@@ -1766,7 +1766,7 @@ function buildPanelHeaderHTML(hl) {
       '<div>' +
         '<div style="font-size:18px;font-weight:700;color:var(--navy)">' + lbl + '</div>' +
         '<div style="display:flex;flex-direction:column;gap:3px;margin-top:4px">' +
-          '<div id="submit-badge-' + id + '" class="submit-badge">&#9679; Chưa lưu</div>' +
+          '<div id="submit-badge-' + id + '" class="submit-badge">● Chưa làm</div>' +
           '<div id="grade-badge-' + id + '" class="grade-badge-hs">' +
             '<span>&#9733; Đã chấm</span>' +
             '<span class="gb-score" id="gb-score-' + id + '">—</span>' +
@@ -2316,7 +2316,8 @@ function restorePanel(hlId, data, locked, rec) {
     _sbadge.className = 'submit-badge' + (_tt === 'submitted' || _tt === 'graded' ? ' done' : '');
     if      (!_tt || _tt === 'unsaved') _sbadge.textContent = '● Chưa làm';
     else if (_tt === 'draft')           _sbadge.textContent = '● Đang làm · Đã lưu nháp lúc ' + (rec.cap_nhat || '');
-    else                                _sbadge.textContent = '✓ Đã nộp lúc ' + _sub;
+    else if (_tt === 'submitted')       _sbadge.textContent = '✓ Đã nộp lúc ' + _sub;
+    else if (_tt === 'graded')          _sbadge.textContent = '✓ Đã nộp lúc ' + _sub;
   }
   // Cập nhật grade-badge-hs (box dưới: trạng thái chấm bài)
   const _gbScore   = document.getElementById('gb-score-'   + hlId);
