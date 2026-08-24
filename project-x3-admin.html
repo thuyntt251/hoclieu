@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-cache,no-store,must-revalidate">
+<title>PROJECT X3 · Quản lý dữ liệu</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0F2B5B;--blue:#1B4FD8;--purple:#4C1D95;
+  --slate:#64748B;--border:#E2E8F0;--bg:#F8FAFF;
+  --green:#059669;--orange:#D97706;--red:#DC2626;
+  --radius:10px;--shadow:0 2px 12px rgba(15,43,91,.10);
+}
+body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:#1E293B;min-height:100vh;font-size:13px}
+
+/* ── HEADER ── */
+.header{background:var(--navy);color:#fff;padding:14px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.header-title{font-size:16px;font-weight:700;letter-spacing:.3px}
+.header-sub{font-size:11px;opacity:.65;margin-top:2px}
+.header-right{display:flex;align-items:center;gap:10px}
+#loginChip{display:none;background:rgba(255,255,255,.15);border-radius:20px;padding:5px 14px;font-size:12px;font-weight:600}
+#btnLogout{display:none;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);color:#fff;padding:5px 14px;border-radius:6px;font-size:12px;cursor:pointer;font-family:inherit}
+#btnLogout:hover{background:rgba(255,255,255,.2)}
+
+/* ── LOGIN ── */
+#loginWrap{display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 56px)}
+.login-card{background:#fff;border-radius:16px;padding:36px 40px;width:400px;box-shadow:var(--shadow)}
+.login-title{font-size:17px;font-weight:700;color:var(--navy);margin-bottom:4px}
+.login-sub{font-size:12px;color:var(--slate);margin-bottom:24px}
+.field{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+.field label{font-size:11px;font-weight:700;color:#475569;text-transform:uppercase;letter-spacing:.7px}
+.field select,.field input{padding:9px 12px;border:1.5px solid var(--border);border-radius:7px;font-size:13px;font-family:inherit;color:#1E293B;background:#fff}
+.field select:focus,.field input:focus{outline:none;border-color:var(--blue)}
+.btn-primary{width:100%;padding:11px;background:var(--blue);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:4px}
+.btn-primary:hover{background:#1440B0}
+.login-err{font-size:12px;color:var(--red);min-height:16px;margin-top:8px;text-align:center}
+
+/* ── MAIN ── */
+#mainWrap{display:none;padding:20px 28px 40px}
+
+/* ── FILTER BAR ── */
+.filter-bar{background:#fff;border-radius:var(--radius);padding:16px 20px;box-shadow:var(--shadow);margin-bottom:18px}
+.filter-title{font-size:12px;font-weight:700;color:var(--slate);text-transform:uppercase;letter-spacing:.7px;margin-bottom:12px}
+.filter-grid{display:grid;grid-template-columns:repeat(5,1fr) auto;gap:10px;align-items:end}
+.filter-field label{font-size:11px;font-weight:600;color:var(--slate);display:block;margin-bottom:4px}
+.filter-field select,.filter-field input{width:100%;padding:7px 10px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-family:inherit;color:#1E293B}
+.filter-field select:focus,.filter-field input:focus{outline:none;border-color:var(--blue)}
+.filter-actions{display:flex;gap:6px;align-items:flex-end}
+.btn-filter{padding:7px 16px;border:none;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap}
+.btn-filter.apply{background:var(--blue);color:#fff}
+.btn-filter.reset{background:#F1F5F9;color:var(--slate);border:1.5px solid var(--border)}
+.btn-filter.apply:hover{background:#1440B0}
+.btn-filter.reset:hover{background:#E2E8F0}
+
+/* ── STATS ── */
+.stats-bar{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.stat-chip{background:#fff;border-radius:8px;padding:8px 16px;font-size:12px;font-weight:600;box-shadow:0 1px 4px rgba(15,43,91,.08);display:flex;gap:6px;align-items:center}
+.stat-chip .val{font-size:18px;font-weight:800;color:var(--navy)}
+.stat-chip.s-draft .val{color:var(--orange)}
+.stat-chip.s-submitted .val{color:var(--blue)}
+.stat-chip.s-graded .val{color:var(--purple)}
+
+/* ── TABLE ── */
+.table-wrap{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+.table-header{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-bottom:1px solid var(--border)}
+.table-count{font-size:12px;color:var(--slate)}
+.btn-export{padding:6px 14px;background:#F1F5F9;border:1.5px solid var(--border);border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;color:var(--slate)}
+.btn-export:hover{background:#E2E8F0}
+
+table{width:100%;border-collapse:collapse}
+thead tr{background:#F8FAFF}
+th{padding:9px 12px;text-align:left;font-size:11px;font-weight:700;color:var(--slate);text-transform:uppercase;letter-spacing:.6px;border-bottom:2px solid var(--border);white-space:nowrap}
+td{padding:0;border-bottom:1px solid #F1F5F9;vertical-align:top}
+tbody tr:hover{background:#FAFCFF}
+tbody tr.unlocked-row{background:#FFFBEB}
+tbody tr.unlocked-row:hover{background:#FEF3C7}
+
+.cell{padding:9px 12px;font-size:12.5px}
+.cell-name{font-weight:600;color:var(--navy)}
+.cell-edit{width:100%;border:none;background:transparent;font-size:12.5px;font-family:inherit;color:#1E293B;resize:none;padding:0;min-height:22px;line-height:1.4}
+.cell-edit:focus{outline:2px solid var(--blue);border-radius:3px;background:#fff}
+
+/* status badge */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700;white-space:nowrap}
+.badge.draft{background:#FEF3C7;color:#92400E}
+.badge.submitted{background:#DBEAFE;color:#1E40AF}
+.badge.graded{background:#EDE9FE;color:#4C1D95}
+
+/* score */
+.score-display{font-weight:700;color:var(--purple)}
+
+/* action cell */
+.action-cell{padding:8px 10px;display:flex;flex-direction:column;gap:5px;min-width:90px}
+.btn-unlock{padding:4px 10px;background:#FEF3C7;border:1.5px solid #FDE68A;border-radius:5px;font-size:11px;font-weight:700;cursor:pointer;color:#92400E;font-family:inherit;white-space:nowrap}
+.btn-unlock:hover{background:#FDE68A}
+.btn-save-row{padding:4px 10px;background:#D1FAE5;border:1.5px solid #6EE7B7;border-radius:5px;font-size:11px;font-weight:700;cursor:pointer;color:#065F46;font-family:inherit;white-space:nowrap;display:none}
+.btn-save-row:hover{background:#A7F3D0}
+.btn-cancel-row{padding:4px 10px;background:#F1F5F9;border:1.5px solid var(--border);border-radius:5px;font-size:11px;font-weight:600;cursor:pointer;color:var(--slate);font-family:inherit;white-space:nowrap;display:none}
+.btn-cancel-row:hover{background:#E2E8F0}
+.btn-history{padding:4px 10px;background:#EDE9FE;border:1.5px solid #DDD6FE;border-radius:5px;font-size:11px;font-weight:600;cursor:pointer;color:var(--purple);font-family:inherit;white-space:nowrap}
+.btn-history:hover{background:#DDD6FE}
+
+/* change log inline */
+.change-log{font-size:10.5px;color:var(--slate);margin-top:3px;font-style:italic;display:none}
+.change-log.has-changes{display:block;color:#D97706}
+
+/* history panel (slide in) */
+.history-panel{display:none;background:#FFFBEB;border-top:1px dashed #FDE68A;padding:10px 14px}
+.history-panel.open{display:block}
+.history-item{font-size:11px;color:#78350F;margin-bottom:4px;line-height:1.5}
+.history-item .old{text-decoration:line-through;color:#B45309;opacity:.7}
+.history-item .new{color:#065F46;font-weight:600}
+.history-empty{font-size:11px;color:var(--slate);font-style:italic}
+
+/* empty state */
+.empty-state{text-align:center;padding:60px 20px;color:var(--slate)}
+.empty-icon{font-size:40px;opacity:.3;margin-bottom:8px}
+
+/* loading overlay */
+#loader{display:none;position:fixed;inset:0;background:rgba(15,43,91,.18);z-index:999;align-items:center;justify-content:center}
+#loader.show{display:flex}
+.loader-box{background:#fff;border-radius:12px;padding:24px 36px;text-align:center;box-shadow:var(--shadow)}
+.loader-spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 10px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* toast */
+#toast{position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:6px}
+.toast-item{padding:10px 18px;border-radius:8px;font-size:13px;font-weight:600;box-shadow:var(--shadow);animation:toastIn .2s ease}
+.toast-item.success{background:#D1FAE5;color:#065F46;border:1px solid #6EE7B7}
+.toast-item.error{background:#FEE2E2;color:#991B1B;border:1px solid #FCA5A5}
+@keyframes toastIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+@media(max-width:900px){
+  .filter-grid{grid-template-columns:1fr 1fr;grid-template-rows:auto}
+  th:nth-child(n+6),td:nth-child(n+6){display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div>
+    <div class="header-title">PROJECT X3 · Quản lý dữ liệu bài làm</div>
+    <div class="header-sub">PDP FSchools · Dành cho Giáo viên</div>
+  </div>
+  <div class="header-right">
+    <span id="loginChip"></span>
+    <button id="btnLogout" onclick="doLogout()">Đăng xuất</button>
+  </div>
+</div>
+
+<!-- LOADER -->
+<div id="loader"><div class="loader-box"><div class="loader-spinner"></div><div style="font-size:13px;color:var(--slate)">Đang xử lý...</div></div></div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<!-- LOGIN -->
+<div id="loginWrap">
+  <div class="login-card">
+    <div class="login-title">🔐 Đăng nhập Giáo viên</div>
+    <div class="login-sub">Trang quản lý dữ liệu · PROJECT X3</div>
+    <div class="field">
+      <label>Họ và tên GV</label>
+      <select id="login_name"><option value="">-- Đang tải... --</option></select>
+    </div>
+    <div class="field">
+      <label>Mật khẩu</label>
+      <input type="password" id="login_pw" placeholder="Nhập mật khẩu..." onkeydown="if(e.key==='Enter')doLogin()">
+    </div>
+    <button class="btn-primary" onclick="doLogin()">Đăng nhập →</button>
+    <div class="login-err" id="login_err"></div>
+    <div id="login_status" style="font-size:11px;color:var(--slate);text-align:center;margin-top:8px">Đang tải danh sách...</div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div id="mainWrap">
+  <!-- FILTER -->
+  <div class="filter-bar">
+    <div class="filter-title">🔍 Lọc dữ liệu</div>
+    <div class="filter-grid">
+      <div class="filter-field">
+        <label>Lớp</label>
+        <select id="f_lop"><option value="">Tất cả lớp</option></select>
+      </div>
+      <div class="filter-field">
+        <label>Bài học</label>
+        <select id="f_bai"><option value="">Tất cả bài</option></select>
+      </div>
+      <div class="filter-field">
+        <label>Học liệu</label>
+        <select id="f_hl"><option value="">Tất cả HL</option></select>
+      </div>
+      <div class="filter-field">
+        <label>Trạng thái</label>
+        <select id="f_tt">
+          <option value="">Tất cả</option>
+          <option value="draft">Nháp</option>
+          <option value="submitted">Đã nộp</option>
+          <option value="graded">Đã chấm</option>
+        </select>
+      </div>
+      <div class="filter-field">
+        <label>Tìm tên HS</label>
+        <input type="text" id="f_ten" placeholder="Nhập tên...">
+      </div>
+      <div class="filter-actions">
+        <button class="btn-filter apply" onclick="applyFilter()">Lọc</button>
+        <button class="btn-filter reset" onclick="resetFilter()">Reset</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-bar" id="statsBar"></div>
+
+  <!-- TABLE -->
+  <div class="table-wrap">
+    <div class="table-header">
+      <span class="table-count" id="tableCount">— dòng</span>
+      <button class="btn-export" onclick="exportCSV()">⬇ Xuất CSV</button>
+    </div>
+    <div style="overflow-x:auto">
+      <table id="dataTable">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Họ và tên</th>
+            <th>Lớp</th>
+            <th>Bài</th>
+            <th>Học liệu</th>
+            <th>Trạng thái</th>
+            <th>Điểm</th>
+            <th>Nộp lúc</th>
+            <th>Chấm lúc</th>
+            <th style="min-width:90px">Thao tác</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+    <div id="emptyState" class="empty-state" style="display:none">
+      <div class="empty-icon">📭</div>
+      <div style="font-weight:600;color:var(--navy)">Không có dữ liệu</div>
+      <div style="font-size:12px;margin-top:4px">Thử thay đổi bộ lọc hoặc tải lại dữ liệu</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbzVFQe8LYRLj8D1QM68Tv_-JyzA5T9XnzWnXI9bzHk30lPPP6xyl3vOxHIMlveUU9o/exec';
+const ADMIN_SESSION = 'x3_admin_session';
+
+let allRecords  = [];   // raw data từ GAS
+let filtered    = [];   // sau filter
+let currentGV   = null;
+let pendingEdits= {};   // rowIndex → {field: {old, new}}
+
+// ── UTILS ────────────────────────────────────────────────────
+function showLoader(){ document.getElementById('loader').classList.add('show'); }
+function hideLoader(){ document.getElementById('loader').classList.remove('show'); }
+
+function showToast(msg, type='success'){
+  const t = document.createElement('div');
+  t.className = 'toast-item ' + type;
+  t.textContent = msg;
+  document.getElementById('toast').appendChild(t);
+  setTimeout(() => t.remove(), 3200);
+}
+
+function fetchWithTimeout(url, opts={}, ms=15000){
+  const ctrl = new AbortController();
+  const tid  = setTimeout(() => ctrl.abort(), ms);
+  return fetch(url, {...opts, signal: ctrl.signal}).finally(() => clearTimeout(tid));
+}
+
+function statusBadge(s){
+  const map = {draft:'Nháp',submitted:'Đã nộp',graded:'Đã chấm'};
+  return `<span class="badge ${s||'draft'}">${map[s]||s||'—'}</span>`;
+}
+
+// ── AUTH ─────────────────────────────────────────────────────
+async function initLogin(){
+  try{
+    const res  = await fetchWithTimeout(GAS_URL + '?action=listGV');
+    const json = await res.json();
+    const sel  = document.getElementById('login_name');
+    sel.innerHTML = '<option value="">-- Chọn GV --</option>';
+    (json.teachers||[]).forEach(t => {
+      const o = document.createElement('option');
+      o.value = t.ten; o.textContent = t.ten;
+      sel.appendChild(o);
+    });
+    document.getElementById('login_status').textContent =
+      `Tìm thấy ${(json.teachers||[]).length} giáo viên`;
+  } catch(e){
+    document.getElementById('login_status').textContent = '❌ Không kết nối được server';
+  }
+}
+
+async function doLogin(){
+  const name = document.getElementById('login_name').value.trim();
+  const pw   = document.getElementById('login_pw').value.trim();
+  const err  = document.getElementById('login_err');
+  if(!name){ err.textContent='Vui lòng chọn tên GV'; return; }
+  if(!pw)  { err.textContent='Vui lòng nhập mật khẩu'; return; }
+  err.textContent='';
+  showLoader();
+  try{
+    const res  = await fetchWithTimeout(GAS_URL + '?action=verifyGV&name=' + encodeURIComponent(name) + '&pw=' + encodeURIComponent(pw));
+    const json = await res.json();
+    if(json.valid){
+      currentGV = { ten: name, pw };
+      sessionStorage.setItem(ADMIN_SESSION, JSON.stringify(currentGV));
+      enterApp();
+    } else {
+      err.textContent = '❌ Mật khẩu không đúng';
+    }
+  } catch(e){
+    err.textContent = '❌ Lỗi kết nối: ' + e.message;
+  } finally { hideLoader(); }
+}
+
+function doLogout(){
+  if(!confirm('Đăng xuất?')) return;
+  sessionStorage.removeItem(ADMIN_SESSION);
+  location.reload();
+}
+
+// ── ENTER APP ────────────────────────────────────────────────
+async function enterApp(){
+  document.getElementById('loginWrap').style.display = 'none';
+  document.getElementById('mainWrap').style.display  = 'block';
+  document.getElementById('loginChip').textContent   = '👩‍🏫 ' + currentGV.ten;
+  document.getElementById('loginChip').style.display = 'block';
+  document.getElementById('btnLogout').style.display = 'block';
+  await loadAllData();
+}
+
+// ── LOAD DATA ─────────────────────────────────────────────────
+async function loadAllData(){
+  showLoader();
+  try{
+    // GAS action=admin_load: lấy toàn bộ DuLieuBaiLam
+    const res  = await fetchWithTimeout(GAS_URL + '?action=adminLoad&gv_pw=' + encodeURIComponent(currentGV.pw));
+    const json = await res.json();
+    if(json.error){ showToast('❌ ' + json.error, 'error'); hideLoader(); return; }
+    allRecords = json.records || [];
+    buildFilterOptions();
+    applyFilter();
+    showToast(`✓ Đã tải ${allRecords.length} dòng`, 'success');
+  } catch(e){
+    showToast('❌ Lỗi tải dữ liệu: ' + e.message, 'error');
+  } finally { hideLoader(); }
+}
+
+// ── FILTER OPTIONS ────────────────────────────────────────────
+function buildFilterOptions(){
+  const lops = [...new Set(allRecords.map(r=>r.lop).filter(Boolean))].sort();
+  const bais = [...new Set(allRecords.map(r=>r.bai).filter(Boolean))].sort();
+  const hls  = [...new Set(allRecords.map(r=>r.hoc_lieu).filter(Boolean))].sort();
+
+  fillSelect('f_lop', lops, 'Tất cả lớp');
+  fillSelect('f_bai', bais, 'Tất cả bài');
+  fillSelect('f_hl',  hls,  'Tất cả HL');
+}
+
+function fillSelect(id, vals, placeholder){
+  const sel = document.getElementById(id);
+  const cur = sel.value;
+  sel.innerHTML = `<option value="">${placeholder}</option>`;
+  vals.forEach(v => {
+    const o = document.createElement('option');
+    o.value = v; o.textContent = v;
+    if(v===cur) o.selected=true;
+    sel.appendChild(o);
+  });
+}
+
+// ── FILTER ────────────────────────────────────────────────────
+function applyFilter(){
+  const fLop = document.getElementById('f_lop').value;
+  const fBai = document.getElementById('f_bai').value;
+  const fHL  = document.getElementById('f_hl').value;
+  const fTT  = document.getElementById('f_tt').value;
+  const fTen = document.getElementById('f_ten').value.trim().toLowerCase();
+
+  filtered = allRecords.filter(r => {
+    if(fLop && r.lop      !== fLop) return false;
+    if(fBai && r.bai      !== fBai) return false;
+    if(fHL  && r.hoc_lieu !== fHL)  return false;
+    if(fTT  && r.trang_thai !== fTT) return false;
+    if(fTen && !r.ten.toLowerCase().includes(fTen)) return false;
+    return true;
+  });
+
+  renderStats();
+  renderTable();
+}
+
+function resetFilter(){
+  ['f_lop','f_bai','f_hl','f_tt'].forEach(id => document.getElementById(id).value='');
+  document.getElementById('f_ten').value='';
+  applyFilter();
+}
+
+// ── STATS ────────────────────────────────────────────────────
+function renderStats(){
+  const total     = filtered.length;
+  const draft     = filtered.filter(r=>r.trang_thai==='draft').length;
+  const submitted = filtered.filter(r=>r.trang_thai==='submitted').length;
+  const graded    = filtered.filter(r=>r.trang_thai==='graded').length;
+  const avgScore  = (() => {
+    const gs = filtered.filter(r=>r.grade_score!==''&&r.grade_score!==null&&r.grade_score!==undefined);
+    if(!gs.length) return null;
+    return (gs.reduce((a,r)=>a+parseFloat(r.grade_score),0)/gs.length).toFixed(1);
+  })();
+
+  document.getElementById('statsBar').innerHTML = `
+    <div class="stat-chip"><span class="val">${total}</span> tổng dòng</div>
+    <div class="stat-chip s-draft"><span class="val">${draft}</span> nháp</div>
+    <div class="stat-chip s-submitted"><span class="val">${submitted}</span> đã nộp</div>
+    <div class="stat-chip s-graded"><span class="val">${graded}</span> đã chấm</div>
+    ${avgScore!==null ? `<div class="stat-chip"><span class="val">${avgScore}</span> điểm TB</div>` : ''}
+  `;
+}
+
+// ── TABLE ─────────────────────────────────────────────────────
+function renderTable(){
+  const tbody = document.getElementById('tableBody');
+  document.getElementById('tableCount').textContent = `${filtered.length} dòng`;
+
+  if(!filtered.length){
+    tbody.innerHTML='';
+    document.getElementById('emptyState').style.display='block';
+    return;
+  }
+  document.getElementById('emptyState').style.display='none';
+
+  tbody.innerHTML = filtered.map((r,i) => buildRow(r,i)).join('');
+}
+
+function buildRow(r, idx){
+  const ri = r.rowIndex;
+  const edits = pendingEdits[ri] || {};
+  const isUnlocked = !!edits._unlocked;
+  const hasChanges = Object.keys(edits).filter(k=>k!=='_unlocked').length > 0;
+
+  const scoreVal = r.grade_score!==''&&r.grade_score!==null&&r.grade_score!==undefined
+    ? `<span class="score-display">${r.grade_score}/10</span>` : '—';
+
+  const commentVal = r.grade_comment || '';
+  const statusVal  = r.trang_thai || '';
+
+  return `
+  <tr id="row-${ri}" class="${isUnlocked?'unlocked-row':''}">
+    <td class="cell" style="color:var(--slate);font-size:11px">${idx+1}</td>
+    <td class="cell cell-name">${esc(r.ten)}</td>
+    <td class="cell">${esc(r.lop)}</td>
+    <td class="cell" style="font-size:11.5px">${esc(r.bai||'')}</td>
+    <td class="cell" style="font-size:11.5px;color:var(--purple);font-weight:600">${esc(r.hoc_lieu||'')}</td>
+    <td class="cell">
+      ${isUnlocked
+        ? `<select id="tt-${ri}" class="cell-edit" style="width:auto;padding:2px 6px;border:1.5px solid var(--border);border-radius:4px" onchange="markChanged(${ri},'trang_thai',this.value)">
+            <option value="draft" ${statusVal==='draft'?'selected':''}>Nháp</option>
+            <option value="submitted" ${statusVal==='submitted'?'selected':''}>Đã nộp</option>
+            <option value="graded" ${statusVal==='graded'?'selected':''}>Đã chấm</option>
+           </select>`
+        : statusBadge(statusVal)
+      }
+    </td>
+    <td class="cell">
+      ${isUnlocked
+        ? `<input type="number" id="gs-${ri}" class="cell-edit" style="width:60px;border:1.5px solid var(--border);border-radius:4px;padding:2px 6px" min="0" max="10" step="0.5" value="${r.grade_score||''}" onchange="markChanged(${ri},'grade_score',this.value)">`
+        : scoreVal
+      }
+    </td>
+    <td class="cell" style="font-size:11px;color:var(--slate);white-space:nowrap">${r.submitted_at||'—'}</td>
+    <td class="cell" style="font-size:11px;color:var(--slate);white-space:nowrap">${r.graded_at||'—'}</td>
+    <td class="action-cell">
+      <button class="btn-unlock" id="btn-unlock-${ri}" onclick="unlockRow(${ri})" ${isUnlocked?'style="display:none"':''}>🔓 Mở khóa</button>
+      <button class="btn-save-row" id="btn-save-${ri}" onclick="saveRow(${ri})" style="${isUnlocked&&hasChanges?'display:block':'display:none'}">💾 Lưu</button>
+      <button class="btn-cancel-row" id="btn-cancel-${ri}" onclick="cancelRow(${ri})" style="${isUnlocked?'display:block':'display:none'}">✕ Huỷ</button>
+      <button class="btn-history" onclick="toggleHistory(${ri})">📋 LS</button>
+    </td>
+  </tr>
+  <tr id="history-${ri}">
+    <td colspan="10" style="padding:0">
+      <div class="history-panel" id="hp-${ri}">
+        ${buildHistoryHTML(r)}
+      </div>
+    </td>
+  </tr>`;
+}
+
+function buildHistoryHTML(r){
+  const h = r.edit_history || [];
+  if(!h.length) return '<div class="history-empty">Chưa có thay đổi nào được ghi lại.</div>';
+  return h.map(e => `
+    <div class="history-item">
+      <span style="color:var(--slate)">${e.time||''} · ${e.field||''} · bởi ${e.by||'?'}</span><br>
+      <span class="old">${esc(String(e.old||''))}</span>
+      → <span class="new">${esc(String(e.new||''))}</span>
+    </div>`).join('');
+}
+
+function esc(s){
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── ROW ACTIONS ───────────────────────────────────────────────
+function unlockRow(ri){
+  if(!pendingEdits[ri]) pendingEdits[ri] = {};
+  pendingEdits[ri]._unlocked = true;
+  // Re-render chỉ row đó
+  const r = allRecords.find(x=>x.rowIndex===ri);
+  if(r) rerenderRow(r, filtered.indexOf(r));
+}
+
+function cancelRow(ri){
+  delete pendingEdits[ri];
+  const r = allRecords.find(x=>x.rowIndex===ri);
+  if(r) rerenderRow(r, filtered.indexOf(r));
+}
+
+function markChanged(ri, field, newVal){
+  if(!pendingEdits[ri]) pendingEdits[ri]={_unlocked:true};
+  const r = allRecords.find(x=>x.rowIndex===ri);
+  const oldVal = r ? r[field] : '';
+  if(String(newVal) !== String(oldVal||'')){
+    pendingEdits[ri][field] = { old: oldVal, new: newVal };
+  } else {
+    delete pendingEdits[ri][field];
+  }
+  // Show/hide save button
+  const hasChanges = Object.keys(pendingEdits[ri]).filter(k=>k!=='_unlocked').length > 0;
+  const saveBtn = document.getElementById('btn-save-'+ri);
+  if(saveBtn) saveBtn.style.display = hasChanges ? 'block' : 'none';
+}
+
+function toggleHistory(ri){
+  const hp = document.getElementById('hp-'+ri);
+  if(hp) hp.classList.toggle('open');
+}
+
+function rerenderRow(r, idx){
+  const tr = document.getElementById('row-'+r.rowIndex);
+  if(!tr) return;
+  const wrapper = document.createElement('tbody');
+  wrapper.innerHTML = buildRow(r, idx);
+  const newTr = wrapper.querySelector('tr');
+  const newHr = wrapper.querySelectorAll('tr')[1];
+  tr.replaceWith(newTr);
+  const oldHr = document.getElementById('history-'+r.rowIndex);
+  if(oldHr && newHr) oldHr.replaceWith(newHr);
+}
+
+// ── SAVE ROW ──────────────────────────────────────────────────
+async function saveRow(ri){
+  const edits = pendingEdits[ri] || {};
+  const changes = Object.entries(edits).filter(([k])=>k!=='_unlocked');
+  if(!changes.length){ showToast('Không có thay đổi nào', 'error'); return; }
+
+  const r = allRecords.find(x=>x.rowIndex===ri);
+  if(!r){ showToast('Không tìm thấy dòng', 'error'); return; }
+
+  showLoader();
+  try{
+    // Build payload: tên, lop, bai, hoc_lieu + các field thay đổi + gv_pw
+    const payload = {
+      action: 'adminEdit',
+      ten:      r.ten,
+      lop:      r.lop,
+      bai:      r.bai,
+      hoc_lieu: r.hoc_lieu,
+      gv_pw:    currentGV.pw,
+      changes:  changes.map(([field,{old:o,new:n}]) => ({ field, old:o, new:n })),
+      edited_by: currentGV.ten
+    };
+
+    const res  = await fetchWithTimeout(GAS_URL, {
+      method:'POST',
+      headers:{'Content-Type':'text/plain'},
+      body: JSON.stringify(payload)
+    });
+    const json = await res.json();
+
+    if(json.ok){
+      // Cập nhật local record
+      changes.forEach(([field,{new:n}]) => { r[field] = n; });
+      if(!r.edit_history) r.edit_history = [];
+      changes.forEach(([field,{old:o,new:n}]) => {
+        r.edit_history.unshift({
+          time:  json.saved_at || new Date().toLocaleString('vi-VN',{timeZone:'Asia/Ho_Chi_Minh'}),
+          field, old: o, new: n, by: currentGV.ten
+        });
+      });
+      delete pendingEdits[ri];
+      rerenderRow(r, filtered.indexOf(r));
+      showToast('✓ Đã lưu thay đổi', 'success');
+    } else {
+      showToast('❌ ' + (json.error||'Lỗi không xác định'), 'error');
+    }
+  } catch(e){
+    showToast('❌ Lỗi kết nối: ' + e.message, 'error');
+  } finally { hideLoader(); }
+}
+
+// ── EXPORT CSV ────────────────────────────────────────────────
+function exportCSV(){
+  const headers = ['ten','lop','bai','hoc_lieu','trang_thai','grade_score','grade_comment','submitted_at','graded_at'];
+  const labels  = ['Họ và tên','Lớp','Bài','Học liệu','Trạng thái','Điểm','Nhận xét','Nộp lúc','Chấm lúc'];
+  const rows    = [labels.join(',')];
+  filtered.forEach(r => {
+    rows.push(headers.map(h => '"' + String(r[h]||'').replace(/"/g,'""') + '"').join(','));
+  });
+  const blob = new Blob(['\uFEFF' + rows.join('\r\n')], {type:'text/csv;charset=utf-8'});
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href=url; a.download='X3_DuLieu_' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click(); URL.revokeObjectURL(url);
+}
+
+// ── ENTER ON PW ──────────────────────────────────────────────
+document.getElementById('login_pw').addEventListener('keydown', e => {
+  if(e.key==='Enter') doLogin();
+});
+
+// ── INIT ──────────────────────────────────────────────────────
+(async function(){
+  const saved = sessionStorage.getItem(ADMIN_SESSION);
+  if(saved){
+    try{
+      currentGV = JSON.parse(saved);
+      await enterApp();
+      return;
+    } catch(e){ sessionStorage.removeItem(ADMIN_SESSION); }
+  }
+  await initLogin();
+})();
+</script>
+</body>
+</html>
