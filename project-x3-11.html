@@ -131,8 +131,8 @@ body.gv-logged .hl-panel.graded .gi-comment-row{display:block}
 .x3-grade.v-khongdat{background:#FEE2E2;border-color:#FCA5A5;color:#DC2626}
 .x3-grade.v-travề{background:#FEF3C7;border-color:#FDE68A;color:#92400E}
 /* Comment row */
-.x3-comment{font-size:12px;color:#5B21B6;font-style:italic;padding:2px 14px;display:none}
-.hl-panel.graded .x3-comment{display:block}
+.x3-comment{font-size:12px;color:#5B21B6;font-style:italic;display:none}
+.hl-panel.graded .x3-comment{display:inline}
 /* Ẩn với GV (GV xem grade-info-bar) */
 body.gv-logged .x3-status-bar{display:none!important}
 /* Icon */
@@ -1825,13 +1825,15 @@ function buildPanelHeaderHTML(hl) {
           '<span class="x3-label" id="sb-label-' + id + '">Chưa làm</span>' +
           '<span class="x3-time" id="sb-time-' + id + '"></span>' +
         '</div>' +
-        '<div class="x3-status-row x3-grade" id="grade-badge-' + id + '">' +
-          '<span class="x3-icon" id="gb-icon-' + id + '">&#8987;</span>' +
-          '<span class="x3-label" id="gb-label-' + id + '">Đợi chấm</span>' +
-          '<span class="x3-score" id="gb-score-' + id + '"></span>' +
-          '<span class="x3-time" id="gb-time-' + id + '"></span>' +
+        '<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">' +
+          '<div class="x3-status-row x3-grade" id="grade-badge-' + id + '">' +
+            '<span class="x3-icon" id="gb-icon-' + id + '">&#8987;</span>' +
+            '<span class="x3-label" id="gb-label-' + id + '">Đợi chấm</span>' +
+            '<span class="x3-score" id="gb-score-' + id + '"></span>' +
+            '<span class="x3-time" id="gb-time-' + id + '"></span>' +
+          '</div>' +
+          '<div class="x3-comment" id="gb-comment-' + id + '"></div>' +
         '</div>' +
-        '<div class="x3-comment" id="gb-comment-' + id + '"></div>' +
       '</div>' +
       '<div class="grade-info-bar" id="grade-info-' + id + '">' +
         '<div class="gi-submit-row"><span>✓ Đã nộp</span><span class="gi-submit-time" id="gi-sub-' + id + '"></span></div>' +
