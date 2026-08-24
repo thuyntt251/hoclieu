@@ -123,6 +123,30 @@ tbody tr.unlocked-row:hover{background:#FEF3C7}
 .empty-state{text-align:center;padding:60px 20px;color:var(--slate)}
 .empty-icon{font-size:40px;opacity:.3;margin-bottom:8px}
 
+/* SCORE MATRIX */
+.sm-col-toggle-bar{padding:10px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.sm-col-toggle-label{font-size:11px;font-weight:700;color:var(--slate);margin-right:4px;white-space:nowrap}
+.sm-toggle-btn{padding:3px 10px;border-radius:12px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;border:1.5px solid var(--border);background:#F1F5F9;color:var(--slate);transition:all .15s}
+.sm-toggle-btn.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+.sm-toggle-all{background:#0F2B5B;color:#fff;border-color:#0F2B5B}
+.sm-toggle-none{background:#F1F5F9;color:var(--slate)}
+.col-hidden{display:none}
+.score-matrix-wrap{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);margin-top:20px;overflow:hidden}
+.score-matrix-header{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-bottom:1px solid var(--border)}
+.score-matrix-title{font-size:13px;font-weight:700;color:var(--navy)}
+.score-matrix-scroll{overflow-x:auto}
+.score-matrix table{width:100%;border-collapse:collapse;font-size:12px}
+.score-matrix thead tr{background:#F8FAFF}
+.score-matrix th{padding:8px 10px;text-align:center;font-size:11px;font-weight:700;color:var(--slate);text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid var(--border);white-space:nowrap}
+.score-matrix th.name-col{text-align:left;min-width:160px}
+.score-matrix td{padding:7px 10px;text-align:center;border-bottom:1px solid #F1F5F9;font-size:12px}
+.score-matrix td.name-cell{text-align:left;font-weight:600;color:var(--navy);white-space:nowrap}
+.score-matrix tbody tr:hover{background:#FAFCFF}
+.sm-score{font-weight:700;color:#4C1D95}
+.sm-avg{font-weight:800;color:var(--blue);font-size:13px;background:#EFF6FF;border-radius:4px;padding:2px 6px}
+.sm-empty{color:#CBD5E1;font-size:11px}
+.sm-high{background:#DCFCE7;color:#15803D;border-radius:4px;padding:2px 4px}
+.sm-low{background:#FEE2E2;color:#DC2626;border-radius:4px;padding:2px 4px}
 /* loading overlay */
 #loader{display:none;position:fixed;inset:0;background:rgba(15,43,91,.18);z-index:999;align-items:center;justify-content:center}
 #loader.show{display:flex}
@@ -259,6 +283,22 @@ tbody tr.unlocked-row:hover{background:#FEF3C7}
       <div style="font-weight:600;color:var(--navy)">Không có dữ liệu</div>
       <div style="font-size:12px;margin-top:4px">Thử thay đổi bộ lọc hoặc tải lại dữ liệu</div>
     </div>
+  </div>
+</div>
+
+<!-- SCORE MATRIX -->
+<div class="score-matrix-wrap" id="scoreMatrixWrap" style="display:none">
+  <div class="score-matrix-header">
+    <span class="score-matrix-title">📊 Bảng tổng hợp điểm</span>
+    <button class="btn-export" onclick="exportMatrixCSV()">⬇ Xuất CSV</button>
+  </div>
+  <div class="sm-col-toggle-bar" id="smToggleBar">
+    <span class="sm-col-toggle-label">Hiện cột:</span>
+    <button class="sm-toggle-btn sm-toggle-all" onclick="smToggleAll(true)">Tất cả</button>
+    <button class="sm-toggle-btn sm-toggle-none" onclick="smToggleAll(false)">Ẩn hết</button>
+  </div>
+  <div class="score-matrix-scroll">
+    <div class="score-matrix" id="scoreMatrix"></div>
   </div>
 </div>
 
@@ -409,6 +449,7 @@ function applyFilter(){
 
   renderStats();
   renderTable();
+  renderScoreMatrix();
 }
 
 function resetFilter(){
@@ -639,6 +680,164 @@ async function saveRow(ri){
   } catch(e){
     showToast('❌ Lỗi kết nối: ' + e.message, 'error');
   } finally { hideLoader(); }
+}
+
+// ── SCORE MATRIX ──────────────────────────────────────────────────────────────
+// Nhóm HL theo bài
+const HL_GROUPS = {"B1": ["B1_HL1", "B1_HL2", "B1_HL3", "B1_HL4", "B1_HL5"], "B2": ["B2_HL0", "B2_HL1", "B2_HL2", "B2_HL3", "B2_HL4", "B2_HL5"], "B3": ["B3_HL1", "B3_HL2", "B3_HL3", "B3_HL4"], "B4": ["B4_HL0", "B4_HL1", "B4_HL2", "B4_HL3", "B4_HL4", "B4_HL5"], "B5": ["B5_HL1", "B5_HL2", "B5_HL3", "B5_HL4"], "B6": ["B6_HL0", "B6_HL2", "B6_HL3", "B6_HL5"], "B7": ["B7_HL0", "B7_HL2", "B7_HL3", "B7_HL5"], "B8": ["B8_HL1", "B8_HL2", "B8_HL3"], "B9": ["B9_HL1", "B9_HL3", "B9_HL5"], "B10": ["B10_HL1", "B10_HL2", "B10_HL3"], "B11": ["B11_HL1", "B11_HL3"], "B12": ["B12_HL1", "B12_HL2", "B12_HL4", "B12_HL5"], "B13": ["B13_HL1", "B13_HL2", "B13_HL3"], "B14": ["B14_HL1", "B14_HL2", "B14_HL4"], "B15": ["B15_HL1", "B15_HL3", "B15_HL4"], "B16": ["B16_HL1", "B16_HL2", "B16_HL3"], "B17": ["B17_HL1", "B17_HL2"], "B18": ["B18_HL1", "B18_HL3"], "B19": ["B19_HL1", "B19_HL3"], "B20": ["B20_HL1", "B20_HL2", "B20_HL3"]};
+let visibleBais = new Set(Object.keys(HL_GROUPS)); // mặc định hiện tất cả
+
+function smToggleAll(show) {
+  if (show) visibleBais = new Set(Object.keys(HL_GROUPS));
+  else visibleBais = new Set();
+  document.querySelectorAll('.sm-toggle-btn[data-bai]').forEach(b => {
+    b.classList.toggle('active', show);
+  });
+  applyMatrixColVisibility();
+}
+
+function smToggleBai(bai, btn) {
+  if (visibleBais.has(bai)) visibleBais.delete(bai);
+  else visibleBais.add(bai);
+  btn.classList.toggle('active', visibleBais.has(bai));
+  applyMatrixColVisibility();
+}
+
+function applyMatrixColVisibility() {
+  const table = document.querySelector('#scoreMatrix table');
+  if (!table) return;
+  const allHls = ['B1_HL1', 'B1_HL2', 'B1_HL3', 'B1_HL4', 'B1_HL5', 'B2_HL0', 'B2_HL1', 'B2_HL2', 'B2_HL3', 'B2_HL4', 'B2_HL5', 'B3_HL1', 'B3_HL2', 'B3_HL3', 'B3_HL4', 'B4_HL0', 'B4_HL1', 'B4_HL2', 'B4_HL3', 'B4_HL4', 'B4_HL5', 'B5_HL1', 'B5_HL2', 'B5_HL3', 'B5_HL4', 'B6_HL0', 'B6_HL2', 'B6_HL3', 'B6_HL5', 'B7_HL0', 'B7_HL2', 'B7_HL3', 'B7_HL5', 'B8_HL1', 'B8_HL2', 'B8_HL3', 'B9_HL1', 'B9_HL3', 'B9_HL5', 'B10_HL1', 'B10_HL2', 'B10_HL3', 'B11_HL1', 'B11_HL3', 'B12_HL1', 'B12_HL2', 'B12_HL4', 'B12_HL5', 'B13_HL1', 'B13_HL2', 'B13_HL3', 'B14_HL1', 'B14_HL2', 'B14_HL4', 'B15_HL1', 'B15_HL3', 'B15_HL4', 'B16_HL1', 'B16_HL2', 'B16_HL3', 'B17_HL1', 'B17_HL2', 'B18_HL1', 'B18_HL3', 'B19_HL1', 'B19_HL3', 'B20_HL1', 'B20_HL2', 'B20_HL3'];
+  allHls.forEach((hl, i) => {
+    const bai = hl.split('_')[0];
+    const colIdx = i + 3; // offset: #, tên, lớp
+    const show = visibleBais.has(bai);
+    table.querySelectorAll('tr').forEach(tr => {
+      const cells = tr.querySelectorAll('th, td');
+      if (cells[colIdx]) cells[colIdx].classList.toggle('col-hidden', !show);
+    });
+  });
+}
+
+function renderScoreMatrix() {
+  const wrap = document.getElementById('scoreMatrixWrap');
+  const container = document.getElementById('scoreMatrix');
+  if (!wrap || !container) return;
+
+  // Chỉ hiện các bài đã graded
+  // Lấy tất cả record của filtered để có đủ tên HS
+  const graded = filtered;
+  if (!graded.length) { wrap.style.display = 'none'; return; }
+  wrap.style.display = 'block';
+
+  // Lấy danh sách học sinh unique (ten + lop)
+  const studentKeys = [...new Map(graded.map(r => [r.ten + '|' + r.lop, { ten: r.ten, lop: r.lop, mshs: r.mshs || '' }])).values()];
+
+  // Toàn bộ học liệu của 20 bài (theo đúng thứ tự chương trình)
+  const ALL_HLS = ['B1_HL1', 'B1_HL2', 'B1_HL3', 'B1_HL4', 'B1_HL5', 'B2_HL0', 'B2_HL1', 'B2_HL2', 'B2_HL3', 'B2_HL4', 'B2_HL5', 'B3_HL1', 'B3_HL2', 'B3_HL3', 'B3_HL4', 'B4_HL0', 'B4_HL1', 'B4_HL2', 'B4_HL3', 'B4_HL4', 'B4_HL5', 'B5_HL1', 'B5_HL2', 'B5_HL3', 'B5_HL4', 'B6_HL0', 'B6_HL2', 'B6_HL3', 'B6_HL5', 'B7_HL0', 'B7_HL2', 'B7_HL3', 'B7_HL5', 'B8_HL1', 'B8_HL2', 'B8_HL3', 'B9_HL1', 'B9_HL3', 'B9_HL5', 'B10_HL1', 'B10_HL2', 'B10_HL3', 'B11_HL1', 'B11_HL3', 'B12_HL1', 'B12_HL2', 'B12_HL4', 'B12_HL5', 'B13_HL1', 'B13_HL2', 'B13_HL3', 'B14_HL1', 'B14_HL2', 'B14_HL4', 'B15_HL1', 'B15_HL3', 'B15_HL4', 'B16_HL1', 'B16_HL2', 'B16_HL3', 'B17_HL1', 'B17_HL2', 'B18_HL1', 'B18_HL3', 'B19_HL1', 'B19_HL3', 'B20_HL1', 'B20_HL2', 'B20_HL3'];
+  const hls = ALL_HLS;
+
+  // Build map: ten|lop → hoc_lieu → grade_score
+  const scoreMap = {};
+  graded.forEach(r => {
+    const key = r.ten + '|' + r.lop;
+    if (!scoreMap[key]) scoreMap[key] = {};
+    if (r.grade_score !== '' && r.grade_score !== null && r.grade_score !== undefined) {
+      scoreMap[key][r.hoc_lieu] = parseFloat(r.grade_score);
+    }
+  });
+
+  // Build table
+  let html = '<table><thead><tr>';
+  html += '<th class="name-col">#</th><th class="name-col">Họ và tên</th><th>Lớp</th>';
+  hls.forEach(hl => { html += '<th>' + esc(hl) + '</th>'; });
+  html += '<th>TB</th></tr></thead><tbody>';
+
+  studentKeys.forEach((st, idx) => {
+    const key = st.ten + '|' + st.lop;
+    const scores = scoreMap[key] || {};
+    const vals = hls.map(hl => scores[hl]);
+    const graded_vals = vals.filter(v => v !== undefined && !isNaN(v));
+    const avg = graded_vals.length ? (graded_vals.reduce((a,b) => a+b, 0) / graded_vals.length) : null;
+
+    html += '<tr>';
+    html += '<td class="name-cell" style="color:var(--slate);font-size:11px">' + (idx+1) + '</td>';
+    html += '<td class="name-cell">' + esc(st.ten) + '</td>';
+    html += '<td style="color:var(--slate)">' + esc(st.lop) + '</td>';
+    vals.forEach(v => {
+      if (v === undefined) {
+        html += '<td class="sm-empty">—</td>';
+      } else {
+        const cls = v >= 8 ? 'sm-high' : v < 5 ? 'sm-low' : 'sm-score';
+        html += '<td><span class="' + cls + '">' + v + '</span></td>';
+      }
+    });
+    if (avg !== null) {
+      html += '<td><span class="sm-avg">' + avg.toFixed(1) + '</span></td>';
+    } else {
+      html += '<td class="sm-empty">—</td>';
+    }
+    html += '</tr>';
+  });
+
+  // Dòng trung bình lớp
+  html += '<tr style="background:#F8FAFF;font-weight:700"><td colspan="3" style="text-align:right;color:var(--slate);font-size:11px;padding:8px 10px">Điểm TB học liệu</td>';
+  hls.forEach(hl => {
+    const hlScores = studentKeys.map(st => (scoreMap[st.ten+'|'+st.lop]||{})[hl]).filter(v => v !== undefined && !isNaN(v));
+    if (hlScores.length) {
+      const hlAvg = (hlScores.reduce((a,b)=>a+b,0)/hlScores.length).toFixed(1);
+      html += '<td><span class="sm-avg">' + hlAvg + '</span></td>';
+    } else {
+      html += '<td class="sm-empty">—</td>';
+    }
+  });
+  const allScores = studentKeys.flatMap(st => Object.values(scoreMap[st.ten+'|'+st.lop]||{}));
+  const grandAvg = allScores.length ? (allScores.reduce((a,b)=>a+b,0)/allScores.length).toFixed(1) : '—';
+  html += '<td><span class="sm-avg" style="background:#EDE9FE;color:#4C1D95">' + grandAvg + '</span></td>';
+  html += '</tr>';
+
+  html += '</tbody></table>';
+  container.innerHTML = html;
+
+  // Build toggle buttons theo bài
+  const toggleBar = document.getElementById('smToggleBar');
+  if (toggleBar) {
+    // Xóa buttons cũ (giữ label + Tất cả + Ẩn hết)
+    toggleBar.querySelectorAll('[data-bai]').forEach(b => b.remove());
+    Object.keys(HL_GROUPS).forEach(bai => {
+      const btn = document.createElement('button');
+      btn.className = 'sm-toggle-btn' + (visibleBais.has(bai) ? ' active' : '');
+      btn.setAttribute('data-bai', bai);
+      btn.textContent = bai;
+      btn.onclick = function() { smToggleBai(bai, this); };
+      toggleBar.appendChild(btn);
+    });
+  }
+  applyMatrixColVisibility();
+}
+
+function exportMatrixCSV() {
+  const wrap = document.getElementById('scoreMatrixWrap');
+  if (!wrap || wrap.style.display === 'none') return;
+  const graded = filtered.filter(r => r.trang_thai === 'graded' || r.trang_thai === 'submitted');
+  const studentKeys = [...new Map(graded.map(r => [r.ten+'|'+r.lop, {ten:r.ten,lop:r.lop}])).values()];
+  const hls = ['B1_HL1', 'B1_HL2', 'B1_HL3', 'B1_HL4', 'B1_HL5', 'B2_HL0', 'B2_HL1', 'B2_HL2', 'B2_HL3', 'B2_HL4', 'B2_HL5', 'B3_HL1', 'B3_HL2', 'B3_HL3', 'B3_HL4', 'B4_HL0', 'B4_HL1', 'B4_HL2', 'B4_HL3', 'B4_HL4', 'B4_HL5', 'B5_HL1', 'B5_HL2', 'B5_HL3', 'B5_HL4', 'B6_HL0', 'B6_HL2', 'B6_HL3', 'B6_HL5', 'B7_HL0', 'B7_HL2', 'B7_HL3', 'B7_HL5', 'B8_HL1', 'B8_HL2', 'B8_HL3', 'B9_HL1', 'B9_HL3', 'B9_HL5', 'B10_HL1', 'B10_HL2', 'B10_HL3', 'B11_HL1', 'B11_HL3', 'B12_HL1', 'B12_HL2', 'B12_HL4', 'B12_HL5', 'B13_HL1', 'B13_HL2', 'B13_HL3', 'B14_HL1', 'B14_HL2', 'B14_HL4', 'B15_HL1', 'B15_HL3', 'B15_HL4', 'B16_HL1', 'B16_HL2', 'B16_HL3', 'B17_HL1', 'B17_HL2', 'B18_HL1', 'B18_HL3', 'B19_HL1', 'B19_HL3', 'B20_HL1', 'B20_HL2', 'B20_HL3'];
+  const scoreMap = {};
+  graded.forEach(r => {
+    const key = r.ten+'|'+r.lop;
+    if (!scoreMap[key]) scoreMap[key] = {};
+    if (r.grade_score !== '' && r.grade_score !== null) scoreMap[key][r.hoc_lieu] = parseFloat(r.grade_score);
+  });
+  const rows = [['Họ và tên','Lớp',...hls,'Điểm TB'].join(',')];
+  studentKeys.forEach(st => {
+    const key = st.ten+'|'+st.lop;
+    const vals = hls.map(hl => scoreMap[key]?.[hl] ?? '');
+    const nums = vals.filter(v => v !== '');
+    const avg = nums.length ? (nums.reduce((a,b)=>a+b,0)/nums.length).toFixed(1) : '';
+    rows.push(['"'+st.ten+'"',st.lop,...vals,avg].join(','));
+  });
+  const blob = new Blob(['\uFEFF'+rows.join('\r\n')],{type:'text/csv;charset=utf-8'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = 'X3_DiemTH_'+new Date().toISOString().slice(0,10)+'.csv'; a.click();
 }
 
 // ── EXPORT CSV ────────────────────────────────────────────────
