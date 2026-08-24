@@ -94,7 +94,7 @@ tbody tr.unlocked-row:hover{background:#FEF3C7}
 /* action cell */
 .action-cell{padding:8px 10px;white-space:nowrap;min-width:220px}
 .action-row{display:flex;gap:5px;flex-wrap:nowrap}
-.btn-unlock,.btn-save-row,.btn-cancel-row,.btn-history{padding:5px 12px;border-radius:5px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;width:72px;text-align:center}
+.btn-unlock,.btn-save-row,.btn-cancel-row,.btn-history{padding:5px 12px;border-radius:5px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;min-width:72px;text-align:center}
 .btn-unlock{background:#FEF3C7;border:1.5px solid #FDE68A;color:#92400E}
 .btn-unlock:hover{background:#FDE68A}
 .btn-save-row{background:#D1FAE5;border:1.5px solid #6EE7B7;color:#065F46;display:none}
@@ -488,7 +488,7 @@ function buildRow(r, idx){
         <button class="btn-unlock" id="btn-unlock-${ri}" onclick="unlockRow(${ri})" ${isUnlocked?'style="display:none"':''}>🔓 Khóa</button>
         <button class="btn-save-row" id="btn-save-${ri}" onclick="saveRow(${ri})" style="${isUnlocked&&hasChanges?'display:inline-block':'display:none'}">💾 Lưu</button>
         <button class="btn-cancel-row" id="btn-cancel-${ri}" onclick="cancelRow(${ri})" style="${isUnlocked?'display:inline-block':'display:none'}">✕ Huỷ</button>
-        <button class="btn-history" onclick="toggleHistory(${ri})">📋 LS</button>
+        <button class="btn-history" onclick="toggleHistory(${ri})">📋 Lịch sử</button>
       </div>
     </td>
   </tr>
