@@ -349,6 +349,7 @@ body.gv-logged .btn-grade{display:inline-flex!important}
     <div class="login-field">
       <label>Mật khẩu</label>
       <input type="password" id="login_pw" placeholder="Nhập mật khẩu..."
+             autocomplete="new-password"
              onkeydown="if(event.key==='Enter')doLogin()"/>
     </div>
 
@@ -2013,8 +2014,8 @@ async function loadNameList() {
   } catch(e) {
     const isTimeout = e.name === 'AbortError';
     const msg = isTimeout
-      ? '⏱ Kết nối quá chậm — kiểm tra mạng hoặc thử lại'
-      : '❌ Không kết nối được server';
+      ? '⏱ GAS khởi động chậm — bấm Tải lại trang hoặc thử lại'
+      : '❌ Không kết nối được — kiểm tra GAS URL';
     setStatus('<span style="color:#DC2626">' + msg + '</span>');
     // Hiện nút thử lại ngay dưới status
     if (statusEl) {
@@ -2484,7 +2485,6 @@ function updateStatusBadge(hlId, status, time) {
     if (_gcEl)  _gcEl.textContent  = st.grade_comment ? 'Nhận xét: ' + st.grade_comment : '';
     if (_gtEl)  _gtEl.textContent  = (st.graded_at || time) ? 'lúc ' + (st.graded_at || time) : '';
   }
-}
   hlState[hlId] = hlState[hlId] || {};
   hlState[hlId].status = status;
 }
