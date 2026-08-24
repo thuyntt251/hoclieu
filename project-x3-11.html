@@ -2199,9 +2199,6 @@ function onGVLopChange() {
   hideMshsBox();
   if (!lop) return;
 
-  if (allStudents.length > 0) {
-
-  }
   const filtered = allStudents.filter(s => s.lop === lop);
   filtered.forEach(s => {
     const opt = document.createElement('option');
@@ -2563,6 +2560,10 @@ async function saveHL(hlId) {
       hlState[hlId] = { ...(hlState[hlId]||{}), status:'draft', cap_nhat: _capNhat, data };
       updateX3StatusBar(hlId, { trang_thai:'draft', cap_nhat: _capNhat });
       showToast('💾 Đã lưu nháp lúc ' + _capNhat, 'success');
+      // Reload nhẹ để đồng bộ hlTabs
+      renderHLTabs();
+      const _activeTab = document.querySelector('.hl-tab.active');
+      if (_activeTab) _activeTab.click();
     } else {
       showToast('❌ ' + (json.error || 'Lỗi lưu'), 'error');
     }
@@ -2603,10 +2604,11 @@ async function submitHL(hlId) {
     const json = await res.json();
     if (json.ok) {
       const _ts = json.submitted_at || new Date().toLocaleString('vi-VN',{timeZone:'Asia/Ho_Chi_Minh'});
-      hlState[hlId] = { status:'submitted', data, submitted_at: _ts };
-      updateStatusBadge(hlId, 'submitted', _ts);
-      lockPanel(hlId);
-      showToast('✅ Nộp bài thành công!', 'success');
+      hlState[hlId] = { ...(hlState[hlId]||{}), status:'submitted', submitted_at: _ts };
+      showToast('✅ Đã nộp bài lúc ' + _ts, 'success');
+      // Reload để đồng bộ trạng thái từ sheet
+      const _stSubmit = getStudent();
+      if (_stSubmit.ten) await loadStudentData(_stSubmit.ten, _stSubmit.lop);
     } else {
       showToast('❌ ' + (json.error || 'Lỗi nộp'), 'error');
     }
