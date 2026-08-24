@@ -2149,6 +2149,7 @@ async function enterAppGV(gv, doLog) {
   } catch(e) { /* giữ allStudents cũ nếu có */ }
 
   // Build lớp dropdown từ allStudents
+  console.log('[GV] allStudents after load:', allStudents.length, allStudents[0]);
   buildLopDropdown();
 
   if (doLog) fetch(GAS_URL, { method: 'POST', body: JSON.stringify({
@@ -2174,7 +2175,14 @@ function onGVLopChange() {
   stSel.innerHTML = '<option value="">-- Chọn học sinh --</option>';
   hideMshsBox();
   if (!lop) return;
+  console.log('[GV] lop selected:', JSON.stringify(lop));
+  console.log('[GV] allStudents count:', allStudents.length);
+  if (allStudents.length > 0) {
+    console.log('[GV] sample student:', JSON.stringify(allStudents[0]));
+    console.log('[GV] student lops:', [...new Set(allStudents.map(s=>s.lop))]);
+  }
   const filtered = allStudents.filter(s => s.lop === lop);
+  console.log('[GV] filtered count:', filtered.length);
   filtered.forEach(s => {
     const opt = document.createElement('option');
     opt.value = JSON.stringify({ ten: s.ten, lop: s.lop, mshs: s.mshs || '' });
