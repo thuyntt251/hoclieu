@@ -452,7 +452,7 @@ body.gv-logged .btn-grade{display:inline-flex!important}
 // ═══════════════════════════════════════════════════════════
 // CONFIG — Replace with your deployed Apps Script URL
 // ═══════════════════════════════════════════════════════════
-const GAS_URL  = 'https://script.google.com/macros/s/AKfycbwijdQciL7oKDMsRjKZcysg6S_w9kJeCrIuZA3gnYKvpP9WhC3NCqWz-ZtobKyOqm9Y/exec';
+const GAS_URL  = 'https://script.google.com/macros/s/AKfycbxiE6C8ACUURNfGNmM0WaDGz9aa6cJbmeAI7Ra1jVAboFL2fmHHszDtnhY1agLhyUs/exec';
 const SHEET_ID = '1DpojpfuQpyEnXw6eQJc_fOakgiwDZhf9k0IrO1RhtMI';
 
 // ═══════════════════════════════════════════════════════════
@@ -2288,7 +2288,6 @@ async function loadStudentData(ten, lop) {
     const res  = await fetchWithTimeout(GAS_URL + '?action=load&name=' + encodeURIComponent(ten) + '&lop=' + encodeURIComponent(lop), {});
     const json = await res.json();
     studentRecords = json.records || [];
-    console.log('[load] records:', studentRecords.length, studentRecords[0]);
     hlState = {};
     studentRecords.forEach(rec => {
       hlState[rec.hoc_lieu] = {
@@ -2302,11 +2301,9 @@ async function loadStudentData(ten, lop) {
       const isLocked = rec.trang_thai === 'submitted' || rec.trang_thai === 'graded';
       restorePanel(rec.hoc_lieu, rec.du_lieu, isLocked, rec);
     });
-    console.log('[load] hlState:', Object.keys(hlState));
     renderHLTabs();
     // Luôn gọi showHL(0) sau khi render để đảm bảo panel đầu tiên hiện ra
     showHL(currentHLIndex || 0);
-    console.log('[load] showHL done, active panel:', document.querySelector('.hl-panel.active')?.id);
     showToast('✓ Đã tải bài làm của ' + ten, 'success');
     // grading body luôn mở — không cần addClass
   } catch(e) {
