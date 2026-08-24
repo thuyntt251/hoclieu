@@ -244,10 +244,10 @@ tbody tr.unlocked-row:hover{background:#FEF3C7}
             <th>Bài</th>
             <th>Học liệu</th>
             <th>Trạng thái</th>
-            <th>Điểm</th>
-            <th>Nhận xét</th>
             <th>Nộp lúc</th>
             <th>Chấm lúc</th>
+            <th>Điểm</th>
+            <th>Nhận xét</th>
             <th style="min-width:220px">Thao tác</th>
           </tr>
         </thead>
@@ -484,6 +484,8 @@ function buildRow(r, idx){
         : statusBadge(statusVal)
       }
     </td>
+    <td class="cell" style="font-size:11px;color:var(--slate);white-space:nowrap">${r.submitted_at||'—'}</td>
+    <td class="cell" style="font-size:11px;color:var(--slate);white-space:nowrap">${r.graded_at||'—'}</td>
     <td class="cell">
       ${isUnlocked
         ? `<input type="number" id="gs-${ri}" class="cell-edit" style="width:60px;border:1.5px solid var(--border);border-radius:4px;padding:2px 6px" min="0" max="10" step="0.5" value="${r.grade_score||''}" onchange="markChanged(${ri},'grade_score',this.value)">`
@@ -496,8 +498,6 @@ function buildRow(r, idx){
         : esc(r.grade_comment||'—')
       }
     </td>
-    <td class="cell" style="font-size:11px;color:var(--slate);white-space:nowrap">${r.submitted_at||'—'}</td>
-    <td class="cell" style="font-size:11px;color:var(--slate);white-space:nowrap">${r.graded_at||'—'}</td>
     <td class="action-cell">
       <div class="action-row">
         <button class="btn-unlock" id="btn-unlock-${ri}" onclick="unlockRow(${ri})" ${isUnlocked?'style="display:none"':''}>🔓 Mở khóa</button>
