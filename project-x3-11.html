@@ -2048,7 +2048,6 @@ async function enterAppHS(student, doLog) {
   currentRole = 'hs';
   document.body.classList.remove('gv-logged');
   document.getElementById('loginOverlay').classList.add('hidden');
-  document.getElementById('studentBar').style.display = '';
   document.getElementById('teacherBar').classList.remove('visible');
   requestAnimationFrame(updateStickyTops);
   const avatar = student.ten.trim().split(' ').pop()[0].toUpperCase();
