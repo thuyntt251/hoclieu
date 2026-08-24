@@ -102,13 +102,18 @@ body{font-family:"Be Vietnam Pro",sans-serif;background:#F0F4FF;color:var(--ink)
 .hl-panel.active{display:block}
 
 /* GRADE INFO BAR — hiện trên panel header cho GV */
-.grade-info-bar{display:none;background:linear-gradient(135deg,#F5F3FF,#EDE9FE);border:1.5px solid #DDD6FE;border-radius:8px;padding:10px 16px;margin-top:8px;gap:16px;flex-wrap:wrap;align-items:center}
+.grade-info-bar{display:none;flex-direction:column;gap:4px;margin-top:6px}
 body.gv-logged .hl-panel.graded .grade-info-bar{display:flex}
-.grade-info-item{display:flex;flex-direction:column;gap:2px}
-.grade-info-label{font-size:10px;font-weight:700;color:#7C3AED;text-transform:uppercase;letter-spacing:.6px}
-.grade-info-value{font-size:13px;font-weight:600;color:#4C1D95}
-.grade-info-score{font-size:22px;font-weight:800;color:#4C1D95;line-height:1}
-.grade-info-comment{font-size:12.5px;color:#5B21B6;font-style:italic;max-width:400px;line-height:1.4}
+/* Nộp bài row (GV) */
+.gi-submit-row{display:inline-flex;align-items:center;gap:7px;padding:5px 13px;border-radius:8px;font-size:12.5px;font-weight:700;background:#DCFCE7;border:1.5px solid #86EFAC;color:#15803D;width:fit-content}
+.gi-submit-time{font-size:11px;font-weight:400;opacity:.75}
+/* Chấm điểm row (GV) */
+.gi-grade-row{display:inline-flex;align-items:center;gap:7px;padding:5px 13px;border-radius:8px;font-size:12.5px;font-weight:700;background:#EDE9FE;border:1.5px solid #C4B5FD;color:#4C1D95;width:fit-content}
+.gi-score{font-size:15px;font-weight:800}
+.gi-time{font-size:11px;font-weight:400;opacity:.75}
+/* Nhận xét row (GV) */
+.gi-comment-row{font-size:12px;color:#5B21B6;font-style:italic;padding:2px 14px;display:none}
+body.gv-logged .hl-panel.graded .gi-comment-row{display:block}
 /* SUBMIT BADGE + GRADE BADGE — HS view */
 /* ── STATUS BAR (dùng chung HTML + admin) ── */
 .x3-status-bar{display:flex;flex-direction:column;gap:4px;margin-top:6px}
@@ -1791,9 +1796,16 @@ function buildPanelHeaderHTML(hl) {
           '<div class="x3-comment" id="gb-comment-' + id + '"></div>' +
         '</div>' +
         '<div class="grade-info-bar" id="grade-info-' + id + '">' +
-          '<div class="grade-info-item"><span class="grade-info-label">Điểm</span><span class="grade-info-score" id="gi-score-' + id + '">—</span></div>' +
-          '<div class="grade-info-item"><span class="grade-info-label">Nhận xét</span><span class="grade-info-comment" id="gi-comment-' + id + '">—</span></div>' +
-          '<div class="grade-info-item"><span class="grade-info-label">Chấm lúc</span><span class="grade-info-value" id="gi-time-' + id + '">—</span></div>' +
+          '<div class="gi-submit-row">' +
+            '<span>✓ Đã nộp</span>' +
+            '<span class="gi-submit-time" id="gi-sub-' + id + '"></span>' +
+          '</div>' +
+          '<div class="gi-grade-row">' +
+            '<span>★ Đã chấm điểm</span>' +
+            '<span class="gi-score" id="gi-score-' + id + '">—</span>' +
+            '<span class="gi-time" id="gi-time-' + id + '"></span>' +
+          '</div>' +
+          '<div class="gi-comment-row" id="gi-comment-' + id + '"></div>' +
         '</div>' +
       '</div>' +
     '</div>' +
@@ -2460,35 +2472,19 @@ function updateStatusBadge(hlId, status, time) {
     panel.classList.remove('draft','submitted','graded','unsaved');
     panel.classList.add(status);
   }
-  // Cập nhật grade-info-bar nếu graded
-  const gi = document.getElementById('grade-info-' + hlId);
-  if (gi) {
-    const st = hlState[hlId] || {};
-    const gsEl  = document.getElementById('gi-score-'   + hlId);
-    const gcEl  = document.getElementById('gi-comment-' + hlId);
-    const gtEl  = document.getElementById('gi-time-'    + hlId);
-    if (gsEl)  gsEl.textContent  = (st.grade_score  !== undefined && st.grade_score  !== '') ? st.grade_score + '/10' : '—';
-    if (gcEl)  gcEl.textContent  = st.grade_comment || '—';
-    if (gtEl)  gtEl.textContent  = st.graded_at     || '—';
-  }
-  // Cập nhật grade-info-bar (GV) và grade-badge (HS)
+    // Cập nhật grade-info-bar (GV) khi graded
   if (status === 'graded') {
-    const _st = hlState[hlId] || {};
-    // GV info bar
-    const _gsEl = document.getElementById('gi-score-'   + hlId);
-    const _gcEl = document.getElementById('gi-comment-' + hlId);
-    const _gtEl = document.getElementById('gi-time-'    + hlId);
-    if (_gsEl) _gsEl.textContent = (_st.grade_score !== undefined && _st.grade_score !== '') ? _st.grade_score + '/10' : (time || '—');
-    if (_gcEl) _gcEl.textContent = _st.grade_comment || '—';
-    if (_gtEl) _gtEl.textContent = _st.graded_at || time || '—';
-    // Grade badge (HS): điểm + nhận xét + thời gian chấm
-    const _gbScore   = document.getElementById('gb-score-'   + hlId);
-    const _gbComment = document.getElementById('gb-comment-' + hlId);
-    const _gbTime    = document.getElementById('gb-time-'    + hlId);
-    if (_gbScore)   _gbScore.textContent   = (_st.grade_score !== undefined && _st.grade_score !== '') ? _st.grade_score + '/10' : '—';
-    if (_gbComment) _gbComment.textContent = _st.grade_comment || '';
-    if (_gbTime)    _gbTime.textContent    = 'Chấm lúc ' + (_st.graded_at || time || '');
+    const st = hlState[hlId] || {};
+    const _giSub = document.getElementById('gi-sub-'     + hlId);
+    const _gsEl  = document.getElementById('gi-score-'   + hlId);
+    const _gcEl  = document.getElementById('gi-comment-' + hlId);
+    const _gtEl  = document.getElementById('gi-time-'    + hlId);
+    if (_giSub) _giSub.textContent = st.submitted_at ? 'lúc ' + st.submitted_at : '';
+    if (_gsEl)  _gsEl.textContent  = (st.grade_score !== undefined && st.grade_score !== '') ? st.grade_score + '/10' : '—';
+    if (_gcEl)  _gcEl.textContent  = st.grade_comment ? 'Nhận xét: ' + st.grade_comment : '';
+    if (_gtEl)  _gtEl.textContent  = (st.graded_at || time) ? 'lúc ' + (st.graded_at || time) : '';
   }
+}
   hlState[hlId] = hlState[hlId] || {};
   hlState[hlId].status = status;
 }
@@ -2641,12 +2637,14 @@ function restoreGrading(hlId, rec) {
       if (gradeBtn) { gradeBtn.disabled = true; gradeBtn.textContent = '✔ Đã chấm'; }
     }
     // GV: cập nhật grade-info-bar
-    const gsEl = document.getElementById('gi-score-'   + hlId);
-    const gcEl = document.getElementById('gi-comment-' + hlId);
-    const gtEl = document.getElementById('gi-time-'    + hlId);
-    if (gsEl) gsEl.textContent = rec.grade_score + '/10';
-    if (gcEl) gcEl.textContent = rec.grade_comment || '—';
-    if (gtEl) gtEl.textContent = rec.graded_at || '—';
+    const giSub = document.getElementById('gi-sub-'   + hlId);
+    const gsEl  = document.getElementById('gi-score-' + hlId);
+    const gcEl  = document.getElementById('gi-comment-' + hlId);
+    const gtEl  = document.getElementById('gi-time-'  + hlId);
+    if (giSub) giSub.textContent = rec.submitted_at ? 'lúc ' + rec.submitted_at : '';
+    if (gsEl)  gsEl.textContent  = rec.grade_score + '/10';
+    if (gcEl)  gcEl.textContent  = rec.grade_comment ? 'Nhận xét: ' + rec.grade_comment : '';
+    if (gtEl)  gtEl.textContent  = rec.graded_at ? 'lúc ' + rec.graded_at : '';
     // HS: cập nhật x3 status bar
     updateX3StatusBar(hlId, rec);
   }
