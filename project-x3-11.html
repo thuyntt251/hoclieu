@@ -2139,6 +2139,15 @@ async function enterAppGV(gv, doLog) {
   document.getElementById('headerUserRole').textContent = '👩‍🏫 Giáo viên';
   document.getElementById('headerUser').classList.add('visible');
 
+  // Đảm bảo allStudents đã có data (trường hợp restore session, loadNameList chưa chạy)
+  if (!allStudents || allStudents.length === 0) {
+    try {
+      const _res  = await fetchWithTimeout(GAS_URL + '?action=list', {});
+      const _json = await _res.json();
+      allStudents = _json.students || [];
+    } catch(e) { allStudents = []; }
+  }
+
   // Build lớp dropdown từ allStudents
   buildLopDropdown();
 
