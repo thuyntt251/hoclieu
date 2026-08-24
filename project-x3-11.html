@@ -2465,8 +2465,7 @@ function lockPanel(hlId) {
       const banner = document.createElement('div');
       banner.className = 'locked-banner';
       const submittedTime = hlState[hlId]?.submitted_at || '';
-      banner.innerHTML = '';
-      banner.style.display = 'none';
+      if (banner) { banner.innerHTML = ''; banner.style.display = 'none'; }
       const headerEl = panel.querySelector('.hl-panel-header');
       if (headerEl) headerEl.insertAdjacentElement('afterend', banner);
     }
