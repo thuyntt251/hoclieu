@@ -742,7 +742,7 @@ function renderScoreMatrix() {
     const key = r.ten + '|' + r.lop;
     if (!scoreMap[key]) scoreMap[key] = {};
     if (r.grade_score !== '' && r.grade_score !== null && r.grade_score !== undefined) {
-      scoreMap[key][r.hoc_lieu] = parseFloat(r.grade_score);
+      scoreMap[key][r.hoc_lieu] = r.grade_score; // giữ nguyên giá trị gốc (số hoặc chữ)
     }
   });
 
@@ -756,19 +756,27 @@ function renderScoreMatrix() {
     const key = st.ten + '|' + st.lop;
     const scores = scoreMap[key] || {};
     const vals = hls.map(hl => scores[hl]);
-    const graded_vals = vals.filter(v => v !== undefined && !isNaN(v));
-    const avg = graded_vals.length ? (graded_vals.reduce((a,b) => a+b, 0) / graded_vals.length) : null;
+    const num_vals = vals.map(v => v !== undefined ? parseFloat(v) : NaN).filter(v => !isNaN(v));
+    const avg = num_vals.length ? (num_vals.reduce((a,b) => a+b, 0) / num_vals.length) : null;
 
     html += '<tr>';
     html += '<td class="name-cell" style="color:var(--slate);font-size:11px">' + (idx+1) + '</td>';
     html += '<td class="name-cell">' + esc(st.ten) + '</td>';
     html += '<td style="color:var(--slate)">' + esc(st.lop) + '</td>';
     vals.forEach(v => {
-      if (v === undefined) {
+      if (v === undefined || v === null || v === '') {
         html += '<td class="sm-empty">—</td>';
       } else {
-        const cls = v >= 8 ? 'sm-high' : v < 5 ? 'sm-low' : 'sm-score';
-        html += '<td><span class="' + cls + '">' + v + '</span></td>';
+        const num = parseFloat(v);
+        if (!isNaN(num)) {
+          const cls = num >= 8 ? 'sm-high' : num < 5 ? 'sm-low' : 'sm-score';
+          html += '<td><span class="' + cls + '">' + num + '</span></td>';
+        } else {
+          // Điểm chữ: đạt / không đạt
+          const txt = String(v).trim().toLowerCase();
+          const cls = (txt === 'đạt' || txt === 'dat' || txt === 'pass') ? 'sm-high' : 'sm-low';
+          html += '<td><span class="' + cls + '">' + esc(String(v)) + '</span></td>';
+        }
       }
     });
     if (avg !== null) {
@@ -782,7 +790,9 @@ function renderScoreMatrix() {
   // Dòng trung bình lớp
   html += '<tr style="background:#F8FAFF;font-weight:700"><td colspan="3" style="text-align:right;color:var(--slate);font-size:11px;padding:8px 10px">Điểm TB học liệu</td>';
   hls.forEach(hl => {
-    const hlScores = studentKeys.map(st => (scoreMap[st.ten+'|'+st.lop]||{})[hl]).filter(v => v !== undefined && !isNaN(v));
+    const hlRaw = studentKeys.map(st => (scoreMap[st.ten+'|'+st.lop]||{})[hl]);
+    const hlScores = hlRaw.map(v => parseFloat(v)).filter(v => !isNaN(v));
+    const hlText = hlRaw.filter(v => v !== undefined && isNaN(parseFloat(v)));
     if (hlScores.length) {
       const hlAvg = (hlScores.reduce((a,b)=>a+b,0)/hlScores.length).toFixed(1);
       html += '<td><span class="sm-avg">' + hlAvg + '</span></td>';
@@ -790,7 +800,7 @@ function renderScoreMatrix() {
       html += '<td class="sm-empty">—</td>';
     }
   });
-  const allScores = studentKeys.flatMap(st => Object.values(scoreMap[st.ten+'|'+st.lop]||{}));
+  const allScores = studentKeys.flatMap(st => Object.values(scoreMap[st.ten+'|'+st.lop]||{}).map(v=>parseFloat(v)).filter(v=>!isNaN(v)));
   const grandAvg = allScores.length ? (allScores.reduce((a,b)=>a+b,0)/allScores.length).toFixed(1) : '—';
   html += '<td><span class="sm-avg" style="background:#EDE9FE;color:#4C1D95">' + grandAvg + '</span></td>';
   html += '</tr>';
@@ -825,7 +835,7 @@ function exportMatrixCSV() {
   graded.forEach(r => {
     const key = r.ten+'|'+r.lop;
     if (!scoreMap[key]) scoreMap[key] = {};
-    if (r.grade_score !== '' && r.grade_score !== null) scoreMap[key][r.hoc_lieu] = parseFloat(r.grade_score);
+    if (r.grade_score !== '' && r.grade_score !== null) scoreMap[key][r.hoc_lieu] = r.grade_score;
   });
   const rows = [['Họ và tên','Lớp',...hls,'Điểm TB'].join(',')];
   studentKeys.forEach(st => {
