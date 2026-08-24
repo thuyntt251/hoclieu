@@ -127,6 +127,9 @@ body.gv-logged .hl-panel.graded .gi-comment-row{display:block}
 .x3-grade{background:#F8FAFF;border:1.5px solid #E2E8F0;color:#94A3B8;display:none}
 .hl-panel.submitted .x3-grade,.hl-panel.graded .x3-grade{display:inline-flex}
 .hl-panel.graded .x3-grade{background:#EDE9FE;border-color:#C4B5FD;color:#4C1D95}
+.x3-grade.v-dat{background:#DCFCE7;border-color:#86EFAC;color:#15803D}
+.x3-grade.v-khongdat{background:#FEE2E2;border-color:#FCA5A5;color:#DC2626}
+.x3-grade.v-travề{background:#FEF3C7;border-color:#FDE68A;color:#92400E}
 /* Comment row */
 .x3-comment{font-size:12px;color:#5B21B6;font-style:italic;padding:2px 14px;display:none}
 .hl-panel.graded .x3-comment{display:block}
@@ -145,10 +148,14 @@ body.gv-logged .x3-status-bar{display:none!important}
 .hl-status-badge.graded{background:#EDE9FE;color:#4C1D95}
 
 /* ── GRADING SECTION ─────────────────────────────── */
-.grading-section{margin-top:20px;border:2px solid #DDD6FE;border-radius:var(--radius);overflow:hidden;display:none}
+.grading-section{border:none;overflow:hidden}
 .grading-section:hover{box-shadow:0 0 0 3px rgba(124,58,237,.08)}
-/* Chỉ hiện cho GV */
-body.gv-logged .grading-section{display:block}
+/* ── PANEL SECTIONS ───────────────────────────── */
+.panel-section-title{font-size:10.5px;font-weight:800;color:var(--slate);text-transform:uppercase;letter-spacing:.9px;padding:10px 24px 6px;border-top:1px solid var(--border);display:flex;align-items:center;gap:6px;margin-top:4px}
+.panel-section-body{padding:4px 24px 16px}
+.section-grading{display:none}
+body.gv-logged .section-grading{display:block}
+/* grading-section display managed by .section-grading */
 /* Header tím */
 .grading-header{background:linear-gradient(135deg,#4C1D95,#6D28D9);color:#fff;padding:12px 18px;font-size:12px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;display:flex;align-items:center;justify-content:space-between}
 .grading-toggle-icon{display:none}
@@ -167,6 +174,16 @@ body.gv-logged .btn-save,body.gv-logged .btn-submit,body.gv-logged .btn-reset{di
 .gv-admin-link:hover{background:#DDD6FE}
 body.gv-logged .gv-admin-link{display:inline-flex}
 .grading-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+/* VERDICT BUTTONS */
+.verdict-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.verdict-btn{padding:8px 18px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;border:2px solid var(--border);background:#F8FAFF;color:var(--slate);transition:all .15s}
+.verdict-btn:hover{transform:translateY(-1px);box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.verdict-btn.v-dat{border-color:#86EFAC;color:#15803D}
+.verdict-btn.v-dat.selected{background:#059669;color:#fff;border-color:#059669}
+.verdict-btn.v-khongdat{border-color:#FCA5A5;color:#DC2626}
+.verdict-btn.v-khongdat.selected{background:#DC2626;color:#fff;border-color:#DC2626}
+.verdict-btn.v-travề{border-color:#FDE68A;color:#92400E}
+.verdict-btn.v-travề.selected{background:#D97706;color:#fff;border-color:#D97706}
 .grade-input{width:90px;padding:8px 12px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:inherit;font-size:16px;font-weight:700;color:var(--navy);text-align:center;background:#fff}
 .grade-input:focus{outline:none;border-color:#7C3AED;box-shadow:0 0 0 3px rgba(124,58,237,.12)}
 .grade-input[readonly]{background:var(--slate-light);color:var(--ink-soft);cursor:not-allowed}
@@ -1770,7 +1787,14 @@ function buildAllPanels() {
       div.className = 'hl-panel';
       div.id = 'panel-' + hl.id;
       // Inject content first via innerHTML (no event handlers needed there)
-      div.innerHTML = buildPanelHeaderHTML(hl) + hlHTML(hl.id) + buildGradingHTML(hl);
+      div.innerHTML =
+        buildPanelHeaderHTML(hl) +
+        '<div class="panel-section-title"><span class="sec-icon">📝</span>Nội dung học liệu</div>' +
+        '<div class="panel-section-body">' + hlHTML(hl.id) + '</div>' +
+        '<div class="section-grading">' +
+          '<div class="panel-section-title"><span class="sec-icon">✏️</span>Đánh giá của giáo viên</div>' +
+          '<div class="panel-section-body">' + buildGradingHTML(hl) + '</div>' +
+        '</div>';
       // Then wire up event handlers via DOM references (survives innerHTML)
       wirePanel(div, hl);
       ca.appendChild(div);
@@ -1781,72 +1805,65 @@ function buildAllPanels() {
 // Returns static HTML string for panel header (no onclick — wired in wirePanel)
 function buildPanelHeaderHTML(hl) {
   var id = hl.id, lbl = hl.label, sid = id.replace('_',' ');
-  return '<div class="hl-panel-header">' +
-    '<div class="hl-panel-title-wrap">' +
-      '<span class="hl-badge">' + sid + '</span>' +
-      '<div>' +
+  return (
+    '<div class="hl-panel-header">' +
+      '<div class="hl-panel-title-wrap">' +
+        '<span class="hl-badge">' + sid + '</span>' +
         '<div style="font-size:18px;font-weight:700;color:var(--navy)">' + lbl + '</div>' +
-        '<div class="x3-status-bar" id="x3-bar-' + id + '">' +
-          '<div class="x3-status-row x3-submit unsaved" id="submit-badge-' + id + '">' +
-            '<span class="x3-icon">&#9679;</span>' +
-            '<span class="x3-label" id="sb-label-' + id + '">Chưa làm</span>' +
-            '<span class="x3-time" id="sb-time-' + id + '"></span>' +
-          '</div>' +
-          '<div class="x3-status-row x3-grade" id="grade-badge-' + id + '">' +
-            '<span class="x3-icon" id="gb-icon-' + id + '">&#8987;</span>' +
-            '<span class="x3-label" id="gb-label-' + id + '">Đang chờ chấm điểm</span>' +
-            '<span class="x3-score" id="gb-score-' + id + '"></span>' +
-            '<span class="x3-time" id="gb-time-' + id + '"></span>' +
-          '</div>' +
-          '<div class="x3-comment" id="gb-comment-' + id + '"></div>' +
-        '</div>' +
-        '<div class="grade-info-bar" id="grade-info-' + id + '">' +
-          '<div class="gi-submit-row">' +
-            '<span>✓ Đã nộp</span>' +
-            '<span class="gi-submit-time" id="gi-sub-' + id + '"></span>' +
-          '</div>' +
-          '<div class="gi-grade-row">' +
-            '<span>★ Đã chấm điểm</span>' +
-            '<span class="gi-score" id="gi-score-' + id + '">—</span>' +
-            '<span class="gi-time" id="gi-time-' + id + '"></span>' +
-          '</div>' +
-          '<div class="gi-comment-row" id="gi-comment-' + id + '"></div>' +
-        '</div>' +
+      '</div>' +
+      '<div class="hl-panel-actions">' +
+        '<button class="btn btn-reset" data-hlid="' + id + '" style="margin-right:16px">&#x1F504; Xóa trắng</button>' +
+        '<button class="btn btn-save" data-hlid="' + id + '">&#x1F4BE; Lưu</button>' +
+        '<button class="btn btn-submit" data-hlid="' + id + '">&#x2705; Nộp bài</button>' +
       '</div>' +
     '</div>' +
-    '<div class="hl-panel-actions">' +
-      '<button class="btn btn-reset" data-hlid="' + id + '" style="margin-right:16px">&#x1F504; Xóa trắng</button>' +
-      '<button class="btn btn-save" data-hlid="' + id + '">&#x1F4BE; Lưu</button>' +
-      '<button class="btn btn-submit" data-hlid="' + id + '">&#x2705; Nộp bài</button>' +
-    '</div>' +
-  '</div>';
+    '<div class="panel-section-title sec-status"><span class="sec-icon">📋</span>Tình trạng</div>' +
+    '<div class="panel-section-body">' +
+      '<div class="x3-status-bar" id="x3-bar-' + id + '">' +
+        '<div class="x3-status-row x3-submit unsaved" id="submit-badge-' + id + '">' +
+          '<span class="x3-icon">&#9679;</span>' +
+          '<span class="x3-label" id="sb-label-' + id + '">Chưa làm</span>' +
+          '<span class="x3-time" id="sb-time-' + id + '"></span>' +
+        '</div>' +
+        '<div class="x3-status-row x3-grade" id="grade-badge-' + id + '">' +
+          '<span class="x3-icon" id="gb-icon-' + id + '">&#8987;</span>' +
+          '<span class="x3-label" id="gb-label-' + id + '">Đợi chấm</span>' +
+          '<span class="x3-score" id="gb-score-' + id + '"></span>' +
+          '<span class="x3-time" id="gb-time-' + id + '"></span>' +
+        '</div>' +
+        '<div class="x3-comment" id="gb-comment-' + id + '"></div>' +
+      '</div>' +
+      '<div class="grade-info-bar" id="grade-info-' + id + '">' +
+        '<div class="gi-submit-row"><span>✓ Đã nộp</span><span class="gi-submit-time" id="gi-sub-' + id + '"></span></div>' +
+        '<div class="gi-grade-row"><span>★ Đánh giá</span><span class="gi-score" id="gi-score-' + id + '">—</span><span class="gi-time" id="gi-time-' + id + '"></span></div>' +
+        '<div class="gi-comment-row" id="gi-comment-' + id + '"></div>' +
+      '</div>' +
+    '</div>'
+  );
 }
 
 // Returns static HTML string for grading section
 function buildGradingHTML(hl) {
   var id = hl.id;
-  return '<div class="grading-section" id="grading-' + id + '">' +
+  return '<div id="grading-' + id + '">' +
     '<div class="grading-header" data-hlid="' + id + '">' +
       '<span>&#x1F4DD; Chấm điểm — Giáo viên</span><span class="grading-toggle-icon">&#9662;</span>' +
     '</div>' +
     '<div class="grading-body">' +
-      '<div class="grade-type-toggle">' +
-        '<button class="grade-type-btn active" id="gtype-num-' + id + '" data-hlid="' + id + '" data-type="num">0–10</button>' +
-        '<button class="grade-type-btn" id="gtype-txt-' + id + '" data-hlid="' + id + '" data-type="txt">Đạt / Không đạt</button>' +
+      '<div style="font-size:12px;font-weight:700;color:var(--slate);margin-bottom:8px;text-transform:uppercase;letter-spacing:.6px">Đánh giá</div>' +
+      '<div class="verdict-row">' +
+        '<button class="verdict-btn v-dat" id="vbtn-dat-' + id + '" data-hlid="' + id + '" data-verdict="Đạt">✔ Đạt</button>' +
+        '<button class="verdict-btn v-khongdat" id="vbtn-kdat-' + id + '" data-hlid="' + id + '" data-verdict="Không đạt">✘ Không đạt</button>' +
+        '<button class="verdict-btn v-travề" id="vbtn-tv-' + id + '" data-hlid="' + id + '" data-verdict="Trả về">↺ Trả về</button>' +
       '</div>' +
-      '<div class="grading-row">' +
-        '<input type="number" id="grade-score-' + id + '" class="grade-input" min="0" max="10" step="0.5" placeholder="—"/>' +
-        '<select id="grade-score-txt-' + id + '" class="grade-text-select">' +
-          '<option value="">— Chọn —</option>' +
-          '<option value="Đạt">Đạt</option>' +
-          '<option value="Không đạt">Không đạt</option>' +
-        '</select>' +
-        '<button class="btn-grade" data-hlid="' + id + '">✔ Chấm bài</button>' +
-        '<span id="grade-result-' + id + '" class="grade-result" style="display:none"></span>' +
-      '</div>' +
-      '<div>' +
-        '<label style="font-size:13px;font-weight:600;color:var(--ink);display:block;margin-bottom:5px">Nhận xét của GV:</label>' +
+      '<span id="grade-result-' + id + '" class="grade-result" style="display:none"></span>' +
+      '<div style="margin-top:10px">' +
+        '<label style="font-size:13px;font-weight:600;color:var(--ink);display:block;margin-bottom:5px">Nhận xét:</label>' +
         '<textarea id="grade-comment-' + id + '" class="grade-comment" placeholder="Nhận xét, góp ý cho học sinh..."></textarea>' +
+      '</div>' +
+      '<input type="hidden" id="grade-score-' + id + '" value=""/>' +
+      '<div class="gv-auth-row" id="gvauth2-' + id + '" style="margin-top:10px">' +
+        '<button class="btn-grade" data-hlid="' + id + '" style="width:100%;justify-content:center">✔ Xác nhận đánh giá</button>' +
       '</div>' +
       '<div class="gv-auth-row" id="gvauth-' + id + '">' +
         '<label style="font-size:12px;font-weight:600;color:#4C1D95;white-space:nowrap">&#x1F511; Mã chấm điểm (GB):</label>' +
@@ -1890,13 +1907,20 @@ function wirePanel(div, hl) {
   div.querySelectorAll('.grade-type-btn').forEach(btn => {
     btn.addEventListener('click', () => setGradeType(btn.dataset.hlid, btn.dataset.type));
   });
-  // Grade type toggle
-  div.querySelectorAll('.grade-type-btn').forEach(btn => {
-    btn.addEventListener('click', function() { setGradeType(this.dataset.hlid, this.dataset.type); });
+  // Grade submit
+  const gradeBtn2 = div.querySelector('.btn-grade');
+  if (gradeBtn2) gradeBtn2.addEventListener('click', () => gradeHL(hl.id));
+  // Verdict buttons — click để chọn và chấm ngay
+  div.querySelectorAll('.verdict-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      // Deselect all, select this
+      div.querySelectorAll('.verdict-btn').forEach(b => b.classList.remove('selected'));
+      this.classList.add('selected');
+      // Ghi verdict vào hidden input
+      const hiddenScore = document.getElementById('grade-score-' + hl.id);
+      if (hiddenScore) hiddenScore.value = this.dataset.verdict;
+    });
   });
-  // Grade submit button
-  const gradeBtn = div.querySelector('.btn-grade');
-  if (gradeBtn) gradeBtn.addEventListener('click', () => gradeHL(hl.id));
 }
 
 // panelHeader kept as no-op (replaced by buildPanelHeaderHTML + buildGradingHTML)
@@ -2473,8 +2497,8 @@ function updateX3StatusBar(hlId, rec) {
       if (sbTime) sbTime.textContent = '';
     } else if (tt === 'draft') {
       sbEl.classList.add('draft');
-      sbLabel.textContent = 'Đang làm · đã lưu nháp';
-      if (sbTime) sbTime.textContent = capNhat ? 'lúc ' + capNhat : '';
+      sbLabel.textContent = 'Đang làm';
+      if (sbTime) sbTime.textContent = capNhat ? '· đã lưu lúc ' + capNhat : '';
     } else {
       sbEl.classList.add('done');
       sbLabel.textContent = 'Đã nộp';
@@ -2490,15 +2514,20 @@ function updateX3StatusBar(hlId, rec) {
   const gbComment = document.getElementById('gb-comment-' + hlId);
 
   if (tt === 'graded' && gs !== '' && gs !== undefined && gs !== null) {
-    if (gbIcon)    gbIcon.textContent    = '★';
-    if (gbLabel)   gbLabel.textContent   = 'Đã chấm điểm';
-    if (gbScore)   gbScore.textContent   = gs + '/10';
+    const gsStr = String(gs).trim();
+    const vClass = gsStr === 'Đạt' ? 'v-dat' : gsStr === 'Không đạt' ? 'v-khongdat' : gsStr === 'Trả về' ? 'v-travề' : '';
+    const icon   = gsStr === 'Đạt' ? '✔' : gsStr === 'Không đạt' ? '✘' : gsStr === 'Trả về' ? '↺' : '★';
+    const gbEl   = document.getElementById('grade-badge-' + hlId);
+    if (gbEl) { gbEl.className = 'x3-status-row x3-grade ' + vClass; }
+    if (gbIcon)    gbIcon.textContent    = icon;
+    if (gbLabel)   gbLabel.textContent   = gsStr;
+    if (gbScore)   gbScore.textContent   = '';
     const _gradedBy = rec.graded_by || '';
     if (gbTime)    gbTime.textContent    = (_gradedBy ? 'bởi GV ' + _gradedBy + ' ' : '') + (ga ? 'lúc ' + ga : '');
     if (gbComment) gbComment.textContent = gc ? 'Nhận xét: ' + gc : '';
   } else if (tt === 'submitted' || tt === 'graded') {
     if (gbIcon)    gbIcon.textContent    = '⏳';
-    if (gbLabel)   gbLabel.textContent   = 'Đang chờ chấm điểm';
+    if (gbLabel)   gbLabel.textContent   = 'Đợi chấm';
     if (gbScore)   gbScore.textContent   = '';
     if (gbTime)    gbTime.textContent    = '';
     if (gbComment) gbComment.textContent = '';
@@ -2679,8 +2708,14 @@ function restoreGrading(hlId, rec) {
 
   if (rec.grade_score !== '' && rec.grade_score !== undefined) {
     scoreEl.value = rec.grade_score;
-    // Only lock grading for non-GV sessions
-    if (!document.body.classList.contains('gv-logged')) scoreEl.readOnly = true;
+    // Highlight nút verdict đã chọn
+    const gs = String(rec.grade_score).trim();
+    const panel = scoreEl.closest('.hl-panel');
+    if (panel) {
+      panel.querySelectorAll('.verdict-btn').forEach(b => {
+        b.classList.toggle('selected', b.dataset.verdict === gs);
+      });
+    }
   }
   if (rec.grade_comment) {
     commentEl.value = rec.grade_comment;
@@ -2722,21 +2757,11 @@ async function gradeHL(hlId) {
     return;
   }
 
-  const scoreEl    = document.getElementById('grade-score-'     + hlId);
-  const scoreTxtEl = document.getElementById('grade-score-txt-' + hlId);
-  // Lấy giá trị: nếu txt input đang hiện thì dùng txt, ngược lại dùng số
-  const useTxt = scoreTxtEl && scoreTxtEl.style.display !== 'none';
-  let scoreVal, score;
-  if (useTxt) {
-    scoreVal = scoreTxtEl ? scoreTxtEl.value.trim() : '';
-    if (!scoreVal) { showToast('❌ Vui lòng chọn Đạt / Không đạt', 'error'); return; }
-    score = scoreVal; // dạng chữ
-  } else {
-    score = parseFloat(scoreEl ? scoreEl.value : '');
-    if (isNaN(score) || score < 0 || score > 10) {
-      showToast('❌ Vui lòng nhập điểm số từ 0 đến 10', 'error'); return;
-    }
-    scoreVal = score;
+  const scoreEl = document.getElementById('grade-score-' + hlId);
+  const scoreVal = scoreEl ? scoreEl.value.trim() : '';
+  if (!scoreVal) {
+    showToast('❌ Vui lòng chọn Đạt, Không đạt hoặc Trả về', 'error');
+    return;
   }
 
   const st = getStudent();
