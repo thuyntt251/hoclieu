@@ -237,7 +237,9 @@ tbody tr.unlocked-row:hover{background:#FEF3C7}
         <thead>
           <tr>
             <th>#</th>
+            <th>MSHS</th>
             <th>Họ và tên</th>
+            <th>Ngày sinh</th>
             <th>Lớp</th>
             <th>Bài</th>
             <th>Học liệu</th>
@@ -245,7 +247,7 @@ tbody tr.unlocked-row:hover{background:#FEF3C7}
             <th>Điểm</th>
             <th>Nộp lúc</th>
             <th>Chấm lúc</th>
-            <th style="min-width:90px">Thao tác</th>
+            <th style="min-width:220px">Thao tác</th>
           </tr>
         </thead>
         <tbody id="tableBody"></tbody>
@@ -368,10 +370,9 @@ async function loadAllData(){
 
 // ── FILTER OPTIONS ────────────────────────────────────────────
 function buildFilterOptions(){
-  const lops = [...new Set(allRecords.map(r=>r.lop).filter(Boolean))].sort();
-  const bais = [...new Set(allRecords.map(r=>r.bai).filter(Boolean))].sort();
-  const hls  = [...new Set(allRecords.map(r=>r.hoc_lieu).filter(Boolean))].sort();
-
+  const lops  = [...new Set(allRecords.map(r=>r.lop).filter(Boolean))].sort();
+  const bais  = [...new Set(allRecords.map(r=>r.bai).filter(Boolean))].sort();
+  const hls   = [...new Set(allRecords.map(r=>r.hoc_lieu).filter(Boolean))].sort();
   fillSelect('f_lop', lops, 'Tất cả lớp');
   fillSelect('f_bai', bais, 'Tất cả bài');
   fillSelect('f_hl',  hls,  'Tất cả HL');
@@ -391,17 +392,16 @@ function fillSelect(id, vals, placeholder){
 
 // ── FILTER ────────────────────────────────────────────────────
 function applyFilter(){
-  const fLop = document.getElementById('f_lop').value;
-  const fBai = document.getElementById('f_bai').value;
-  const fHL  = document.getElementById('f_hl').value;
-  const fTT  = document.getElementById('f_tt').value;
-  const fTen = document.getElementById('f_ten').value.trim().toLowerCase();
-
+  const fLop  = document.getElementById('f_lop').value;
+  const fBai  = document.getElementById('f_bai').value;
+  const fHL   = document.getElementById('f_hl').value;
+  const fTT   = document.getElementById('f_tt').value;
+  const fTen  = document.getElementById('f_ten').value.trim().toLowerCase();
   filtered = allRecords.filter(r => {
-    if(fLop && r.lop      !== fLop) return false;
-    if(fBai && r.bai      !== fBai) return false;
-    if(fHL  && r.hoc_lieu !== fHL)  return false;
-    if(fTT  && r.trang_thai !== fTT) return false;
+    if(fLop && r.lop        !== fLop)  return false;
+    if(fBai && r.bai        !== fBai)  return false;
+    if(fHL  && r.hoc_lieu   !== fHL)   return false;
+    if(fTT  && r.trang_thai !== fTT)   return false;
     if(fTen && !r.ten.toLowerCase().includes(fTen)) return false;
     return true;
   });
@@ -467,7 +467,9 @@ function buildRow(r, idx){
   return `
   <tr id="row-${ri}" class="${isUnlocked?'unlocked-row':''}">
     <td class="cell" style="color:var(--slate);font-size:11px">${idx+1}</td>
+    <td class="cell" style="font-size:11.5px;font-weight:600;color:var(--blue)">${esc(r.mshs||'—')}</td>
     <td class="cell cell-name">${esc(r.ten)}</td>
+    <td class="cell" style="font-size:11.5px;color:var(--slate);white-space:nowrap">${esc(r.ngay_sinh||'—')}</td>
     <td class="cell">${esc(r.lop)}</td>
     <td class="cell" style="font-size:11.5px">${esc(r.bai||'')}</td>
     <td class="cell" style="font-size:11.5px;color:var(--purple);font-weight:600">${esc(r.hoc_lieu||'')}</td>
@@ -634,8 +636,8 @@ async function saveRow(ri){
 
 // ── EXPORT CSV ────────────────────────────────────────────────
 function exportCSV(){
-  const headers = ['ten','lop','bai','hoc_lieu','trang_thai','grade_score','grade_comment','submitted_at','graded_at'];
-  const labels  = ['Họ và tên','Lớp','Bài','Học liệu','Trạng thái','Điểm','Nhận xét','Nộp lúc','Chấm lúc'];
+  const headers = ['mshs','ten','ngay_sinh','lop','bai','hoc_lieu','trang_thai','grade_score','grade_comment','submitted_at','graded_at'];
+  const labels  = ['MSHS','Họ và tên','Ngày sinh','Lớp','Bài','Học liệu','Trạng thái','Điểm','Nhận xét','Nộp lúc','Chấm lúc'];
   const rows    = [labels.join(',')];
   filtered.forEach(r => {
     rows.push(headers.map(h => '"' + String(r[h]||'').replace(/"/g,'""') + '"').join(','));
