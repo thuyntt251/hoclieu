@@ -2288,6 +2288,7 @@ async function loadStudentData(ten, lop) {
     const res  = await fetchWithTimeout(GAS_URL + '?action=load&name=' + encodeURIComponent(ten) + '&lop=' + encodeURIComponent(lop), {});
     const json = await res.json();
     studentRecords = json.records || [];
+    console.log('[load] records:', studentRecords.length, studentRecords[0]);
     hlState = {};
     studentRecords.forEach(rec => {
       hlState[rec.hoc_lieu] = {
@@ -2301,17 +2302,12 @@ async function loadStudentData(ten, lop) {
       const isLocked = rec.trang_thai === 'submitted' || rec.trang_thai === 'graded';
       restorePanel(rec.hoc_lieu, rec.du_lieu, isLocked, rec);
     });
+    console.log('[load] hlState:', Object.keys(hlState));
     renderHLTabs();
+    // Luôn gọi showHL(0) sau khi render để đảm bảo panel đầu tiên hiện ra
+    showHL(currentHLIndex || 0);
+    console.log('[load] showHL done, active panel:', document.querySelector('.hl-panel.active')?.id);
     showToast('✓ Đã tải bài làm của ' + ten, 'success');
-    // Switch lại HL tab hiện tại để panel hiện đúng
-    const _activeHLTab = document.querySelector('.hl-tab.active');
-    if (_activeHLTab) {
-      _activeHLTab.click();
-    } else {
-      // Mặc định hiện HL đầu tiên của bài đang chọn
-      const _firstHL = document.querySelector('.hl-tab');
-      if (_firstHL) _firstHL.click();
-    }
     // grading body luôn mở — không cần addClass
   } catch(e) {
     showToast('❌ Lỗi tải dữ liệu: ' + e.message, 'error');
@@ -2560,10 +2556,9 @@ async function saveHL(hlId) {
       hlState[hlId] = { ...(hlState[hlId]||{}), status:'draft', cap_nhat: _capNhat, data };
       updateX3StatusBar(hlId, { trang_thai:'draft', cap_nhat: _capNhat });
       showToast('💾 Đã lưu nháp lúc ' + _capNhat, 'success');
-      // Reload nhẹ để đồng bộ hlTabs
+      // Re-render tabs và giữ panel hiện tại
       renderHLTabs();
-      const _activeTab = document.querySelector('.hl-tab.active');
-      if (_activeTab) _activeTab.click();
+      showHL(currentHLIndex);
     } else {
       showToast('❌ ' + (json.error || 'Lỗi lưu'), 'error');
     }
