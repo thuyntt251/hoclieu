@@ -129,6 +129,9 @@ body:not(.gv-logged) .btn-grade{display:none!important}
 body.gv-logged [data-fid]{pointer-events:none!important;background:#F8FAFC!important;color:var(--ink-soft)!important;border-color:#E2E8F0!important;cursor:default!important;opacity:.75}
 /* Ẩn nút HS */
 body.gv-logged .btn-save,body.gv-logged .btn-submit,body.gv-logged .btn-reset{display:none!important}
+.gv-admin-link{display:none;align-items:center;gap:6px;padding:5px 14px;background:#EDE9FE;border:1.5px solid #DDD6FE;border-radius:7px;font-size:12px;font-weight:700;color:var(--purple);text-decoration:none;white-space:nowrap;transition:background .15s}
+.gv-admin-link:hover{background:#DDD6FE}
+body.gv-logged .gv-admin-link{display:inline-flex}
 .grading-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .grade-input{width:90px;padding:8px 12px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:inherit;font-size:16px;font-weight:700;color:var(--navy);text-align:center;background:#fff}
 .grade-input:focus{outline:none;border-color:#7C3AED;box-shadow:0 0 0 3px rgba(124,58,237,.12)}
@@ -332,6 +335,7 @@ body.gv-logged .btn-grade{display:inline-flex!important}
     <div class="header-title">PROJECT X3 · TRUYỀN THÔNG SÁNG TẠO</div>
     <div class="header-subtitle">Bộ Học Liệu Tổng Hợp Toàn Khóa · Khối 11</div>
   </div>
+  <a class="gv-admin-link" href="https://thuyntt251.github.io/hoclieu/project-x3-admin.html" target="_blank">📊 Quản lý dữ liệu</a>
   <div class="header-user" id="headerUser">
     <div class="header-user-avatar" id="headerAvatar">?</div>
     <div class="header-user-info">
