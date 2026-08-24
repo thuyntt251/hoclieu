@@ -1850,19 +1850,23 @@ function buildGradingHTML(hl) {
       '<span>&#x1F4DD; Chấm điểm — Giáo viên</span><span class="grading-toggle-icon">&#9662;</span>' +
     '</div>' +
     '<div class="grading-body">' +
-      '<div style="font-size:12px;font-weight:700;color:var(--slate);margin-bottom:8px;text-transform:uppercase;letter-spacing:.6px">Đánh giá</div>' +
-      '<div class="verdict-row">' +
-        '<button class="verdict-btn v-dat" id="vbtn-dat-' + id + '" data-hlid="' + id + '" data-verdict="Đạt">✔ Đạt</button>' +
-        '<button class="verdict-btn v-khongdat" id="vbtn-kdat-' + id + '" data-hlid="' + id + '" data-verdict="Không đạt">✘ Không đạt</button>' +
-        '<button class="verdict-btn v-travề" id="vbtn-tv-' + id + '" data-hlid="' + id + '" data-verdict="Trả về">↺ Trả về</button>' +
+      '<div style="display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap">' +
+        '<div style="flex:0 0 auto">' +
+          '<div style="font-size:11px;font-weight:700;color:var(--slate);text-transform:uppercase;letter-spacing:.7px;margin-bottom:8px">Đánh giá</div>' +
+          '<div class="verdict-row" style="flex-direction:column;gap:6px">' +
+            '<button class="verdict-btn v-dat" id="vbtn-dat-' + id + '" data-hlid="' + id + '" data-verdict="Đạt">✔ Đạt</button>' +
+            '<button class="verdict-btn v-khongdat" id="vbtn-kdat-' + id + '" data-hlid="' + id + '" data-verdict="Không đạt">✘ Không đạt</button>' +
+            '<button class="verdict-btn v-travề" id="vbtn-tv-' + id + '" data-hlid="' + id + '" data-verdict="Trả về">↺ Trả về</button>' +
+          '</div>' +
+        '</div>' +
+        '<div style="flex:1;min-width:200px">' +
+          '<label style="font-size:11px;font-weight:700;color:var(--slate);text-transform:uppercase;letter-spacing:.7px;display:block;margin-bottom:8px">Nhận xét</label>' +
+          '<textarea id="grade-comment-' + id + '" class="grade-comment" style="height:108px" placeholder="Nhận xét, góp ý cho học sinh..."></textarea>' +
+        '</div>' +
       '</div>' +
       '<span id="grade-result-' + id + '" class="grade-result" style="display:none"></span>' +
-      '<div style="margin-top:10px">' +
-        '<label style="font-size:13px;font-weight:600;color:var(--ink);display:block;margin-bottom:5px">Nhận xét:</label>' +
-        '<textarea id="grade-comment-' + id + '" class="grade-comment" placeholder="Nhận xét, góp ý cho học sinh..."></textarea>' +
-      '</div>' +
       '<input type="hidden" id="grade-score-' + id + '" value=""/>' +
-      '<div class="gv-auth-row" id="gvauth2-' + id + '" style="margin-top:10px">' +
+      '<div style="margin-top:12px">' +
         '<button class="btn-grade" data-hlid="' + id + '" style="width:100%;justify-content:center">✔ Xác nhận đánh giá</button>' +
       '</div>' +
       '<div class="gv-auth-row" id="gvauth-' + id + '">' +
@@ -2467,7 +2471,8 @@ function lockPanel(hlId) {
       const banner = document.createElement('div');
       banner.className = 'locked-banner';
       const submittedTime = hlState[hlId]?.submitted_at || '';
-      banner.innerHTML = '🔒 Đã nộp' + (submittedTime ? ' lúc ' + submittedTime : '') + ' — không thể chỉnh sửa';
+      banner.innerHTML = '';
+      banner.style.display = 'none';
       const headerEl = panel.querySelector('.hl-panel-header');
       if (headerEl) headerEl.insertAdjacentElement('afterend', banner);
     }
