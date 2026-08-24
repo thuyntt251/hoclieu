@@ -331,7 +331,11 @@ body.gv-logged .btn-grade{display:inline-flex!important}
 
     <!-- HS: chọn tên -->
     <div class="login-field" id="field_hs_name">
-      <label>Họ và tên</label>
+      <label>Lớp</label>
+      <select id="login_lop" onchange="onLoginLopChange()">
+        <option value="">-- Chọn lớp --</option>
+      </select>
+      <label style="margin-top:10px">Họ và tên</label>
       <select id="login_name">
         <option value="">-- Chọn tên --</option>
       </select>
@@ -1922,6 +1926,19 @@ function showHL(idx) {
 // ═══════════════════════════════════════════════════════════
 // ROLE
 // ═══════════════════════════════════════════════════════════
+function onLoginLopChange() {
+  const lop = document.getElementById('login_lop').value;
+  const sel = document.getElementById('login_name');
+  sel.innerHTML = '<option value="">-- Chọn tên --</option>';
+  if (!lop) return;
+  allStudents.filter(s => s.lop === lop).forEach(s => {
+    const opt = document.createElement('option');
+    opt.value = JSON.stringify({ ten: s.ten, lop: s.lop, mshs: s.mshs || '' });
+    opt.textContent = s.ten;
+    sel.appendChild(opt);
+  });
+}
+
 function setRole(role) {
   currentRole = role;
   document.getElementById('role_hs').classList.toggle('active', role === 'hs');
@@ -1929,6 +1946,8 @@ function setRole(role) {
   document.getElementById('field_hs_name').classList.toggle('hidden', role !== 'hs');
   document.getElementById('field_gv_name').classList.toggle('hidden', role !== 'gv');
   document.getElementById('login_pw').value = '';
+  const _lopSel = document.getElementById('login_lop');
+  if (_lopSel) _lopSel.value = '';
   document.getElementById('login_err').textContent = '';
 }
 
@@ -1981,13 +2000,19 @@ async function loadNameList() {
     allStudents = json.students || [];
     const sel  = document.getElementById('login_name');
     sel.innerHTML = '<option value="">-- Chọn tên --</option>';
-    allStudents.forEach(s => {
-      const opt = document.createElement('option');
-      // Lưu mshs vào value để dùng sau
-      opt.value = JSON.stringify({ ten: s.ten, lop: s.lop, mshs: s.mshs || '' });
-      opt.textContent = s.ten + (s.lop ? ' (' + s.lop + ')' : '');
-      sel.appendChild(opt);
-    });
+    // Populate lớp dropdown
+    const lopSel = document.getElementById('login_lop');
+    if (lopSel) {
+      const lops = [...new Set(allStudents.map(s => s.lop).filter(Boolean))].sort();
+      lopSel.innerHTML = '<option value="">-- Chọn lớp --</option>';
+      lops.forEach(lop => {
+        const o = document.createElement('option');
+        o.value = lop; o.textContent = lop;
+        lopSel.appendChild(o);
+      });
+    }
+    // Login_name: rỗng ban đầu, populate sau khi chọn lớp
+    sel.innerHTML = '<option value="">-- Chọn tên --</option>';
 
     // ── Danh sách GV ────────────────────────────────────────────
     const res2  = await fetchWithTimeout(GAS_URL + '?action=listGV', {});
