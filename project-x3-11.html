@@ -400,7 +400,7 @@ body.gv-logged .btn-grade{display:inline-flex!important}
 // ═══════════════════════════════════════════════════════════
 // CONFIG — Replace with your deployed Apps Script URL
 // ═══════════════════════════════════════════════════════════
-const GAS_URL  = 'https://script.google.com/macros/s/AKfycbyDIBn8JeDTKMP46jx_PV3MrG1cBBRrbnxxdWPu0FUoNX1qyiLbrrcWLOEvoqAnnEVJ/exec';
+const GAS_URL  = 'https://script.google.com/macros/s/AKfycbwgEboNFvCUd8f8v5plkBr09NAaS0-YNinRnuexkNfBGQm08M_OjTzfTtjq4Qx3PVzT/exec';
 const SHEET_ID = '1DpojpfuQpyEnXw6eQJc_fOakgiwDZhf9k0IrO1RhtMI';
 
 // ═══════════════════════════════════════════════════════════
@@ -412,7 +412,7 @@ const LOCK_KEY     = 'x3_lock';
 const ATTEMPT_KEY  = 'x3_attempts';
 const SESSION_KEY  = 'x3_session'; // sessionStorage — xóa khi đóng tab
 
-let currentStudent = null;  // { ten, lop, nhom }
+let currentStudent = null;  // { ten, lop }
 let currentRole    = 'hs';  // 'hs' | 'gv'
 let allStudents    = [];    // cache full list for GV filter
 
@@ -1681,7 +1681,7 @@ function hlHTML(hlId) {
 let currentLesson = 0;
 let currentHLIndex = 0;
 let studentRecords = []; // loaded from sheet
-let students = [];       // [{ten, lop, nhom}]
+let students = [];       // [{ten, lop}]
 // hlState[hlId] = { status:'draft'|'submitted'|'unsaved', data:{fid:val,...} }
 let hlState = {};
 
@@ -1899,7 +1899,7 @@ async function loadNameList() {
     sel.innerHTML = '<option value="">-- Chọn tên --</option>';
     allStudents.forEach(s => {
       const opt = document.createElement('option');
-      opt.value = JSON.stringify({ ten: s.ten, lop: s.lop, nhom: s.nhom });
+      opt.value = JSON.stringify({ ten: s.ten, lop: s.lop });
       opt.textContent = s.ten + (s.lop ? ' (' + s.lop + ')' : '');
       sel.appendChild(opt);
     });
@@ -2054,12 +2054,11 @@ async function enterAppHS(student, doLog) {
   const avatar = student.ten.trim().split(' ').pop()[0].toUpperCase();
   document.getElementById('headerAvatar').textContent = avatar;
   document.getElementById('headerUserName').textContent = student.ten;
-  document.getElementById('headerUserRole').textContent = '🎓 ' + student.lop + ' · ' + student.nhom;
+  document.getElementById('headerUserRole').textContent = '🎓 ' + student.lop;
   document.getElementById('headerUser').classList.add('visible');
 
   document.getElementById('s_name').value = student.ten;
   document.getElementById('s_lop').value  = student.lop;
-  document.getElementById('s_nhom').value = student.nhom;
 
   if (doLog) fetch(GAS_URL, { method: 'POST', body: JSON.stringify({
     action:'log', ten: student.ten, ua: navigator.userAgent, hanh_dong:'Đăng nhập (HS)'
@@ -2111,8 +2110,8 @@ function onGVLopChange() {
   const filtered = allStudents.filter(s => s.lop === lop);
   filtered.forEach(s => {
     const opt = document.createElement('option');
-    opt.value = JSON.stringify({ ten: s.ten, lop: s.lop, nhom: s.nhom });
-    opt.textContent = s.ten + (s.nhom ? ' · ' + s.nhom : '');
+    opt.value = JSON.stringify({ ten: s.ten, lop: s.lop });
+    opt.textContent = s.ten;
     stSel.appendChild(opt);
   });
 }
@@ -2301,7 +2300,6 @@ function getStudent() {
   return {
     ten:  document.getElementById('s_name').value,
     lop:  document.getElementById('s_lop').value,
-    nhom: document.getElementById('s_nhom').value,
   };
 }
 
@@ -2325,7 +2323,7 @@ async function saveHL(hlId) {
       headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify({
         action:'save',
-        ten: st.ten, lop: st.lop, nhom: st.nhom,
+        ten: st.ten, lop: st.lop,
         bai: lesson?.bai, hoc_lieu: hlId,
         du_lieu: data, ua: navigator.userAgent
       })
@@ -2367,7 +2365,7 @@ async function submitHL(hlId) {
       headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify({
         action:'submit',
-        ten: st.ten, lop: st.lop, nhom: st.nhom,
+        ten: st.ten, lop: st.lop,
         bai: lesson?.bai, hoc_lieu: hlId,
         du_lieu: data, ua: navigator.userAgent
       })
