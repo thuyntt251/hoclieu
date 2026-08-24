@@ -2306,6 +2306,15 @@ async function loadStudentData(ten, lop) {
     });
     renderHLTabs();
     showToast('✓ Đã tải bài làm của ' + ten, 'success');
+    // Switch lại HL tab hiện tại để panel hiện đúng
+    const _activeHLTab = document.querySelector('.hl-tab.active');
+    if (_activeHLTab) {
+      _activeHLTab.click();
+    } else {
+      // Mặc định hiện HL đầu tiên của bài đang chọn
+      const _firstHL = document.querySelector('.hl-tab');
+      if (_firstHL) _firstHL.click();
+    }
     // grading body luôn mở — không cần addClass
   } catch(e) {
     showToast('❌ Lỗi tải dữ liệu: ' + e.message, 'error');
@@ -2323,21 +2332,23 @@ function onStudentChange() {}
 // ═══════════════════════════════════════════════════════════
 function restorePanel(hlId, data, locked, rec) {
   const panel = document.getElementById('panel-' + hlId);
-  if (!panel || !data) return;
+  if (!panel) return;
+  // Nếu có data thì fill inputs
+  if (data && typeof data === 'object' && Object.keys(data).length > 0) {
 
-  // Fill inputs
-  Object.entries(data).forEach(([fid, val]) => {
-    const el = panel.querySelector(`[data-fid="${fid}"]`);
-    if (!el) return;
-    if (el.type === 'checkbox') el.checked = !!val;
-    else if (el.type === 'radio') {
-      // find radio with matching value
-      panel.querySelectorAll(`[data-fid="${fid}"]`).forEach(r => {
-        if (r.value === val) r.checked = true;
-      });
-    }
-    else el.value = val || '';
-  });
+    // Fill inputs
+    Object.entries(data).forEach(([fid, val]) => {
+      const el = panel.querySelector(`[data-fid="${fid}"]`);
+      if (!el) return;
+      if (el.type === 'checkbox') el.checked = !!val;
+      else if (el.type === 'radio') {
+        panel.querySelectorAll(`[data-fid="${fid}"]`).forEach(r => {
+          if (r.value === val) r.checked = true;
+        });
+      }
+      else el.value = val || '';
+    });
+  }
 
   // Lock if submitted/graded
   if (locked) lockPanel(hlId);
