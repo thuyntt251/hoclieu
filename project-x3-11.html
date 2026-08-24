@@ -452,7 +452,7 @@ body.gv-logged .btn-grade{display:inline-flex!important}
 // ═══════════════════════════════════════════════════════════
 // CONFIG — Replace with your deployed Apps Script URL
 // ═══════════════════════════════════════════════════════════
-const GAS_URL  = 'https://script.google.com/macros/s/AKfycbw_pYTWohFdDnh3kZEDPz9fVYw0ukeTzCRNvSHeQAqb5XKzt2OFaj0NBEix4kd5Xoqg/exec';
+const GAS_URL  = 'https://script.google.com/macros/s/AKfycbxTbC-EinZCGglpw-F1IiOArsi8S8hJJemr8CY_pCbbWI-t4FdzbYsrztZkHHFspTR8/exec';
 const SHEET_ID = '1DpojpfuQpyEnXw6eQJc_fOakgiwDZhf9k0IrO1RhtMI';
 
 // ═══════════════════════════════════════════════════════════
@@ -2421,8 +2421,9 @@ function updateX3StatusBar(hlId, rec) {
     if (gbIcon)    gbIcon.textContent    = '★';
     if (gbLabel)   gbLabel.textContent   = 'Đã chấm điểm';
     if (gbScore)   gbScore.textContent   = gs + '/10';
-    if (gbTime)    gbTime.textContent    = ga ? 'lúc ' + ga : '';
-    if (gbComment) gbComment.textContent = gc;
+    const _gradedBy = rec.graded_by || '';
+    if (gbTime)    gbTime.textContent    = (_gradedBy ? 'bởi GV ' + _gradedBy + ' ' : '') + (ga ? 'lúc ' + ga : '');
+    if (gbComment) gbComment.textContent = gc ? 'Nhận xét: ' + gc : '';
   } else if (tt === 'submitted' || tt === 'graded') {
     if (gbIcon)    gbIcon.textContent    = '⏳';
     if (gbLabel)   gbLabel.textContent   = 'Đang chờ chấm điểm';
@@ -2695,12 +2696,15 @@ async function gradeHL(hlId) {
         grade_score: score,
         grade_comment: commentEl ? commentEl.value : '',
         gv_pw: gvPw,
+        graded_by: currentGV ? currentGV.ten : '',
         ua: navigator.userAgent
       })
     });
     const json = await res.json();
     if (json.ok) {
       const ts = json.graded_at || now;
+      hlState[hlId] = { ...(hlState[hlId]||{}), status:'graded', graded_at: ts, grade_score: score,
+        grade_comment: commentEl ? commentEl.value : '', graded_by: currentGV ? currentGV.ten : '' };
       showToast('★ Đã chấm ' + score + '/10 lúc ' + ts, 'success');
       const _st = getStudent();
       if (_st.ten) await loadStudentData(_st.ten, _st.lop);
