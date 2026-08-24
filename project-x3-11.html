@@ -377,6 +377,11 @@ body.gv-logged .btn-grade{display:inline-flex!important}
   <select id="gv_student" onchange="onGVStudentChange()">
     <option value="">-- Chọn học sinh --</option>
   </select>
+  <label id="gv_mshs_label" style="display:none">Mã thẻ</label>
+  <select id="gv_mshs" onchange="onGVMshsChange()" style="display:none">
+    <option value="">-- Chọn mã thẻ --</option>
+  </select>
+  <span id="gv_mshs_display" style="font-size:12px;color:#4C1D95;font-weight:600;display:none"></span>
   <div id="loadStatus" style="font-size:12px;color:#4C1D95;margin-left:8px"></div>
 </div>
 
@@ -1931,7 +1936,8 @@ async function loadNameList() {
     sel.innerHTML = '<option value="">-- Chọn tên --</option>';
     allStudents.forEach(s => {
       const opt = document.createElement('option');
-      opt.value = JSON.stringify({ ten: s.ten, lop: s.lop });
+      // Lưu mshs vào value để dùng sau
+      opt.value = JSON.stringify({ ten: s.ten, lop: s.lop, mshs: s.mshs || '' });
       opt.textContent = s.ten + (s.lop ? ' (' + s.lop + ')' : '');
       sel.appendChild(opt);
     });
@@ -2135,27 +2141,60 @@ function buildLopDropdown() {
 }
 
 function onGVLopChange() {
-  const lop    = document.getElementById('gv_lop').value;
-  const stSel  = document.getElementById('gv_student');
+  const lop   = document.getElementById('gv_lop').value;
+  const stSel = document.getElementById('gv_student');
   stSel.innerHTML = '<option value="">-- Chọn học sinh --</option>';
+  hideMshsBox();
   if (!lop) return;
   const filtered = allStudents.filter(s => s.lop === lop);
   filtered.forEach(s => {
     const opt = document.createElement('option');
-    opt.value = JSON.stringify({ ten: s.ten, lop: s.lop });
+    opt.value = JSON.stringify({ ten: s.ten, lop: s.lop, mshs: s.mshs || '' });
     opt.textContent = s.ten;
     stSel.appendChild(opt);
   });
 }
 
 async function onGVStudentChange() {
-  document.body.classList.remove('no-student-selected');
   const val = document.getElementById('gv_student').value;
-  if (!val) return;
+  if (!val) { hideMshsBox(); return; }
   let st;
   try { st = JSON.parse(val); } catch(e) { return; }
+
+  // Kiểm tra trùng tên trong cùng lớp
+  const lop = document.getElementById('gv_lop').value;
+  const sameNameStudents = allStudents.filter(s => s.ten === st.ten && s.lop === lop);
+
+  if (sameNameStudents.length > 1) {
+    // Trùng tên → yêu cầu chọn mã thẻ
+    const mshsSel = document.getElementById('gv_mshs');
+    mshsSel.innerHTML = '<option value="">-- Chọn mã thẻ --</option>';
+    sameNameStudents.forEach(s => {
+      const opt = document.createElement('option');
+      opt.value = JSON.stringify({ ten: s.ten, lop: s.lop, mshs: s.mshs || '' });
+      opt.textContent = s.mshs ? s.mshs : '(không có mã)';
+      mshsSel.appendChild(opt);
+    });
+    document.getElementById('gv_mshs_label').style.display   = 'inline';
+    document.getElementById('gv_mshs').style.display         = 'inline-block';
+    document.getElementById('gv_mshs_display').style.display = 'none';
+    showToast('⚠ Có ' + sameNameStudents.length + ' học sinh trùng tên — vui lòng chọn mã thẻ', 'error');
+    return; // chưa load, chờ chọn mã thẻ
+  }
+
+  // Không trùng tên → auto-fill MSHS nếu có
+  if (st.mshs) {
+    const disp = document.getElementById('gv_mshs_display');
+    disp.textContent = '🪪 ' + st.mshs;
+    disp.style.display = 'inline';
+    document.getElementById('gv_mshs_label').style.display = 'none';
+    document.getElementById('gv_mshs').style.display       = 'none';
+  } else {
+    hideMshsBox();
+  }
+
+  document.body.classList.remove('no-student-selected');
   currentStudent = st;
-  // Update display
   document.getElementById('s_name').value = st.ten;
   await loadStudentData(st.ten, st.lop);
 }
