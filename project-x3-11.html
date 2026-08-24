@@ -1830,9 +1830,17 @@ function buildGradingHTML(hl) {
       '<span>&#x1F4DD; Chấm điểm — Giáo viên</span><span class="grading-toggle-icon">&#9662;</span>' +
     '</div>' +
     '<div class="grading-body">' +
+      '<div class="grade-type-toggle">' +
+        '<button class="grade-type-btn active" id="gtype-num-' + id + '" data-hlid="' + id + '" data-type="num">0–10</button>' +
+        '<button class="grade-type-btn" id="gtype-txt-' + id + '" data-hlid="' + id + '" data-type="txt">Đạt / Không đạt</button>' +
+      '</div>' +
       '<div class="grading-row">' +
-        '<label style="font-size:13px;font-weight:600;color:var(--ink);white-space:nowrap">Điểm số (0–10):</label>' +
         '<input type="number" id="grade-score-' + id + '" class="grade-input" min="0" max="10" step="0.5" placeholder="—"/>' +
+        '<select id="grade-score-txt-' + id + '" class="grade-text-select">' +
+          '<option value="">— Chọn —</option>' +
+          '<option value="Đạt">Đạt</option>' +
+          '<option value="Không đạt">Không đạt</option>' +
+        '</select>' +
         '<button class="btn-grade" data-hlid="' + id + '">✔ Chấm bài</button>' +
         '<span id="grade-result-' + id + '" class="grade-result" style="display:none"></span>' +
       '</div>' +
@@ -1849,6 +1857,23 @@ function buildGradingHTML(hl) {
   '</div>';
 }
 
+function setGradeType(hlId, type) {
+  const numInput = document.getElementById('grade-score-'     + hlId);
+  const txtInput = document.getElementById('grade-score-txt-' + hlId);
+  const btnNum   = document.getElementById('gtype-num-' + hlId);
+  const btnTxt   = document.getElementById('gtype-txt-' + hlId);
+  if (!numInput || !txtInput) return;
+  if (type === 'num') {
+    numInput.style.display = ''; txtInput.style.display = 'none';
+    if (btnNum) btnNum.classList.add('active');
+    if (btnTxt) btnTxt.classList.remove('active');
+  } else {
+    numInput.style.display = 'none'; txtInput.style.display = '';
+    if (btnNum) btnNum.classList.remove('active');
+    if (btnTxt) btnTxt.classList.add('active');
+  }
+}
+
 // Wire event listeners onto the already-built panel DOM node
 function wirePanel(div, hl) {
   // Header buttons
@@ -1861,6 +1886,14 @@ function wirePanel(div, hl) {
 
   // Grading header: không toggle (body luôn mở)
 
+  // Grade type toggle buttons
+  div.querySelectorAll('.grade-type-btn').forEach(btn => {
+    btn.addEventListener('click', () => setGradeType(btn.dataset.hlid, btn.dataset.type));
+  });
+  // Grade type toggle
+  div.querySelectorAll('.grade-type-btn').forEach(btn => {
+    btn.addEventListener('click', function() { setGradeType(this.dataset.hlid, this.dataset.type); });
+  });
   // Grade submit button
   const gradeBtn = div.querySelector('.btn-grade');
   if (gradeBtn) gradeBtn.addEventListener('click', () => gradeHL(hl.id));
@@ -2689,10 +2722,21 @@ async function gradeHL(hlId) {
     return;
   }
 
-  const scoreEl = document.getElementById('grade-score-' + hlId);
-  const score = parseFloat(scoreEl ? scoreEl.value : '');
-  if (isNaN(score) || score < 0 || score > 10) {
-    showToast('❌ Vui lòng nhập điểm số từ 0 đến 10', 'error'); return;
+  const scoreEl    = document.getElementById('grade-score-'     + hlId);
+  const scoreTxtEl = document.getElementById('grade-score-txt-' + hlId);
+  // Lấy giá trị: nếu txt input đang hiện thì dùng txt, ngược lại dùng số
+  const useTxt = scoreTxtEl && scoreTxtEl.style.display !== 'none';
+  let scoreVal, score;
+  if (useTxt) {
+    scoreVal = scoreTxtEl ? scoreTxtEl.value.trim() : '';
+    if (!scoreVal) { showToast('❌ Vui lòng chọn Đạt / Không đạt', 'error'); return; }
+    score = scoreVal; // dạng chữ
+  } else {
+    score = parseFloat(scoreEl ? scoreEl.value : '');
+    if (isNaN(score) || score < 0 || score > 10) {
+      showToast('❌ Vui lòng nhập điểm số từ 0 đến 10', 'error'); return;
+    }
+    scoreVal = score;
   }
 
   const st = getStudent();
@@ -2705,7 +2749,7 @@ async function gradeHL(hlId) {
 
   // Offline mode
   if (!GAS_URL || GAS_URL.includes('YOUR_')) {
-    if (resultEl) { resultEl.style.display = 'flex'; resultEl.textContent = '★ ' + score + '/10 — ' + now; }
+    if (resultEl) { resultEl.style.display = 'flex'; resultEl.textContent = '★ ' + scoreVal + (typeof scoreVal==='number'?'/10':'') + ' — ' + now; }
     hlState[hlId] = { ...(hlState[hlId]||{}), status:'graded', graded_at: now, grade_score: score };
     updateStatusBadge(hlId, 'graded', now);
     showToast('★ Đã chấm ' + score + '/10 (offline)', 'success');
@@ -2722,7 +2766,7 @@ async function gradeHL(hlId) {
         ten: st.ten, lop: st.lop,
         bai: lesson ? lesson.bai : '',
         hoc_lieu: hlId,
-        grade_score: score,
+        grade_score: scoreVal,
         grade_comment: commentEl ? commentEl.value : '',
         gv_pw: gvPw,
         graded_by: (function(){ try { return JSON.parse(sessionStorage.getItem('x3_session')||'{}').ten||''; } catch(e){ return ''; } })(),
@@ -2734,7 +2778,7 @@ async function gradeHL(hlId) {
       const ts = json.graded_at || now;
       hlState[hlId] = { ...(hlState[hlId]||{}), status:'graded', graded_at: ts, grade_score: score,
         grade_comment: commentEl ? commentEl.value : '', graded_by: (function(){ try { return JSON.parse(sessionStorage.getItem('x3_session')||'{}').ten||''; } catch(e){ return ''; } })() };
-      showToast('★ Đã chấm ' + score + '/10 lúc ' + ts, 'success');
+      showToast('★ Đã chấm: ' + scoreVal + (typeof scoreVal==='number'?' /10':'') + ' lúc ' + ts, 'success');
       const _st = getStudent();
       if (_st.ten) await loadStudentData(_st.ten, _st.lop);
     } else {
