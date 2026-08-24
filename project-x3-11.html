@@ -147,8 +147,7 @@ body{font-family:"Be Vietnam Pro",sans-serif;background:#F0F4FF;color:var(--ink)
 body.gv-logged .section-grading{display:block}
 /* grading-section display managed by .section-grading */
 /* Header tím */
-.grading-header{background:linear-gradient(135deg,#4C1D95,#6D28D9);color:#fff;padding:12px 18px;font-size:12px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;display:flex;align-items:center;justify-content:space-between}
-.grading-toggle-icon{display:none}
+
 /* Body luôn mở — không animation */
 .grading-body{background:#FAFCFF;display:flex;flex-direction:column;gap:14px;padding:18px 18px}
 
@@ -456,8 +455,8 @@ body.gv-logged .btn-grade{display:inline-flex!important}
 
 <div class="gv-placeholder" id="gvPlaceholder">
   <div class="gv-placeholder-icon">👆</div>
-  <div class="gv-placeholder-title">Chọn học sinh để xem bài làm</div>
-  <div class="gv-placeholder-sub">Chọn lớp và học sinh từ thanh công cụ phía trên để tải bài làm và chấm điểm.</div>
+  <div class="gv-placeholder-title" id="gvPlaceholderTitle">Đang tải dữ liệu...</div>
+  <div class="gv-placeholder-sub" id="gvPlaceholderSub">Vui lòng chờ trong giây lát.</div>
 </div>
 <div class="content-area" id="contentArea">
   <!-- HL panels filled by JS from DATA -->
@@ -1835,32 +1834,17 @@ function buildPanelHeaderHTML(hl) {
 function buildGradingHTML(hl) {
   var id = hl.id;
   return '<div id="grading-' + id + '">' +
-    '<div class="grading-header" data-hlid="' + id + '">' +
-      '<span>&#x1F4DD; Chấm điểm — Giáo viên</span><span class="grading-toggle-icon">&#9662;</span>' +
-    '</div>' +
-    '<div class="grading-body">' +
-      '<div style="display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap">' +
-        '<div style="flex:0 0 auto">' +
-          '<div style="font-size:11px;font-weight:700;color:var(--slate);text-transform:uppercase;letter-spacing:.7px;margin-bottom:8px">Đánh giá</div>' +
-          '<div class="verdict-row" style="flex-direction:column;gap:6px">' +
-            '<button class="verdict-btn v-dat" id="vbtn-dat-' + id + '" data-hlid="' + id + '" data-verdict="Đạt">✔ Đạt</button>' +
-            '<button class="verdict-btn v-khongdat" id="vbtn-kdat-' + id + '" data-hlid="' + id + '" data-verdict="Không đạt">✘ Không đạt</button>' +
-            '<button class="verdict-btn v-travề" id="vbtn-tv-' + id + '" data-hlid="' + id + '" data-verdict="Trả về">↺ Trả về</button>' +
-          '</div>' +
-        '</div>' +
-        '<div style="flex:1;min-width:200px">' +
-          '<label style="font-size:11px;font-weight:700;color:var(--slate);text-transform:uppercase;letter-spacing:.7px;display:block;margin-bottom:8px">Nhận xét</label>' +
-          '<textarea id="grade-comment-' + id + '" class="grade-comment" style="height:108px" placeholder="Nhận xét, góp ý cho học sinh..."></textarea>' +
-        '</div>' +
-      '</div>' +
-      
-      '<input type="hidden" id="grade-score-' + id + '" value=""/>' +
-      '<div style="margin-top:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">' +
-        '<label style="font-size:12px;font-weight:600;color:#4C1D95;white-space:nowrap">&#x1F511; Mã GB:</label>' +
-        '<input type="password" id="gv-pw-' + id + '" class="gv-pw-input" placeholder="Nhập mã chấm điểm..." style="flex:1;min-width:150px"/>' +
-        '<button class="btn-grade" data-hlid="' + id + '">✔ Xác nhận</button>' +
+    '<div class="grading-body" style="padding:10px 16px">' +
+      '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">' +
+        '<button class="verdict-btn v-dat" id="vbtn-dat-' + id + '" data-hlid="' + id + '" data-verdict="\u0110\u1ea1t" style="padding:5px 12px;font-size:12px">\u2714 \u0110\u1ea1t</button>' +
+        '<button class="verdict-btn v-khongdat" id="vbtn-kdat-' + id + '" data-hlid="' + id + '" data-verdict="Kh\u00f4ng \u0111\u1ea1t" style="padding:5px 12px;font-size:12px">\u2718 Kh\u00f4ng \u0111\u1ea1t</button>' +
+        '<button class="verdict-btn v-travề" id="vbtn-tv-' + id + '" data-hlid="' + id + '" data-verdict="Tr\u1ea3 v\u1ec1" style="padding:5px 12px;font-size:12px">\u21ba Tr\u1ea3 v\u1ec1</button>' +
+        '<input type="text" id="grade-comment-' + id + '" class="grade-comment" placeholder="Nh\u1eadn x\u00e9t..." style="flex:1;min-width:120px;height:32px;padding:4px 10px;font-size:12px;border-radius:6px;border:1.5px solid var(--border);font-family:inherit"/>' +
+        '<input type="password" id="gv-pw-' + id + '" class="gv-pw-input" placeholder="M\u00e3 GB..." style="width:90px;height:32px;padding:4px 8px;font-size:12px"/>' +
+        '<button class="btn-grade" data-hlid="' + id + '" style="height:32px;padding:0 14px;font-size:12px">\u2714 X\u00e1c nh\u1eadn</button>' +
         '<span id="gv-err-' + id + '" class="gv-auth-err"></span>' +
       '</div>' +
+      '<input type="hidden" id="grade-score-' + id + '" value=""/>' +
     '</div>' +
   '</div>';
 }
@@ -2010,25 +1994,35 @@ function setRole(role) {
 // LOGIN / LOGOUT
 // ═══════════════════════════════════════════════════════════
 async function initApp() {
-  const saved = sessionStorage.getItem(SESSION_KEY);
-  if (saved) {
+  // Thử restore GV session (localStorage — persist qua refresh)
+  const savedGV = localStorage.getItem(SESSION_KEY + '_gv');
+  if (savedGV) {
     try {
-      const sess = JSON.parse(saved);
+      const sess = JSON.parse(savedGV);
       if (sess.role === 'gv') {
         currentRole = 'gv';
         await enterAppGV(sess, false);
-      } else {
+        return;
+      }
+    } catch(e) { localStorage.removeItem(SESSION_KEY + '_gv'); }
+  }
+  // Thử restore HS session (sessionStorage — chỉ trong tab)
+  const savedHS = sessionStorage.getItem(SESSION_KEY);
+  if (savedHS) {
+    try {
+      const sess = JSON.parse(savedHS);
+      if (sess.role === 'hs') {
         currentRole = 'hs';
         currentStudent = sess;
         await enterAppHS(sess, false);
+        return;
       }
-      return;
     } catch(e) {
-      // Session restore thất bại → xóa session, quay về màn hình đăng nhập
       sessionStorage.removeItem(SESSION_KEY);
+  localStorage.removeItem(SESSION_KEY + '_gv');
       currentStudent = null; currentRole = 'hs';
       document.body.classList.remove('gv-logged');
-  document.body.classList.remove('no-student-selected');
+      document.body.classList.remove('no-student-selected');
     }
   }
   await loadNameList();
@@ -2187,7 +2181,7 @@ async function doLogin() {
       const json = await res.json();
       if (json.valid) {
         localStorage.removeItem(LOCK_KEY); localStorage.removeItem(ATTEMPT_KEY);
-        sessionStorage.setItem(SESSION_KEY, JSON.stringify({ ...gv, role: 'gv', _pw: pw }));
+        localStorage.setItem(SESSION_KEY + '_gv', JSON.stringify({ ...gv, role: 'gv', _pw: pw }));
         await enterAppGV(gv, true);
       } else {
         const att = (parseInt(localStorage.getItem(ATTEMPT_KEY)) || 0) + 1;
@@ -2258,6 +2252,11 @@ async function enterAppGV(gv, doLog) {
 
   // Build lớp dropdown từ allStudents
   buildLopDropdown();
+  // Cập nhật placeholder status
+  const _pt = document.getElementById('gvPlaceholderTitle');
+  const _ps = document.getElementById('gvPlaceholderSub');
+  if (_pt) _pt.textContent = 'Chọn học sinh để xem bài làm';
+  if (_ps) _ps.textContent = 'Chọn lớp và học sinh từ thanh công cụ phía trên.';
 
   if (doLog) fetch(GAS_URL, { method: 'POST', body: JSON.stringify({
     action:'log', ten: gv.ten, ua: navigator.userAgent, hanh_dong:'Đăng nhập (GV)'
