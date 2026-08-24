@@ -109,12 +109,18 @@ body.gv-logged .hl-panel.graded .grade-info-bar{display:flex}
 .grade-info-value{font-size:13px;font-weight:600;color:#4C1D95}
 .grade-info-score{font-size:22px;font-weight:800;color:#4C1D95;line-height:1}
 .grade-info-comment{font-size:12.5px;color:#5B21B6;font-style:italic;max-width:400px;line-height:1.4}
-/* GRADE BADGE — hiện cho HS khi bài đã chấm */
-.grade-badge{display:none;align-items:center;gap:8px;padding:6px 14px;background:#EDE9FE;border:1.5px solid #DDD6FE;border-radius:20px;font-size:12.5px;font-weight:700;color:#4C1D95;margin-top:6px;flex-wrap:wrap}
-.hl-panel.graded .grade-badge{display:inline-flex}
-body.gv-logged .grade-badge{display:none!important}
-.grade-badge-score{font-size:16px;font-weight:800}
-.grade-badge-comment{font-size:12px;color:#5B21B6;font-style:italic;font-weight:400}
+/* SUBMIT BADGE + GRADE BADGE — HS view */
+.submit-badge,.grade-badge-hs{display:inline-flex;align-items:center;gap:7px;padding:5px 13px;border-radius:20px;font-size:12.5px;font-weight:700;margin-top:5px;flex-wrap:wrap}
+.submit-badge{background:#F1F5F9;border:1.5px solid #CBD5E1;color:#475569}
+.submit-badge.done{background:#DCFCE7;border-color:#86EFAC;color:#15803D}
+.grade-badge-hs{background:#F1F5F9;border:1.5px solid #CBD5E1;color:#64748B;display:none}
+.hl-panel.submitted .grade-badge-hs,.hl-panel.graded .grade-badge-hs{display:inline-flex}
+.hl-panel.graded .grade-badge-hs{background:#EDE9FE;border-color:#DDD6FE;color:#4C1D95}
+body.gv-logged .submit-badge,body.gv-logged .grade-badge-hs{display:none!important}
+.gb-score{font-size:15px;font-weight:800}
+.gb-sep{opacity:.4}
+.gb-comment{font-size:11.5px;font-style:italic;font-weight:400;color:#5B21B6}
+.gb-time{font-size:11px;opacity:.65}
 /* LOCKED OVERLAY — chỉ khóa student fields (data-fid) */
 .hl-panel.locked [data-fid]{background:#F8FAFC!important;color:var(--ink-soft)!important;pointer-events:none!important;border-color:#E2E8F0!important;cursor:not-allowed!important;opacity:.7}
 .locked-banner{background:var(--green-light);border:1px solid #6EE7B7;border-radius:var(--radius-sm);padding:10px 16px;font-size:13px;color:#065F46;font-weight:600;margin-bottom:16px;display:flex;align-items:center;gap:8px}
@@ -1759,12 +1765,15 @@ function buildPanelHeaderHTML(hl) {
       '<span class="hl-badge">' + sid + '</span>' +
       '<div>' +
         '<div style="font-size:18px;font-weight:700;color:var(--navy)">' + lbl + '</div>' +
-        '<div id="status-' + id + '" class="hl-status-badge unsaved" style="display:inline-block;margin-top:4px">&#9679; Chưa lưu</div>' +
-        '<div class="grade-badge" id="grade-badge-' + id + '">' +
-          '<span>★ Đã được chấm điểm</span>' +
-          '<span class="grade-badge-score" id="gb-score-' + id + '"></span>' +
-          '<span class="grade-badge-comment" id="gb-comment-' + id + '"></span>' +
-          '<span style="font-size:11px;opacity:.7" id="gb-time-' + id + '"></span>' +
+        '<div style="display:flex;flex-direction:column;gap:3px;margin-top:4px">' +
+          '<div id="submit-badge-' + id + '" class="submit-badge">&#9679; Chưa lưu</div>' +
+          '<div id="grade-badge-' + id + '" class="grade-badge-hs">' +
+            '<span>&#9733; Đã chấm</span>' +
+            '<span class="gb-score" id="gb-score-' + id + '">—</span>' +
+            '<span class="gb-sep">·</span>' +
+            '<span class="gb-comment" id="gb-comment-' + id + '"></span>' +
+            '<span class="gb-time" id="gb-time-' + id + '"></span>' +
+          '</div>' +
         '</div>' +
         '<div class="grade-info-bar" id="grade-info-' + id + '">' +
           '<div class="grade-info-item"><span class="grade-info-label">Điểm</span><span class="grade-info-score" id="gi-score-' + id + '">—</span></div>' +
@@ -2299,7 +2308,38 @@ function restorePanel(hlId, data, locked, rec) {
   // Restore grading if present
   if (rec) restoreGrading(hlId, rec);
 
-  // Update status badge
+  // Cập nhật submit-badge (box trên: trạng thái nộp bài)
+  const _sbadge = document.getElementById('submit-badge-' + hlId);
+  if (_sbadge && rec) {
+    const _tt  = rec.trang_thai || '';
+    const _sub = rec.submitted_at || '';
+    _sbadge.className = 'submit-badge' + (_tt === 'submitted' || _tt === 'graded' ? ' done' : '');
+    if      (!_tt || _tt === 'unsaved') _sbadge.textContent = '● Chưa làm';
+    else if (_tt === 'draft')           _sbadge.textContent = '● Đang làm · Đã lưu nháp lúc ' + (rec.cap_nhat || '');
+    else                                _sbadge.textContent = '✓ Đã nộp lúc ' + _sub;
+  }
+  // Cập nhật grade-badge-hs (box dưới: trạng thái chấm bài)
+  const _gbScore   = document.getElementById('gb-score-'   + hlId);
+  const _gbComment = document.getElementById('gb-comment-' + hlId);
+  const _gbTime    = document.getElementById('gb-time-'    + hlId);
+  if (rec && (rec.trang_thai === 'submitted' || rec.trang_thai === 'graded')) {
+    if (rec.trang_thai === 'graded' && rec.grade_score !== '' && rec.grade_score !== undefined) {
+      if (_gbScore)   _gbScore.textContent   = rec.grade_score + '/10';
+      if (_gbComment) _gbComment.textContent = rec.grade_comment || '';
+      if (_gbTime)    _gbTime.textContent    = rec.graded_at ? 'Chấm lúc ' + rec.graded_at : '';
+      // Đặt text đầu badge
+      const _gbBadge = document.getElementById('grade-badge-' + hlId);
+      if (_gbBadge) _gbBadge.querySelector('span').textContent = '★ Đã chấm';
+    } else {
+      // submitted nhưng chưa chấm
+      if (_gbScore)   _gbScore.textContent   = '';
+      if (_gbComment) _gbComment.textContent = '';
+      if (_gbTime)    _gbTime.textContent    = '';
+      const _gbBadge = document.getElementById('grade-badge-' + hlId);
+      if (_gbBadge) _gbBadge.querySelector('span').textContent = '⏳ Đang chờ chấm điểm';
+    }
+  }
+  // Update status badge (for CSS class targeting + tab dot)
   const stKey = hlState[hlId]?.status || (locked ? 'submitted' : 'draft');
   const timeStr = stKey === 'graded' ? (hlState[hlId]?.graded_at||'') : (hlState[hlId]?.submitted_at||'');
   updateStatusBadge(hlId, stKey, timeStr);
@@ -2332,14 +2372,22 @@ function lockPanel(hlId) {
 }
 
 function updateStatusBadge(hlId, status, time) {
+  // Submit badge (box trên): chưa làm / chưa nộp / đã nộp + thời gian
+  const sbadge = document.getElementById('submit-badge-' + hlId);
+  if (sbadge) {
+    sbadge.className = 'submit-badge' + (status === 'submitted' || status === 'graded' ? ' done' : '');
+    if      (status === 'unsaved')   sbadge.textContent = '● Chưa làm';
+    else if (status === 'draft')     sbadge.textContent = '● Đang làm (chưa nộp)';
+    else if (status === 'submitted') sbadge.textContent = '✓ Đã nộp lúc ' + (time || '');
+    else if (status === 'graded')    sbadge.textContent = '✓ Đã nộp';
+  }
+  // Giữ legacy badge (dùng cho GV tab dot)
   const badge = document.getElementById('status-' + hlId);
-  if (!badge) return;
-  const labels = { draft:'● Đã lưu (nháp)', submitted:'✓ Đã nộp', graded:'★ Đã chấm', unsaved:'● Chưa lưu' };
-  badge.className = 'hl-status-badge ' + status;
-  let badgeText = labels[status] || status;
-  if (status === 'submitted' && time) badgeText = '✓ Đã nộp lúc ' + time;
-  if (status === 'graded' && time) badgeText = '★ Đã chấm: ' + time;
-  badge.textContent = badgeText;
+  if (badge) {
+    badge.className = 'hl-status-badge ' + status;
+    badge.textContent = status;
+    badge.style.display = 'none'; // ẩn, chỉ dùng cho CSS targeting
+  }
 
   // Update HL tab dot
   const tab = document.getElementById('hltab-' + hlId);
@@ -2374,13 +2422,13 @@ function updateStatusBadge(hlId, status, time) {
     if (_gsEl) _gsEl.textContent = (_st.grade_score !== undefined && _st.grade_score !== '') ? _st.grade_score + '/10' : (time || '—');
     if (_gcEl) _gcEl.textContent = _st.grade_comment || '—';
     if (_gtEl) _gtEl.textContent = _st.graded_at || time || '—';
-    // HS badge
+    // Grade badge (HS): điểm + nhận xét + thời gian chấm
     const _gbScore   = document.getElementById('gb-score-'   + hlId);
     const _gbComment = document.getElementById('gb-comment-' + hlId);
     const _gbTime    = document.getElementById('gb-time-'    + hlId);
-    if (_gbScore)   _gbScore.textContent   = _st.grade_score !== undefined ? _st.grade_score + '/10' : '';
-    if (_gbComment) _gbComment.textContent = _st.grade_comment ? '· ' + _st.grade_comment : '';
-    if (_gbTime)    _gbTime.textContent    = (_st.graded_at || time) ? 'Chấm lúc ' + (_st.graded_at || time) : '';
+    if (_gbScore)   _gbScore.textContent   = (_st.grade_score !== undefined && _st.grade_score !== '') ? _st.grade_score + '/10' : '—';
+    if (_gbComment) _gbComment.textContent = _st.grade_comment || '';
+    if (_gbTime)    _gbTime.textContent    = 'Chấm lúc ' + (_st.graded_at || time || '');
   }
   hlState[hlId] = hlState[hlId] || {};
   hlState[hlId].status = status;
