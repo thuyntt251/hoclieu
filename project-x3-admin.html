@@ -103,6 +103,9 @@ tbody tr.unlocked-row:hover{background:#FEF3C7}
 .btn-cancel-row:hover{background:#E2E8F0}
 .btn-history{background:#EDE9FE;border:1.5px solid #DDD6FE;color:var(--purple)}
 .btn-history:hover{background:#DDD6FE}
+.gb-pw-row{display:none;margin-top:6px;gap:6px;align-items:center}
+.gb-pw-input{padding:5px 10px;border:1.5px solid #7C3AED;border-radius:5px;font-size:11px;font-family:inherit;width:180px;background:#FAF5FF;color:#1E293B}
+.gb-pw-input:focus{outline:none;border-color:#4C1D95}
 
 /* change log inline */
 .change-log{font-size:10.5px;color:var(--slate);margin-top:3px;font-style:italic;display:none}
@@ -485,10 +488,13 @@ function buildRow(r, idx){
     <td class="cell" style="font-size:11px;color:var(--slate);white-space:nowrap">${r.graded_at||'—'}</td>
     <td class="action-cell">
       <div class="action-row">
-        <button class="btn-unlock" id="btn-unlock-${ri}" onclick="unlockRow(${ri})" ${isUnlocked?'style="display:none"':''}>🔓 Khóa</button>
+        <button class="btn-unlock" id="btn-unlock-${ri}" onclick="unlockRow(${ri})" ${isUnlocked?'style="display:none"':''}>🔓 Mở khóa</button>
         <button class="btn-save-row" id="btn-save-${ri}" onclick="saveRow(${ri})" style="${isUnlocked&&hasChanges?'display:inline-block':'display:none'}">💾 Lưu</button>
         <button class="btn-cancel-row" id="btn-cancel-${ri}" onclick="cancelRow(${ri})" style="${isUnlocked?'display:inline-block':'display:none'}">✕ Huỷ</button>
         <button class="btn-history" onclick="toggleHistory(${ri})">📋 Lịch sử</button>
+      </div>
+      <div class="gb-pw-row" id="gb-pw-row-${ri}" style="${isUnlocked?'display:flex':'display:none'}">
+        <input type="password" id="gb-pw-${ri}" class="gb-pw-input" placeholder="Mã chấm điểm (GB)…" autocomplete="off"/>
       </div>
     </td>
   </tr>
@@ -569,6 +575,15 @@ async function saveRow(ri){
   const changes = Object.entries(edits).filter(([k])=>k!=='_unlocked');
   if(!changes.length){ showToast('Không có thay đổi nào', 'error'); return; }
 
+  // Kiểm tra mã chấm điểm GB
+  const gbEl = document.getElementById('gb-pw-'+ri);
+  const gbPw = gbEl ? gbEl.value.trim() : '';
+  if(!gbPw){
+    if(gbEl) gbEl.focus();
+    showToast('❌ Vui lòng nhập mã chấm điểm (GB) để lưu', 'error');
+    return;
+  }
+
   const r = allRecords.find(x=>x.rowIndex===ri);
   if(!r){ showToast('Không tìm thấy dòng', 'error'); return; }
 
@@ -581,7 +596,7 @@ async function saveRow(ri){
       lop:      r.lop,
       bai:      r.bai,
       hoc_lieu: r.hoc_lieu,
-      gv_pw:    currentGV.pw,
+      gv_pw:    gbPw,
       changes:  changes.map(([field,{old:o,new:n}]) => ({ field, old:o, new:n })),
       edited_by: currentGV.ten
     };
@@ -604,6 +619,7 @@ async function saveRow(ri){
         });
       });
       delete pendingEdits[ri];
+      if(gbEl) gbEl.value = '';
       rerenderRow(r, filtered.indexOf(r));
       showToast('✓ Đã lưu thay đổi', 'success');
     } else {
