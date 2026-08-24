@@ -1790,7 +1790,14 @@ function buildAllPanels() {
       div.innerHTML =
         buildPanelHeaderHTML(hl) +
         '<div class="panel-section-title"><span class="sec-icon">📝</span>Nội dung học liệu</div>' +
-        '<div class="panel-section-body">' + hlHTML(hl.id) + '</div>' +
+        '<div class="panel-section-body">' +
+          '<div class="hl-panel-actions" style="margin-bottom:16px">' +
+            '<button class="btn btn-reset" data-hlid="' + hl.id + '" style="margin-right:8px">&#x1F504; Xóa trắng</button>' +
+            '<button class="btn btn-save" data-hlid="' + hl.id + '" style="margin-right:8px">&#x1F4BE; Lưu</button>' +
+            '<button class="btn btn-submit" data-hlid="' + hl.id + '">&#x2705; Nộp bài</button>' +
+          '</div>' +
+          hlHTML(hl.id) +
+        '</div>' +
         '<div class="section-grading">' +
           '<div class="panel-section-title"><span class="sec-icon">✏️</span>Đánh giá của giáo viên</div>' +
           '<div class="panel-section-body">' + buildGradingHTML(hl) + '</div>' +
