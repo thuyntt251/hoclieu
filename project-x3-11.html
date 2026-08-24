@@ -2700,46 +2700,22 @@ async function submitHL(hlId) {
 // RESTORE GRADING (fill score + comment from saved data)
 // ═══════════════════════════════════════════════════════════
 function restoreGrading(hlId, rec) {
-  const scoreEl   = document.getElementById('grade-score-' + hlId);
+  const scoreEl   = document.getElementById('grade-score-'   + hlId);
   const commentEl = document.getElementById('grade-comment-' + hlId);
-  const resultEl  = document.getElementById('grade-result-' + hlId);
   if (!scoreEl) return;
-
+  // Fill hidden score + highlight verdict
   if (rec.grade_score !== '' && rec.grade_score !== undefined) {
     scoreEl.value = rec.grade_score;
-    // Highlight nút verdict đã chọn
     const gs = String(rec.grade_score).trim();
     const panel = scoreEl.closest('.hl-panel');
-    if (panel) {
-      panel.querySelectorAll('.verdict-btn').forEach(b => {
-        b.classList.toggle('selected', b.dataset.verdict === gs);
-      });
-    }
+    if (panel) panel.querySelectorAll('.verdict-btn').forEach(b => {
+      b.classList.toggle('selected', b.dataset.verdict === gs);
+    });
   }
-  if (rec.grade_comment) {
-    commentEl.value = rec.grade_comment;
-    if (!document.body.classList.contains('gv-logged')) commentEl.readOnly = true;
-  }
-  if (rec.trang_thai === 'graded' && rec.grade_score !== '') {
-    resultEl.style.display = 'flex';
-    resultEl.textContent = '★ ' + rec.grade_score + ' — Chấm lúc ' + (rec.graded_at || '');
-    // GV can re-grade; lock button only for student view
-    if (!document.body.classList.contains('gv-logged')) {
-      const gradeBtn = scoreEl.closest('.grading-section')?.querySelector('.btn-grade');
-      if (gradeBtn) { gradeBtn.disabled = true; gradeBtn.textContent = '✔ Đã chấm'; }
-    }
-    // GV: cập nhật grade-info-bar
-    const giSub = document.getElementById('gi-sub-'   + hlId);
-    const gsEl  = document.getElementById('gi-score-' + hlId);
-    const gcEl  = document.getElementById('gi-comment-' + hlId);
-    const gtEl  = document.getElementById('gi-time-'  + hlId);
-    if (giSub) giSub.textContent = rec.submitted_at ? 'lúc ' + rec.submitted_at : '';
-    if (gsEl)  gsEl.textContent  = rec.grade_score + '/10';
-    if (gcEl)  gcEl.textContent  = rec.grade_comment ? 'Nhận xét: ' + rec.grade_comment : '';
-    if (gtEl)  gtEl.textContent  = rec.graded_at ? 'lúc ' + rec.graded_at : '';
-    // HS: cập nhật x3 status bar
-    updateX3StatusBar(hlId, rec);
-  }
+  // Fill comment
+  if (rec.grade_comment && commentEl) commentEl.value = rec.grade_comment;
+  // Update status bar
+  if (rec.trang_thai === 'graded') updateX3StatusBar(hlId, rec);
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -2767,16 +2743,14 @@ async function gradeHL(hlId) {
   if (!st || !st.ten) { showToast('❌ Chưa chọn học sinh', 'error'); return; }
 
   const commentEl = document.getElementById('grade-comment-' + hlId);
-  const resultEl  = document.getElementById('grade-result-'  + hlId);
   const lesson = LESSONS.find(l => l.hls.some(h => h.id === hlId));
   const now = new Date().toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' });
 
   // Offline mode
   if (!GAS_URL || GAS_URL.includes('YOUR_')) {
-    if (resultEl) { resultEl.style.display = 'flex'; resultEl.textContent = '★ ' + scoreVal + (typeof scoreVal==='number'?'/10':'') + ' — ' + now; }
-    hlState[hlId] = { ...(hlState[hlId]||{}), status:'graded', graded_at: now, grade_score: score };
+    hlState[hlId] = { ...(hlState[hlId]||{}), status:'graded', graded_at: now, grade_score: scoreVal };
     updateStatusBadge(hlId, 'graded', now);
-    showToast('★ Đã chấm ' + score + '/10 (offline)', 'success');
+    showToast('★ Đã chấm: ' + scoreVal + ' (offline)', 'success');
     return;
   }
 
