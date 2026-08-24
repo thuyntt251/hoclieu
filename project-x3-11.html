@@ -2702,7 +2702,7 @@ async function gradeHL(hlId) {
         grade_score: score,
         grade_comment: commentEl ? commentEl.value : '',
         gv_pw: gvPw,
-        graded_by: currentGV ? currentGV.ten : '',
+        graded_by: (function(){ try { return JSON.parse(sessionStorage.getItem('x3_session')||'{}').ten||''; } catch(e){ return ''; } })(),
         ua: navigator.userAgent
       })
     });
@@ -2710,7 +2710,7 @@ async function gradeHL(hlId) {
     if (json.ok) {
       const ts = json.graded_at || now;
       hlState[hlId] = { ...(hlState[hlId]||{}), status:'graded', graded_at: ts, grade_score: score,
-        grade_comment: commentEl ? commentEl.value : '', graded_by: currentGV ? currentGV.ten : '' };
+        grade_comment: commentEl ? commentEl.value : '', graded_by: (function(){ try { return JSON.parse(sessionStorage.getItem('x3_session')||'{}').ten||''; } catch(e){ return ''; } })() };
       showToast('★ Đã chấm ' + score + '/10 lúc ' + ts, 'success');
       const _st = getStudent();
       if (_st.ten) await loadStudentData(_st.ten, _st.lop);
