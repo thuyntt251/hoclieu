@@ -227,7 +227,10 @@ tbody tr.unlocked-row:hover{background:#FEF3C7}
   <div class="table-wrap">
     <div class="table-header">
       <span class="table-count" id="tableCount">— dòng</span>
-      <button class="btn-export" onclick="exportCSV()">⬇ Xuất CSV</button>
+      <div style="display:flex;gap:8px">
+        <button class="btn-export" onclick="loadAllData()" style="color:var(--blue);border-color:var(--blue)">↻ Tải lại</button>
+        <button class="btn-export" onclick="exportCSV()">⬇ Xuất CSV</button>
+      </div>
     </div>
     <div style="overflow-x:auto">
       <table id="dataTable">
@@ -619,9 +622,8 @@ async function saveRow(ri){
         });
       });
       delete pendingEdits[ri];
-      if(gbEl) gbEl.value = '';
-      rerenderRow(r, filtered.indexOf(r));
-      showToast('✓ Đã lưu thay đổi', 'success');
+      showToast('✓ Đã lưu — đang tải lại dữ liệu...', 'success');
+      await loadAllData();
     } else {
       showToast('❌ ' + (json.error||'Lỗi không xác định'), 'error');
     }
