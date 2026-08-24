@@ -110,17 +110,28 @@ body.gv-logged .hl-panel.graded .grade-info-bar{display:flex}
 .grade-info-score{font-size:22px;font-weight:800;color:#4C1D95;line-height:1}
 .grade-info-comment{font-size:12.5px;color:#5B21B6;font-style:italic;max-width:400px;line-height:1.4}
 /* SUBMIT BADGE + GRADE BADGE — HS view */
-.submit-badge,.grade-badge-hs{display:inline-flex;align-items:center;gap:7px;padding:5px 13px;border-radius:20px;font-size:12.5px;font-weight:700;margin-top:5px;flex-wrap:wrap}
-.submit-badge{background:#F1F5F9;border:1.5px solid #CBD5E1;color:#475569}
-.submit-badge.done{background:#DCFCE7;border-color:#86EFAC;color:#15803D}
-.grade-badge-hs{background:#F1F5F9;border:1.5px solid #CBD5E1;color:#64748B;display:none}
-.hl-panel.submitted .grade-badge-hs,.hl-panel.graded .grade-badge-hs{display:inline-flex}
-.hl-panel.graded .grade-badge-hs{background:#EDE9FE;border-color:#DDD6FE;color:#4C1D95}
-body.gv-logged .submit-badge,body.gv-logged .grade-badge-hs{display:none!important}
-.gb-score{font-size:15px;font-weight:800}
-.gb-sep{opacity:.4}
-.gb-comment{font-size:11.5px;font-style:italic;font-weight:400;color:#5B21B6}
-.gb-time{font-size:11px;opacity:.65}
+/* ── STATUS BAR (dùng chung HTML + admin) ── */
+.x3-status-bar{display:flex;flex-direction:column;gap:4px;margin-top:6px}
+.x3-status-row{display:inline-flex;align-items:center;gap:8px;padding:5px 14px;border-radius:8px;font-size:12.5px;font-weight:600;width:fit-content;flex-wrap:wrap}
+/* Submit row */
+.x3-submit{background:#F1F5F9;border:1.5px solid #CBD5E1;color:#64748B}
+.x3-submit.unsaved{background:#F1F5F9;border-color:#CBD5E1;color:#94A3B8}
+.x3-submit.draft{background:#FEF3C7;border-color:#FDE68A;color:#92400E}
+.x3-submit.done{background:#DCFCE7;border-color:#86EFAC;color:#15803D}
+/* Grade row */
+.x3-grade{background:#F8FAFF;border:1.5px solid #E2E8F0;color:#94A3B8;display:none}
+.hl-panel.submitted .x3-grade,.hl-panel.graded .x3-grade{display:inline-flex}
+.hl-panel.graded .x3-grade{background:#EDE9FE;border-color:#C4B5FD;color:#4C1D95}
+/* Comment row */
+.x3-comment{font-size:12px;color:#5B21B6;font-style:italic;padding:2px 14px;display:none}
+.hl-panel.graded .x3-comment{display:block}
+/* Ẩn với GV (GV xem grade-info-bar) */
+body.gv-logged .x3-status-bar{display:none!important}
+/* Icon */
+.x3-icon{font-size:13px}
+.x3-label{font-weight:700}
+.x3-time{font-size:11px;opacity:.7;font-weight:400}
+.x3-score{font-size:15px;font-weight:800}
 /* LOCKED OVERLAY — chỉ khóa student fields (data-fid) */
 .hl-panel.locked [data-fid]{background:#F8FAFC!important;color:var(--ink-soft)!important;pointer-events:none!important;border-color:#E2E8F0!important;cursor:not-allowed!important;opacity:.7}
 .locked-banner{background:var(--green-light);border:1px solid #6EE7B7;border-radius:var(--radius-sm);padding:10px 16px;font-size:13px;color:#065F46;font-weight:600;margin-bottom:16px;display:flex;align-items:center;gap:8px}
@@ -1765,15 +1776,19 @@ function buildPanelHeaderHTML(hl) {
       '<span class="hl-badge">' + sid + '</span>' +
       '<div>' +
         '<div style="font-size:18px;font-weight:700;color:var(--navy)">' + lbl + '</div>' +
-        '<div style="display:flex;flex-direction:column;gap:3px;margin-top:4px">' +
-          '<div id="submit-badge-' + id + '" class="submit-badge">● Chưa làm</div>' +
-          '<div id="grade-badge-' + id + '" class="grade-badge-hs">' +
-            '<span>&#9733; Đã chấm</span>' +
-            '<span class="gb-score" id="gb-score-' + id + '">—</span>' +
-            '<span class="gb-sep">·</span>' +
-            '<span class="gb-comment" id="gb-comment-' + id + '"></span>' +
-            '<span class="gb-time" id="gb-time-' + id + '"></span>' +
+        '<div class="x3-status-bar" id="x3-bar-' + id + '">' +
+          '<div class="x3-status-row x3-submit unsaved" id="submit-badge-' + id + '">' +
+            '<span class="x3-icon">&#9679;</span>' +
+            '<span class="x3-label" id="sb-label-' + id + '">Chưa làm</span>' +
+            '<span class="x3-time" id="sb-time-' + id + '"></span>' +
           '</div>' +
+          '<div class="x3-status-row x3-grade" id="grade-badge-' + id + '">' +
+            '<span class="x3-icon" id="gb-icon-' + id + '">&#8987;</span>' +
+            '<span class="x3-label" id="gb-label-' + id + '">Đang chờ chấm điểm</span>' +
+            '<span class="x3-score" id="gb-score-' + id + '"></span>' +
+            '<span class="x3-time" id="gb-time-' + id + '"></span>' +
+          '</div>' +
+          '<div class="x3-comment" id="gb-comment-' + id + '"></div>' +
         '</div>' +
         '<div class="grade-info-bar" id="grade-info-' + id + '">' +
           '<div class="grade-info-item"><span class="grade-info-label">Điểm</span><span class="grade-info-score" id="gi-score-' + id + '">—</span></div>' +
@@ -2330,38 +2345,8 @@ function restorePanel(hlId, data, locked, rec) {
   // Restore grading if present
   if (rec) restoreGrading(hlId, rec);
 
-  // Cập nhật submit-badge (box trên: trạng thái nộp bài)
-  const _sbadge = document.getElementById('submit-badge-' + hlId);
-  if (_sbadge && rec) {
-    const _tt  = rec.trang_thai || '';
-    const _sub = rec.submitted_at || '';
-    _sbadge.className = 'submit-badge' + (_tt === 'submitted' || _tt === 'graded' ? ' done' : '');
-    if      (!_tt || _tt === 'unsaved') _sbadge.textContent = '● Chưa làm';
-    else if (_tt === 'draft')           _sbadge.textContent = '● Đang làm · Đã lưu nháp lúc ' + (rec.cap_nhat || '');
-    else if (_tt === 'submitted')       _sbadge.textContent = '✓ Đã nộp lúc ' + _sub;
-    else if (_tt === 'graded')          _sbadge.textContent = '✓ Đã nộp lúc ' + _sub;
-  }
-  // Cập nhật grade-badge-hs (box dưới: trạng thái chấm bài)
-  const _gbScore   = document.getElementById('gb-score-'   + hlId);
-  const _gbComment = document.getElementById('gb-comment-' + hlId);
-  const _gbTime    = document.getElementById('gb-time-'    + hlId);
-  if (rec && (rec.trang_thai === 'submitted' || rec.trang_thai === 'graded')) {
-    if (rec.trang_thai === 'graded' && rec.grade_score !== '' && rec.grade_score !== undefined) {
-      if (_gbScore)   _gbScore.textContent   = rec.grade_score + '/10';
-      if (_gbComment) _gbComment.textContent = rec.grade_comment || '';
-      if (_gbTime)    _gbTime.textContent    = rec.graded_at ? 'Chấm lúc ' + rec.graded_at : '';
-      // Đặt text đầu badge
-      const _gbBadge = document.getElementById('grade-badge-' + hlId);
-      if (_gbBadge) _gbBadge.querySelector('span').textContent = '★ Đã chấm';
-    } else {
-      // submitted nhưng chưa chấm
-      if (_gbScore)   _gbScore.textContent   = '';
-      if (_gbComment) _gbComment.textContent = '';
-      if (_gbTime)    _gbTime.textContent    = '';
-      const _gbBadge = document.getElementById('grade-badge-' + hlId);
-      if (_gbBadge) _gbBadge.querySelector('span').textContent = '⏳ Đang chờ chấm điểm';
-    }
-  }
+  // Cập nhật status bar
+  if (rec) updateX3StatusBar(hlId, rec);
   // Update status badge (for CSS class targeting + tab dot)
   const stKey = hlState[hlId]?.status || (locked ? 'submitted' : 'draft');
   const timeStr = stKey === 'graded' ? (hlState[hlId]?.graded_at||'') : (hlState[hlId]?.submitted_at||'');
@@ -2394,23 +2379,72 @@ function lockPanel(hlId) {
   // grading-body luôn mở (không cần addClass open)
 }
 
+// Hàm cập nhật X3 status bar (submit + grade rows)
+function updateX3StatusBar(hlId, rec) {
+  if (!rec) return;
+  const tt      = rec.trang_thai || '';
+  const subTime = rec.submitted_at || '';
+  const capNhat = rec.cap_nhat || '';
+  const gs      = rec.grade_score;
+  const gc      = rec.grade_comment || '';
+  const ga      = rec.graded_at || '';
+
+  // ── Submit row ────────────────────────────────────────
+  const sbEl    = document.getElementById('submit-badge-' + hlId);
+  const sbLabel = document.getElementById('sb-label-'     + hlId);
+  const sbTime  = document.getElementById('sb-time-'      + hlId);
+  if (sbEl && sbLabel) {
+    sbEl.className = 'x3-status-row x3-submit';
+    if (!tt || tt === 'unsaved') {
+      sbEl.classList.add('unsaved');
+      sbLabel.textContent = 'Chưa làm';
+      if (sbTime) sbTime.textContent = '';
+    } else if (tt === 'draft') {
+      sbEl.classList.add('draft');
+      sbLabel.textContent = 'Đang làm · đã lưu nháp';
+      if (sbTime) sbTime.textContent = capNhat ? 'lúc ' + capNhat : '';
+    } else {
+      sbEl.classList.add('done');
+      sbLabel.textContent = 'Đã nộp';
+      if (sbTime) sbTime.textContent = subTime ? 'lúc ' + subTime : '';
+    }
+  }
+
+  // ── Grade row ─────────────────────────────────────────
+  const gbIcon    = document.getElementById('gb-icon-'    + hlId);
+  const gbLabel   = document.getElementById('gb-label-'   + hlId);
+  const gbScore   = document.getElementById('gb-score-'   + hlId);
+  const gbTime    = document.getElementById('gb-time-'    + hlId);
+  const gbComment = document.getElementById('gb-comment-' + hlId);
+
+  if (tt === 'graded' && gs !== '' && gs !== undefined && gs !== null) {
+    if (gbIcon)    gbIcon.textContent    = '★';
+    if (gbLabel)   gbLabel.textContent   = 'Đã chấm điểm';
+    if (gbScore)   gbScore.textContent   = gs + '/10';
+    if (gbTime)    gbTime.textContent    = ga ? 'lúc ' + ga : '';
+    if (gbComment) gbComment.textContent = gc;
+  } else if (tt === 'submitted' || tt === 'graded') {
+    if (gbIcon)    gbIcon.textContent    = '⏳';
+    if (gbLabel)   gbLabel.textContent   = 'Đang chờ chấm điểm';
+    if (gbScore)   gbScore.textContent   = '';
+    if (gbTime)    gbTime.textContent    = '';
+    if (gbComment) gbComment.textContent = '';
+  }
+}
+
 function updateStatusBadge(hlId, status, time) {
-  // Submit badge (box trên): chưa làm / chưa nộp / đã nộp + thời gian
-  const sbadge = document.getElementById('submit-badge-' + hlId);
-  if (sbadge) {
-    sbadge.className = 'submit-badge' + (status === 'submitted' || status === 'graded' ? ' done' : '');
-    if      (status === 'unsaved')   sbadge.textContent = '● Chưa làm';
-    else if (status === 'draft')     sbadge.textContent = '● Đang làm (chưa nộp)';
-    else if (status === 'submitted') sbadge.textContent = '✓ Đã nộp lúc ' + (time || '');
-    else if (status === 'graded')    sbadge.textContent = '✓ Đã nộp';
+  // Cập nhật panel class để CSS grade-badge hiện đúng
+  const _panel = document.getElementById('panel-' + hlId);
+  if (_panel) {
+    _panel.classList.remove('unsaved','draft','submitted','graded');
+    _panel.classList.add(status);
   }
-  // Giữ legacy badge (dùng cho GV tab dot)
+  // Legacy status badge (ẩn, chỉ dùng cho CSS class targeting)
   const badge = document.getElementById('status-' + hlId);
-  if (badge) {
-    badge.className = 'hl-status-badge ' + status;
-    badge.textContent = status;
-    badge.style.display = 'none'; // ẩn, chỉ dùng cho CSS targeting
-  }
+  if (badge) { badge.className = 'hl-status-badge ' + status; badge.style.display = 'none'; }
+  // Cập nhật x3 status bar nếu có hlState
+  const _rec = hlState[hlId];
+  if (_rec) updateX3StatusBar(hlId, { ..._rec, trang_thai: status });
 
   // Update HL tab dot
   const tab = document.getElementById('hltab-' + hlId);
@@ -2599,13 +2633,15 @@ function restoreGrading(hlId, rec) {
       const gradeBtn = scoreEl.closest('.grading-section')?.querySelector('.btn-grade');
       if (gradeBtn) { gradeBtn.disabled = true; gradeBtn.textContent = '✔ Đã chấm'; }
     }
-    // Cập nhật grade-info-bar
+    // GV: cập nhật grade-info-bar
     const gsEl = document.getElementById('gi-score-'   + hlId);
     const gcEl = document.getElementById('gi-comment-' + hlId);
     const gtEl = document.getElementById('gi-time-'    + hlId);
     if (gsEl) gsEl.textContent = rec.grade_score + '/10';
     if (gcEl) gcEl.textContent = rec.grade_comment || '—';
     if (gtEl) gtEl.textContent = rec.graded_at || '—';
+    // HS: cập nhật x3 status bar
+    updateX3StatusBar(hlId, rec);
   }
 }
 
