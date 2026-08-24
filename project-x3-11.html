@@ -1791,11 +1791,7 @@ function buildAllPanels() {
         buildPanelHeaderHTML(hl) +
         '<div class="panel-section-title"><span class="sec-icon">📝</span>Nội dung học liệu</div>' +
         '<div class="panel-section-body">' +
-          '<div class="hl-panel-actions" style="margin-bottom:16px;justify-content:flex-end">' +
-            '<button class="btn btn-reset" data-hlid="' + hl.id + '" style="margin-right:8px">&#x1F504; Xóa trắng</button>' +
-            '<button class="btn btn-save" data-hlid="' + hl.id + '" style="margin-right:8px">&#x1F4BE; Lưu</button>' +
-            '<button class="btn btn-submit" data-hlid="' + hl.id + '">&#x2705; Nộp bài</button>' +
-          '</div>' +
+          '<div id="actions-placeholder-' + hl.id + '" style="display:flex;justify-content:flex-end;margin-bottom:16px"></div>' +
           hlHTML(hl.id) +
         '</div>' +
         '<div class="section-grading">' +
@@ -1819,23 +1815,26 @@ function buildPanelHeaderHTML(hl) {
         '<div style="font-size:18px;font-weight:700;color:var(--navy)">' + lbl + '</div>' +
       '</div>' +
     '</div>' +
+    '<div class="hl-panel-actions" id="actions-' + id + '" style="display:none">' +
+      '<button class="btn btn-reset" data-hlid="' + id + '">&#x1F504; Xóa trắng</button>' +
+      '<button class="btn btn-save" data-hlid="' + id + '">&#x1F4BE; Lưu</button>' +
+      '<button class="btn btn-submit" data-hlid="' + id + '">&#x2705; Nộp bài</button>' +
+    '</div>' +
     '<div class="panel-section-title sec-status"><span class="sec-icon">📋</span>Tình trạng</div>' +
     '<div class="panel-section-body">' +
-      '<div class="x3-status-bar" id="x3-bar-' + id + '">' +
+      '<div class="x3-status-bar" style="flex-direction:row;align-items:center;gap:10px;flex-wrap:wrap" id="x3-bar-' + id + '">' +
         '<div class="x3-status-row x3-submit unsaved" id="submit-badge-' + id + '">' +
           '<span class="x3-icon">&#9679;</span>' +
           '<span class="x3-label" id="sb-label-' + id + '">Chưa làm</span>' +
           '<span class="x3-time" id="sb-time-' + id + '"></span>' +
         '</div>' +
-        '<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">' +
-          '<div class="x3-status-row x3-grade" id="grade-badge-' + id + '">' +
-            '<span class="x3-icon" id="gb-icon-' + id + '">&#8987;</span>' +
-            '<span class="x3-label" id="gb-label-' + id + '">Đợi chấm</span>' +
-            '<span class="x3-score" id="gb-score-' + id + '"></span>' +
-            '<span class="x3-time" id="gb-time-' + id + '"></span>' +
-          '</div>' +
-          '<div class="x3-comment" id="gb-comment-' + id + '"></div>' +
+        '<div class="x3-status-row x3-grade" id="grade-badge-' + id + '">' +
+          '<span class="x3-icon" id="gb-icon-' + id + '">&#8987;</span>' +
+          '<span class="x3-label" id="gb-label-' + id + '">Đợi chấm</span>' +
+          '<span class="x3-score" id="gb-score-' + id + '"></span>' +
+          '<span class="x3-time" id="gb-time-' + id + '"></span>' +
         '</div>' +
+        '<div class="x3-comment" id="gb-comment-' + id + '"></div>' +
       '</div>' +
       '<div class="grade-info-bar" id="grade-info-' + id + '">' +
         '<div class="gi-submit-row"><span>✓ Đã nộp</span><span class="gi-submit-time" id="gi-sub-' + id + '"></span></div>' +
@@ -1901,6 +1900,13 @@ function setGradeType(hlId, type) {
 
 // Wire event listeners onto the already-built panel DOM node
 function wirePanel(div, hl) {
+  // Move action buttons từ hidden div vào placeholder trong section Nội dung
+  const actionsDiv = div.querySelector('#actions-' + hl.id);
+  const placeholder = div.querySelector('#actions-placeholder-' + hl.id);
+  if (actionsDiv && placeholder) {
+    while (actionsDiv.firstChild) placeholder.appendChild(actionsDiv.firstChild);
+    actionsDiv.remove();
+  }
   // Header buttons
   const btnReset  = div.querySelector('.btn-reset');
   const btnSave   = div.querySelector('.btn-save');
