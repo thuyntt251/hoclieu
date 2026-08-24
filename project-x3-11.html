@@ -238,6 +238,14 @@ tbody td textarea:focus,tbody td input[type="text"]:focus{background:#fff}
 .login-err{font-size:13px;color:var(--red);font-weight:600;text-align:center;min-height:20px}
 .login-lock{font-size:13px;color:#92400E;font-weight:600;background:var(--amber-light);padding:8px 12px;border-radius:var(--radius-sm);text-align:center}
 .session-bar{display:none!important}
+.gv-placeholder{display:none;flex-direction:column;align-items:center;justify-content:center;padding:80px 32px;text-align:center;gap:16px;min-height:320px}
+.gv-placeholder-icon{font-size:56px;opacity:.35}
+.gv-placeholder-title{font-size:20px;font-weight:700;color:var(--navy);opacity:.7}
+.gv-placeholder-sub{font-size:14px;color:var(--slate);max-width:320px;line-height:1.6}
+body.gv-logged.no-student-selected .gv-placeholder{display:flex}
+body.gv-logged.no-student-selected .lesson-tabs-wrap,
+body.gv-logged.no-student-selected .hl-tabs-wrap,
+body.gv-logged.no-student-selected #contentArea{display:none}
 /* GV AUTH inside grading */
 .gv-auth-row{display:flex;align-items:center;gap:10px;padding:12px 0;border-top:2px solid #DDD6FE;margin-top:10px;flex-wrap:wrap}
 .gv-pw-input{padding:8px 12px;border:1.5px solid #7C3AED;border-radius:var(--radius-sm);font-family:inherit;font-size:13px;width:200px;color:var(--ink);background:#FAF5FF}
@@ -390,6 +398,11 @@ body.gv-logged .btn-grade{display:inline-flex!important}
   <!-- filled by JS -->
 </div>
 
+<div class="gv-placeholder" id="gvPlaceholder">
+  <div class="gv-placeholder-icon">👆</div>
+  <div class="gv-placeholder-title">Chọn học sinh để xem bài làm</div>
+  <div class="gv-placeholder-sub">Chọn lớp và học sinh từ thanh công cụ phía trên để tải bài làm và chấm điểm.</div>
+</div>
 <div class="content-area" id="contentArea">
   <!-- HL panels filled by JS from DATA -->
 </div>
@@ -1871,6 +1884,7 @@ async function initApp() {
       sessionStorage.removeItem(SESSION_KEY);
       currentStudent = null; currentRole = 'hs';
       document.body.classList.remove('gv-logged');
+  document.body.classList.remove('no-student-selected');
     }
   }
   await loadNameList();
@@ -2073,6 +2087,7 @@ async function enterAppGV(gv, doLog) {
   document.getElementById('loginOverlay').classList.add('hidden');
   document.getElementById('studentBar').style.display = 'none';
   document.getElementById('teacherBar').classList.add('visible');
+  document.body.classList.add('no-student-selected');
   requestAnimationFrame(updateStickyTops);
   const gvAvatar = gv.ten.trim().split(' ').pop()[0].toUpperCase();
   document.getElementById('headerAvatar').textContent = gvAvatar;
@@ -2116,6 +2131,7 @@ function onGVLopChange() {
 }
 
 async function onGVStudentChange() {
+  document.body.classList.remove('no-student-selected');
   const val = document.getElementById('gv_student').value;
   if (!val) return;
   let st;
